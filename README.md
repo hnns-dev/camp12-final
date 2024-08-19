@@ -2,6 +2,12 @@
 
 Pinp Pong Finder
 
+## Workflow
+
+- Copy branch name from linear
+- After the first commit create a draft pull request
+- When done working on the issue, turn PR to 'ready for review' and request a review
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
