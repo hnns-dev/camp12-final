@@ -1,11 +1,8 @@
 "use client"; // This marks the component as a Client Component
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 const Settings = () => {
-  const router = useRouter();
-
   // State to hold the selected options for both settings categories
   const [friendsListSetting, setFriendsListSetting] = useState("Private");
   const [profileSetting, setProfileSetting] = useState("Only friends");
@@ -22,9 +19,7 @@ const Settings = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
       {/* Top bar with back arrow */}
       <div className="w-full flex items-center mb-8">
-        <button onClick={() => router.push("/")} className="text-2xl ml-2">
-          ←
-        </button>
+        <button className="text-2xl ml-2">←</button>
         <h1 className="flex-1 text-center text-2xl font-bold">Settings</h1>
       </div>
 
