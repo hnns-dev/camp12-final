@@ -17,10 +17,27 @@ model User {
   id                       String       @id @default(uuid())
   email                    String       @unique
   name                     String?
+  Session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
+  badges                   Badge[]
+}
+
+model Badge {
+  name      String   @id @unique
+  icon      String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Tournament {
@@ -37,6 +54,14 @@ model Tournament {
   participants User[]   @relation("ParticipatedTournaments")
   guests       String[]
   note         String
+  tags         Tag[]
+}
+
+model Tag {
+  name        String       @id @unique
+  venues      Venue[]
+  meets       Meet[]
+  tournaments Tournament[]
 }
 
 model Meet {
@@ -48,5 +73,7 @@ model Meet {
   creatorId    String
   creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
   participants User[]   @relation("ParticipatedMeets")
+  guests       String[]
   notes        String?
+  tags         Tag[]
 }
