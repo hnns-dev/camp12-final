@@ -9,12 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@prisma/client": "^5.18.0",
-=======
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "lucia": "^3.2.0",
->>>>>>> fbedadc (initial commit)
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"
