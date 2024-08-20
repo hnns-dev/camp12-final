@@ -36,3 +36,10 @@ model Tournament {
   guests       String[]
   note         String
 }
+
+model Tag {
+  name        String        @unique
+  venues      Venues[]
+  meets       Meets[]
+  tournaments Tournaments[]
+}
