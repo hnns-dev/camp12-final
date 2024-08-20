@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const Settings = () => {
+export const Settings = () => {
   // State to hold the selected options for both settings categories
   const [friendsListSetting, setFriendsListSetting] = useState("Private");
   const [profileSetting, setProfileSetting] = useState("Only friends");
@@ -113,5 +113,3 @@ const Settings = () => {
     </div>
   );
 };
-
-export default Settings;
