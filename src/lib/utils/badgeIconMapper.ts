@@ -1,24 +1,22 @@
 type BadgeName =
-  | "Gold Badge"
-  | "Silver Badge"
-  | "Bronze Badge"
+  | "GoldBadge"
+  | "SilverBadge"
+  | "BronzeBadge"
   | "Contributor"
-  | "Top Performer"
+  | "TopPerformer"
   | "Newbie";
 // Add or change badge names as needed
 
-const badgeIconMapper = (badgeName: BadgeName): string => {
+export function badgeIconMapper(badgeName: BadgeName): string {
   const iconMapping: Record<BadgeName, string> = {
-    "Gold Badge": "🥇",
-    "Silver Badge": "🥈",
-    "Bronze Badge": "🥉",
+    GoldBadge: "🥇",
+    SilverBadge: "🥈",
+    BronzeBadge: "🥉",
     Contributor: "👥",
-    "Top Performer": "🌟",
+    TopPerformer: "🌟",
     Newbie: "🔰",
     // Add or change mappings as needed
   };
 
   return iconMapping[badgeName] || "🏅"; // Default icon if the badge name is not found
-};
-
-export default badgeIconMapper;
+}
