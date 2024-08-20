@@ -55,5 +55,6 @@ model Meet {
   creatorId    String
   creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
   participants User[]   @relation("ParticipatedMeets")
+  guests       String[]
   notes        String?
 }
