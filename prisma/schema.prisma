@@ -22,6 +22,15 @@ model User {
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
+  badges Badge[]
+}
+
+model Badge {
+  name      String   @id @unique
+  icon      String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Session {
@@ -49,7 +58,7 @@ model Tournament {
 }
 
 model Tag {
-  name        String       @unique
+  name        String       @id @unique
   venues      Venue[]
   meets       Meet[]
   tournaments Tournament[]
