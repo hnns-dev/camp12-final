@@ -17,4 +17,14 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+  Badge Badge[]
+}
+
+model Badge {
+  id        Int      @id @default(autoincrement())
+  name      String
+  icon      String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
