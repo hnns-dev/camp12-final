@@ -25,7 +25,6 @@ model User {
 }
 
 model Badge {
-  id        Int      @id @default(autoincrement())
   name      String
   icon      String?
   userId    Int
