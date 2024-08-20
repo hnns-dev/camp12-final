@@ -14,21 +14,21 @@ datasource db {
 }
 
 model User {
-  id      String    @id @default(uuid())
-  email   String    @unique
-  name    String?
-  Session Session[]
+  id                       String       @id @default(uuid())
+  email                    String       @unique
+  name                     String?
+  Session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
-  badges Badge[]
+  badges                   Badge[]
 }
 
 model Badge {
   name      String   @id @unique
   icon      String?
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
@@ -37,7 +37,7 @@ model Session {
   id        String   @id
   userId    String
   expiresAt DateTime
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)  
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Tournament {
@@ -55,6 +55,8 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
 }
 
 model Tag {
@@ -62,6 +64,15 @@ model Tag {
   venues      Venue[]
   meets       Meet[]
   tournaments Tournament[]
+}
+
+model Venue {
+  id          String       @id @default(uuid())
+  location    String
+  image       String?
+  tags        Tag[]
+  tournaments Tournament[]
+  meets       Meet[]
 }
 
 model Meet {
@@ -76,4 +87,6 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
 }
