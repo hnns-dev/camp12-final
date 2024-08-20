@@ -14,9 +14,10 @@ datasource db {
 }
 
 model User {
-  id                       String       @id @default(uuid())
-  email                    String       @unique
-  name                     String?
+  id      String    @id @default(uuid())
+  email   String    @unique
+  name    String?
+  Session Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
@@ -30,6 +31,13 @@ model Badge {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)  
 }
 
 model Tournament {
