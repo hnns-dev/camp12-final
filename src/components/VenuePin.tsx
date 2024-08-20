@@ -1,13 +1,13 @@
 import React from "react";
 
-// Interface to define the expected props for the VenuePin component
+// Define the possible states for the VenuePin component
 interface VenuePinProps {
-  state: "intended" | "playing" | "free";
+  state?: "intended" | "playing" | "free"; // Make state optional
 }
 
 // VenuePin component definition
 export const VenuePin = ({ state }: VenuePinProps) => {
-  // Determine the color based on the state
+  // Determine the color based on the state or use white if no state is provided
   const getColor = () => {
     switch (state) {
       case "intended":
@@ -17,7 +17,7 @@ export const VenuePin = ({ state }: VenuePinProps) => {
       case "free":
         return "#06D6A0"; // Green for "free" state
       default:
-        return "#000000"; // Fallback color (shouldn't be necessary due to type safety)
+        return "#FFFFFF"; // Default color (white) if no state is provided
     }
   };
 
