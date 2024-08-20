@@ -13,6 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                       String       @id @default(uuid())
+  email                    String       @unique
+  name                     String?
+  tournamentsCreated       Tournament[] @relation("CreatedTournaments")
+  tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
+}
+
+model Tournament {
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  size         Int
+  type         String
+  Mode         String
+  public       Boolean  @default(true)
+  creatorId    String
+  creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedTournaments")
+  guests       String[]
+  note         String
+}
+
 model Tag {
   name        String        @unique
   venues      Venues[]
