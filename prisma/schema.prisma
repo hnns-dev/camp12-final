@@ -40,10 +40,10 @@ model Tournament {
 }
 
 model Tag {
-  name        String        @unique
+  name        String       @unique
   venues      Venue[]
   meets       Meet[]
-  tournaments Tournaments[]
+  tournaments Tournament[]
 }
 
 model Meet {
