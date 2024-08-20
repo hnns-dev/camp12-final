@@ -39,13 +39,6 @@ model Tournament {
   note         String
 }
 
-model Tag {
-  name        String       @unique
-  venues      Venue[]
-  meets       Meet[]
-  tournaments Tournament[]
-}
-
 model Meet {
   id           String   @id @default(uuid())
   date         DateTime

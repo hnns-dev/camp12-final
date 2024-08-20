@@ -1,8 +1,11 @@
-import Image from "next/image";
 import { InteractionBar } from "@/components/InteractionBar";
+import Map from "@/components/map";
 
 export default function Home() {
-  return <main className="min-h-screen">
-    <InteractionBar />
-  </main>;
+  return (
+    <main className="min-h-screen">
+      <Map />
+      <InteractionBar />
+    </main>
+  );
 }
