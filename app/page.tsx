@@ -1,8 +1,9 @@
-import Image from "next/image";
-import { InteractionBar } from "@/components/InteractionBar";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
-  return <main className="min-h-screen">
-    <InteractionBar />
-  </main>;
+  return (
+    <div className="flex h-screen justify-center items-centers">
+      <Navbar />
+    </div>
+  );
 }
