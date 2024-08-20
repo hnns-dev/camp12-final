@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      String    @id @default(uuid())
+  email   String    @unique
+  name    String?
+  Session Session[]
+  tournamentsCreated       Tournament[] @relation("CreatedTournaments")
+  tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
+  meetsCreated             Meet[]       @relation("CreatedMeets")
+  meetsParticipating       Meet[]       @relation("ParticipatedMeets")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)  
+}
+
+model Tournament {
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  size         Int
+  type         String
+  Mode         String
+  public       Boolean  @default(true)
+  creatorId    String
+  creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedTournaments")
+  guests       String[]
+  note         String
+  tags         Tag[]
+}
+
+model Tag {
+  name        String       @unique
+  venues      Venue[]
+  meets       Meet[]
+  tournaments Tournament[]
+}
+
+model Meet {
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  private      Boolean  @default(false)
+  creatorId    String
+  creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedMeets")
+  guests       String[]
+  notes        String?
+  tags         Tag[]
+}
