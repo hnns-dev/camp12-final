@@ -38,8 +38,8 @@ model Tournament {
 }
 
 model Tag {
-  name        String        @unique
-  venues      Venues[]
+  name        String       @unique
+  venues      Venue[]
   meets       Meets[]
-  tournaments Tournaments[]
+  tournaments Tournament[]
 }
