@@ -37,6 +37,7 @@ model Tournament {
   participants User[]   @relation("ParticipatedTournaments")
   guests       String[]
   note         String
+  tags         Tag[]
 }
 
 model Tag {
@@ -57,4 +58,5 @@ model Meet {
   participants User[]   @relation("ParticipatedMeets")
   guests       String[]
   notes        String?
+  tags         Tag[]
 }
