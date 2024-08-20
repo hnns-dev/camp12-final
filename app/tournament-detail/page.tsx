@@ -1,35 +1,20 @@
-import Image from "next/image";
+import { EditButton } from "@/components/EditButton";
 
-const placeHolder = ["Public", "Pros only", "One on One", "4h"];
+const placeHolder = [
+  "Public",
+  "Pros only",
+  "One on One",
+  "4h",
+  "16 players",
+  "knockout",
+];
 
 export default function TournamentDetail() {
   return (
     <main className="h-screen w-screen p-4">
+      <EditButton />
       {/* Header */}
-      <div className="flex flex-row justify-end pb-8 w-full h-6">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18 2L22 6"
-            stroke="black"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.5 20.5L19 9L15 5L3.5 16.5L2 22L7.5 20.5Z"
-            stroke="black"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
+      <div className="flex flex-row justify-end pb-8 w-full h-6"></div>
       {/* main */}
       <section>
         {/* Hero */}
