@@ -25,7 +25,7 @@ model User {
 }
 
 model Badge {
-  name      String
+  name      String   @id @unique
   icon      String?
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
@@ -50,8 +50,7 @@ model Tournament {
 }
 
 model Tag {
-  id           String   @id @default(uuid())
-  name        String       @unique
+  name        String       @id @unique
   venues      Venue[]
   meets       Meet[]
   tournaments Tournament[]
