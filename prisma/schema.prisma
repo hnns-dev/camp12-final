@@ -60,6 +60,12 @@ model Tournament {
 }
 
 model Tag {
+<<<<<<< HEAD
+  name        String       @unique
+  venues      Venue[]
+  meets       Meets[]
+  tournaments Tournament[]
+=======
   name        String       @id @unique
   venues      Venue[]
   meets       Meet[]
@@ -89,4 +95,5 @@ model Meet {
   tags         Tag[]
   Venue        Venue   @relation(fields: [venueId], references: [id])
   venueId      String
+>>>>>>> main
 }
