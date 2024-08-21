@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Input } from "./ui/input";
 
 export function Name() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,9 +14,10 @@ export function Name() {
           isLoggedIn ? "hidden" : "flex"
         } flex-col justify-start text-start gap-2 mt-2`}
       >
-        <p className="border-zinc-200 border-2 rounded-lg p-2 min-h-20 text-sm">
+        {/* <p className="border-zinc-200 border-2 rounded-lg p-2 min-h-20 text-sm">
           You wanna be the very best? Then join our ultimate tournament!
-        </p>
+        </p> */}
+        <Input placeholder="Put in a name"></Input>
       </form>
     </>
   );

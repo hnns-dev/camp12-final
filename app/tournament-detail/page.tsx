@@ -51,17 +51,14 @@ export default function TournamentDetail() {
               </li>
             ))}
           </ul>
-          <form
-            action="input"
-            className="flex flex-col justify-start text-start gap-2 mt-2"
-          >
+          <div className="flex flex-col justify-start text-start gap-2 mt-2">
             <label htmlFor="description" className="text-sm">
               Description
             </label>
             <p className="border-zinc-200 border-2 rounded-lg p-2 min-h-20 text-sm">
               You wanna be the very best? Then join our ultimate tournament!
             </p>
-          </form>
+          </div>
         </div>
       </section>
       {/* Button */}

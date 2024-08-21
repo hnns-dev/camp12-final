@@ -43,10 +43,7 @@ export default function MeetDetail() {
               </li>
             ))}
           </ul>
-          <form
-            action="input"
-            className="flex flex-col justify-start text-start gap-2 mt-2"
-          >
+          <div className="flex flex-col justify-start text-start gap-2 mt-2">
             <label htmlFor="description" className="text-sm">
               Description
             </label>
@@ -54,7 +51,7 @@ export default function MeetDetail() {
               You wann have a fun round of table tennis with us? Then join us!
               We play friendly&fair.
             </p>
-          </form>
+          </div>
         </div>
       </section>
       {/* Button */}
