@@ -14,7 +14,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex w-full justify-between items-center p-5">
+    <nav className="flex w-full h-auto justify-between items-center p-5">
       <button onClick={toggleDrawer} className="nav-button">
         <div className="flex flex-col items-center justify-center">
           <FaTableTennis className="size-6" />
