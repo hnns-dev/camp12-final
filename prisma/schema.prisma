@@ -14,17 +14,79 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  Badge Badge[]
+  id                       String       @id @default(uuid())
+  email                    String       @unique
+  name                     String?
+  Session                  Session[]
+  tournamentsCreated       Tournament[] @relation("CreatedTournaments")
+  tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
+  meetsCreated             Meet[]       @relation("CreatedMeets")
+  meetsParticipating       Meet[]       @relation("ParticipatedMeets")
+  badges                   Badge[]
 }
 
 model Badge {
-  id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @id @unique
   icon      String?
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Tournament {
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  size         Int
+  type         String
+  Mode         String
+  public       Boolean  @default(true)
+  creatorId    String
+  creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedTournaments")
+  guests       String[]
+  note         String
+  tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
+}
+
+model Tag {
+  name        String       @id @unique
+  venues      Venue[]
+  meets       Meet[]
+  tournaments Tournament[]
+}
+
+model Venue {
+  id          String       @id @default(uuid())
+  location    String
+  image       String?
+  tags        Tag[]
+  tournaments Tournament[]
+  meets       Meet[]
+}
+
+model Meet {
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  private      Boolean  @default(false)
+  creatorId    String
+  creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedMeets")
+  guests       String[]
+  notes        String?
+  tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
 }

@@ -1,7 +1,9 @@
-export default function SomePage() {
+import Navbar from "../components/Navbar";
+
+export default function Home() {
   return (
-    <div>
-      <h1>My Page</h1>
+    <div className="flex h-screen justify-center items-centers">
+      <Navbar />
     </div>
   );
 }
