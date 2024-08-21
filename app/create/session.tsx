@@ -21,6 +21,7 @@ import { Slider } from "@/components/ui/slider";
 import { CalendarIcon } from "lucide-react";
 import React from "react";
 import { format } from "date-fns";
+import { Switch } from "@/components/ui/switch";
 
 type SessionType = "tournament" | "meet";
 type TournamentType = "single" | "round";
@@ -31,6 +32,7 @@ export default function TournamentPage() {
   const [session, setSession] = React.useState<SessionType>("meet");
   const [mode, setMode] = React.useState<Mode>();
   const [tournamentType, setTournamentType] = React.useState<TournamentType>();
+  const [privacy, setPrivacy] = React.useState<boolean>(false);
 
   const handleSessionChange = (sessionType: SessionType) => {
     setSession(sessionType);
@@ -110,21 +112,27 @@ export default function TournamentPage() {
           </Select>
         </div>
       )}
-
-      <Tabs defaultValue="public" className="w-full">
-        <TabsList className="w-full">
-          <TabsTrigger value="public" className="w-1/2">
-            Public
-          </TabsTrigger>
-          <TabsTrigger value="privat" className="w-1/2">
-            Private
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
       <Input placeholder="Participants:" />
       <div className="flex flex-col w-full gap-2 grow">
         <span className="">Description:</span>
         <Textarea placeholder="Add some Details" className="grow" />
+      </div>
+      <div className="flex items-center gap-6">
+        <span
+          className={cn(
+            !privacy ? "text-black font-bold" : "text-muted-foreground"
+          )}
+        >
+          Private
+        </span>
+        <Switch onCheckedChange={setPrivacy} />
+        <span
+          className={cn(
+            privacy ? "text-black font-bold" : "text-muted-foreground"
+          )}
+        >
+          Public
+        </span>
       </div>
       <Button className="w-full mt-auto">Create</Button>
     </div>
