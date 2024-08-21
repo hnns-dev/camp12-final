@@ -1,10 +1,7 @@
-import { QRCodeInvite } from "./qr-add-friend/page";
-
-function SomePage() {
+export default function SomePage() {
   return (
     <div>
       <h1>My Page</h1>
-      <QRCodeInvite />
     </div>
   );
 }
