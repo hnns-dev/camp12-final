@@ -1,4 +1,5 @@
 import { Name } from "@/components/name";
+import Link from "next/link";
 
 export default function responsePage() {
   const placeHolder = [
@@ -53,6 +54,7 @@ export default function responsePage() {
           </ul>
           <Name />
         </div>
+        <Link href="/"></Link>
       </section>
       {/* Button */}
       <div className="flex flex-col items-stretch flex-grow justify-end mb-14 mt-6">
