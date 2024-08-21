@@ -14,6 +14,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -45,13 +54,29 @@ export function ProfileForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter your name" {...field} />
+              </FormControl>
+              <FormLabel>Caption</FormLabel>
+              <FormControl>
+                <Input placeholder="Tell us about yourself" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                <Checkbox /> I am a serious competitor!
               </FormDescription>
+              <DropdownMenu>
+                <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Billing</DropdownMenuItem>
+                  <DropdownMenuItem>Team</DropdownMenuItem>
+                  <DropdownMenuItem>Subscription</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <FormMessage />
             </FormItem>
           )}
