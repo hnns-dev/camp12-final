@@ -30,7 +30,7 @@ export default function TournamentDetail({
           </h2>
           <img
             className="rounded-xl h-2/5 w-full object-fill bg-red-300"
-            src="example.png"
+            src="/example.png"
             alt="pic"
           />
           <button className="bg-zinc-300 text-purple-700 text-xs rounded-full w-1/3 py-1">

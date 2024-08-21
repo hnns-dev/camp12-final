@@ -1,5 +1,7 @@
 import { Name } from "@/components/name";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa";
 
 export default function responsePage({
   params,
@@ -65,13 +67,19 @@ export default function responsePage({
           </ul>
           <Name />
         </div>
-        <Link href={`/${eventName}-detail/${sessionId}`}></Link>
+        <Link
+          href={`/${eventName}-detail/${sessionId}`}
+          className="underline flex items-center gap-3"
+        >
+          <p>{eventName} Details </p>
+          <FaArrowRight />
+        </Link>
       </section>
       {/* Button */}
       <div className="flex flex-col items-stretch flex-grow justify-end mb-14 mt-6">
-        <button className="bg-black text-white rounded-l py-4">
+        <Button className="bg-black text-white rounded-l py-4">
           Join {eventName}
-        </button>
+        </Button>
       </div>
     </main>
   );
