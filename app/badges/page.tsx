@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function BadgesComponent() {
   // Example badge data - replace with your actual data
@@ -23,7 +24,9 @@ export default function BadgesComponent() {
   return (
     <div className="max-w-sm mx-auto bg-white p-4 font-sans">
       <div className="mb-4">
-        <ArrowLeft className="w-6 h-6" />
+        <Link href="/profile">
+          <ArrowLeft className="w-6 h-6" />
+        </Link>
       </div>
 
       <h1 className="text-xl text-center font-bold pt-8 mb-12">Badges</h1>
