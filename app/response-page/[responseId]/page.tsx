@@ -4,8 +4,9 @@ import Link from "next/link";
 export default function responsePage({
   params,
 }: {
-  params: { ResponseId: string };
+  params: { responseId: string };
 }) {
+  const { responseId } = params;
   const placeHolder = [
     "Public",
     "Pros only",
@@ -14,6 +15,7 @@ export default function responsePage({
     "16 players",
     "knockout",
   ];
+
   const eventName = "Tournament";
   const date = "29.08.2024";
   const time = "16:00";
@@ -37,7 +39,7 @@ export default function responsePage({
           </h3>
           <img
             className="rounded-xl h-2/5 w-full object-fill bg-red-300"
-            src="example.png"
+            src="/example.png"
             alt="pic"
           />
           <button className="bg-zinc-300 text-purple-700 text-xs rounded-full w-1/3 py-1">
