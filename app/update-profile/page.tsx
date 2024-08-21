@@ -16,13 +16,20 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function ProfileUpdatePage() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
       <div className="w-full max-w-sm bg-white rounded-lg p-6 flex flex-col items-center justify-between flex-grow">
         <div className="flex justify-between w-full mb-6">
-          <Button variant="ghost">Cancel</Button>
+          <Link
+            href="/profile/friends"
+            className="flex items-center text-black hover:text-gray-700"
+          >
+            <ArrowLeft className="w-6 h-6 mr-2" />
+          </Link>
           <Button variant="default">Apply Changes</Button>
         </div>
         <div className="flex flex-col items-center mb-6">
