@@ -1,11 +1,10 @@
 import React from "react";
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 
 export default function QRPage() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between flex-grow">
+      <div className="w-full max-w-sm bg-white rounded-lg p-6 flex flex-col justify-between flex-grow">
         <div className="flex justify-start mb-6">
           <ArrowLeft className="text-black w-6 h-6" />
         </div>
@@ -19,7 +18,7 @@ export default function QRPage() {
             grow your own community
           </p>
           <div className="m-14">
-            <Image
+            <img
               src="/QRcode.svg"
               alt="QR Code"
               width={200}
