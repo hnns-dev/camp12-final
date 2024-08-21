@@ -14,14 +14,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Updated schema
 const formSchema = z.object({
@@ -102,7 +103,7 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem>
               <FormDescription>
-                <Checkbox
+                <Switch
                   {...field}
                   onCheckedChange={(checked) => {
                     field.onChange(checked); // Update form state
@@ -120,44 +121,19 @@ export function ProfileForm() {
           name="playerLevel"
           render={({ field }) => (
             <FormItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="w-full flex justify-between items-center rounded-md border border-gray-300 bg-white p-2">
-                    {field.value || "Player level"}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white border border-gray-300">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => field.onChange("Beginner")}>
-                    Beginner
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => field.onChange("Intermediate")}
-                  >
-                    Intermediate
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => field.onChange("Advanced")}>
-                    Advanced
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => field.onChange("Club Level")}
-                  >
-                    Club Level
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your player level" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="club">Club Level</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
