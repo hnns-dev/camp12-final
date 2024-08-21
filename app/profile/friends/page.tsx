@@ -19,7 +19,7 @@ export default function Component() {
   return (
     <div>
       <div className="flex justify-between p-4">
-        <Link href="/qrcode">Create QR-Code</Link>
+        <Link href="/qr-add-friend">Create QR-Code</Link>
         <Link href="/profile-update">Edit Profile</Link>
       </div>
       <h1 className="text-3xl font-bold m-5">Friends</h1>
