@@ -87,7 +87,7 @@ export function ProfileForm() {
               <FormControl>
                 <Input
                   placeholder="Tell us about yourself"
-                  className="rounded-md border border-gray-300 p-2"
+                  className="rounded-lg border border-gray-300 p-2"
                   {...field}
                 />
               </FormControl>
@@ -96,14 +96,19 @@ export function ProfileForm() {
           )}
         />
 
-        {/* Checkbox Field */}
         <FormField
           control={form.control}
           name="seriousCompetitor"
           render={({ field }) => (
             <FormItem>
               <FormDescription>
-                <Checkbox {...field} /> I am a serious competitor!
+                <Checkbox
+                  {...field}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked); // Update form state
+                  }}
+                />
+                I am a serious competitor!
               </FormDescription>
             </FormItem>
           )}
