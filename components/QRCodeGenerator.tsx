@@ -7,8 +7,8 @@ export default function QRCodeGenerator() {
 	const [value, setValue] = useState<string>("");
 	const [displayCode, setDisplayCode] = useState<boolean>(false);
 
-	const userID = "123456";
-	const userURL = `http://localhost:3000/profile/${userID}`;
+	const userID = "qr-add-friend";
+	const userURL = `http://localhost:3000/${userID}`;
 
 	useEffect(() => {
 		setValue(userURL);
@@ -23,11 +23,11 @@ export default function QRCodeGenerator() {
 	}
 
 	return (
-		<div className='h-full w-full flex flex-col gap-5 items-center justify-center'>
-			<h1 className='text-xl font-semibold'>Add to your friends list...</h1>
+		<div className='h-full w-full flex flex-col gap-5 items-center justify-center my-6'>
+			<h1 className='text-lg font-medium'>Add to your friends list...</h1>
 
 			<button
-				className='bg-zinc-800 px-4 py-2 text-slate-50 rounded-md w-1/2 ls:w-1/3'
+				className='bg-zinc-800 px-4 py-2 text-slate-50 rounded-md w-1/2'
 				onClick={generateQRCodeHandler}
 			>
 				Generate QR-Code
