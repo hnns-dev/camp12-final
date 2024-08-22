@@ -8,7 +8,7 @@ import data from "@/lib/output_data.json";
 //////////////////////////
 // NOT DSVGO COMPLIANT //
 /////////////////////////
-export default function Map() {
+export function Map() {
   const [location, setLocation] = useState<LatLngExpression | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
