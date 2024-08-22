@@ -2,7 +2,7 @@ import { FiFlag, FiPlusCircle, FiInfo } from "react-icons/fi";
 
 export function InteractionBar() {
   return (
-    <div className="flex w-full px-6 py-4 justify-between text-xs font-medium">
+    <div className="flex w-screen h-auto px-6 py-4 justify-between text-xs font-medium self-end">
       <a href="#">
         <div className="flex flex-col gap-2 items-center">
           <FiFlag className="w-8 h-8" />

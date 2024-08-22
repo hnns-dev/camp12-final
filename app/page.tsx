@@ -1,15 +1,11 @@
-import Image from "next/image";
 import { InteractionBar } from "@/components/InteractionBar";
-import Navbar from "@/components/Navbar";
-import { Form } from "@/components/ui/form";
-import { ProfileForm } from "@/components/profile-form";
+import Map from "@/components/Map";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="w-screen h-screen">
       <InteractionBar />
-
-      <Navbar />
+      <Map />
     </main>
   );
 }
