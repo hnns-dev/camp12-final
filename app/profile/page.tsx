@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,13 +10,21 @@ import {
 } from "@/components/ui/card";
 import { Ghost } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
 export default function ProfilePage() {
   return (
     <div>
       <div className=" flex justify-between">
-        <Button variant={"ghost"}>QR</Button>
+        <Link href={`/qr-add-friend`}>
+          <Button
+            // onClick={redirectClickHandler}
+            variant={"ghost"}
+          >
+            Add Friends
+          </Button>
+        </Link>
         <Button variant={"ghost"}>
           <img src="/settings.svg" alt="Settings" />
         </Button>
@@ -50,7 +59,7 @@ export default function ProfilePage() {
             <CardFooter></CardFooter>
           </Card>
         </Link>
-        <Link href="/badges" className="group" prefetch={false}>
+        <Link href="#" className="group" prefetch={false}>
           <Card className="w-full max-w-md group-hover:bg-zinc-300">
             <CardHeader>
               <CardTitle>Badges</CardTitle>
