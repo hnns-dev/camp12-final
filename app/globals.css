@@ -59,6 +59,15 @@
   }
 }
 
+<<<<<<< HEAD
+=======
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+>>>>>>> main
 @layer base {
   * {
     @apply border-border;
