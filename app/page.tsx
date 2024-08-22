@@ -1,17 +1,13 @@
-"use client";
-import Image from "next/image";
-import { InteractionBar } from "@/components/InteractionBar";
-import Navbar from "@/components/Navbar";
-import { Form } from "@/components/ui/form";
-import { ProfileForm } from "@/components/profile-form";
-import QRCodeGenerator from "@/components/QRCodeGenerator";
+import { DrawerHompage } from "@/components/DrawerHompage";
+import Navbar from "../components/Navbar";
+import { Map } from "@/components/Map";
 
 export default function Home() {
-	return (
-		<main className='min-h-screen'>
-			<InteractionBar />
-			<QRCodeGenerator />
-			<Navbar />
-		</main>
-	);
+  return (
+    <div className="h-screen w-full">
+      <DrawerHompage />
+      <Navbar />
+      <Map />
+    </div>
+  );
 }
