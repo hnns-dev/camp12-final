@@ -50,7 +50,7 @@ export default function ProfilePage() {
             <CardFooter></CardFooter>
           </Card>
         </Link>
-        <Link href="#" className="group" prefetch={false}>
+        <Link href="/badges" className="group" prefetch={false}>
           <Card className="w-full max-w-md group-hover:bg-zinc-300">
             <CardHeader>
               <CardTitle>Badges</CardTitle>
