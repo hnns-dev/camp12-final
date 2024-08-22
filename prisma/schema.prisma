@@ -28,7 +28,7 @@ model User {
 model Badge {
   name      String   @id @unique
   icon      String?
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
@@ -55,6 +55,8 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
 }
 
 model Tag {
@@ -62,6 +64,15 @@ model Tag {
   venues      Venue[]
   meets       Meet[]
   tournaments Tournament[]
+}
+
+model Venue {
+  id          String       @id @default(uuid())
+  location    String
+  image       String?
+  tags        Tag[]
+  tournaments Tournament[]
+  meets       Meet[]
 }
 
 model Meet {
@@ -76,4 +87,6 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
+  Venue        Venue   @relation(fields: [venueId], references: [id])
+  venueId      String
 }
