@@ -1,11 +1,11 @@
-import { InteractionBar } from "@/components/InteractionBar";
-import Map from "@/components/Map";
+import { DrawerHompage } from "@/components/DrawerHompage";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   return (
-    <main className="w-screen h-screen">
-      <InteractionBar />
-      <Map />
-    </main>
+    <div className="h-screen w-full">
+      <DrawerHompage />
+      <Navbar />
+    </div>
   );
 }
