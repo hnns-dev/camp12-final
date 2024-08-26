@@ -1,7 +1,8 @@
 import { EditButton } from "@/components/EditButton";
+import { ShareInvite } from "@/components/ShareInvite";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
-
+const responseId = "123";
 export default function MeetDetail({
   params,
 }: {
@@ -11,7 +12,10 @@ export default function MeetDetail({
   return (
     <main className="h-screen w-screen p-4">
       {/* Header */}
-      <EditButton />
+      <header className="flex justify-between p-3">
+        <ShareInvite responseId={responseId} />
+        <EditButton />
+      </header>
       {/* main */}
       <section>
         {/* Hero */}
