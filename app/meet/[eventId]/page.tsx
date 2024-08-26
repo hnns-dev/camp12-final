@@ -3,6 +3,9 @@ import { ShareInvite } from "@/components/ShareInvite";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
 const responseId = "123";
+const userId = "234";
+const creatorId = "234";
+const isPublic = false;
 export default function MeetDetail({
   params,
 }: {
@@ -13,7 +16,12 @@ export default function MeetDetail({
     <main className="h-screen w-screen p-4">
       {/* Header */}
       <header className="flex justify-between p-3">
-        <ShareInvite responseId={responseId} />
+        <ShareInvite
+          responseId={responseId}
+          userId={userId}
+          creatorId={creatorId}
+          isPublic={isPublic}
+        />
         <EditButton />
       </header>
       {/* main */}
