@@ -62,5 +62,8 @@
     "typescript": "^5"
   },
   "module": "index.ts",
-  "type": "module"
+  "type": "module",
+  "prisma": {
+  "seed": "bun seed.ts"
+}
 }

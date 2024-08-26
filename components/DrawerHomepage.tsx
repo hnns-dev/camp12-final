@@ -12,7 +12,7 @@ import {
 import { Button } from "./ui/button";
 import { InteractionBar } from "./InteractionBar";
 
-export function DrawerHompage() {
+export function DrawerHomepage() {
   return (
     <Drawer>
       <DrawerTrigger>Open drawer for now</DrawerTrigger>

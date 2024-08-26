@@ -42,13 +42,13 @@ model Session {
 }
 
 model Tournament {
-  id           String   @id @default(uuid())
+  id           String   @id @unique @default(uuid())
   date         DateTime
   time         String
   duration     Float
   size         Int
   type         String
-  Mode         String
+  mode         String
   public       Boolean  @default(true)
   creatorId    String
   creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
