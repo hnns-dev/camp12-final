@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,7 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -38,52 +37,84 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-// const FormSchema = z.object({
-//   datetime: z.date({
-//     required_error: "Date & time is required!.",
-//   }),
-// });
-
-const FormSchema = z.object({
-  activityType: z.enum(["pingpong", "basketball"]),
-  location: z.string().min(1, "Location is required"),
-  mode: z.enum(["softie", "casual", "competetive"]),
-  tournamentType: z.enum(["single", "round"]),
-  privacy: z.boolean(),
-  datetime: z.date(),
+// Defining a schema for Tournament Creation
+const formSchema = z.object({
+  activityType: z.enum(["pingpong", "basketball"], {
+    required_error: "Choose a Sport",
+  }),
+  mode: z.enum(["softie", "casual", "competetive"], {
+    required_error: "Choose a Mode",
+  }),
+  // tournamentType: z.enum(["single", "round"], {
+  //   required_error: "Choose a tournament type",
+  // }),
+  public: z.boolean(),
+  date: z.date({ required_error: "Date is required" }),
+  time: z.string({ required_error: "Time is required" }),
   duration: z.number(),
-  participants: z.number(),
+  participants: z.coerce
+    .number({
+      invalid_type_error:
+        "Please enter a number of people, you'd like to play with",
+    })
+    .positive({ message: "this👏is👏too👏low" }),
   competetive: z.boolean(),
   recurring: z.boolean(),
-  equipment: z.string().optional(),
-  description: z.string().optional(),
+  equipment: z.string().trim().optional(),
+  description: z.string().trim().optional(),
 });
 
-type ActivityType = "pingpong" | "basketball";
-type TournamentType = "single" | "round";
-type Mode = "softie" | "casual" | "competetive";
-
 export default function Tournament() {
-  const [duration, setDuration] = useState<number>(0.5);
-  const handleDurationChange = (durationType: number) => {
-    setDuration(durationType);
-  };
-
+  // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
-  const [time, setTime] = useState<string>("12:00");
-  const [date, setDate] = useState<Date | null>(null);
-  const [privacy, setPrivacy] = React.useState<boolean>(false);
 
-  const [activity, setActivity] = React.useState<ActivityType>();
-  const handleActivityChange = (activityType: ActivityType) => {
-    setActivity(activityType);
-  };
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  // Setting up React Hook Form with Zod resolver for validation
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      duration: 0.5,
+      public: false,
+      competetive: false,
+      recurring: false,
+      date: new Date(),
+      time: "12:00",
+      description: "",
+      equipment: "",
+    },
   });
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast.success(`Meeting at: ${format(data.datetime, "PPP, p")}`);
+  // Custom hook to subscribe to field change and isolate re-rendering at the component level.
+  const duration = useWatch({
+    control: form.control,
+    name: "duration",
+    defaultValue: 0.5,
+  });
+  const privacy = useWatch({
+    control: form.control,
+    name: "public",
+    defaultValue: false,
+  });
+
+  const date = useWatch({
+    control: form.control,
+    name: "date",
+  });
+  const time = useWatch({
+    control: form.control,
+    name: "time",
+  });
+
+  useEffect(() => {
+    console.log(form.formState.errors);
+  }, [form.formState.errors]);
+
+  // Handling form submission
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log("SUBMITTED", data);
+    // Shadcn Sonner pop up message
+    toast.success(
+      `Meeting at: ${format(data.date, "dd MMM yyyy")} ${data.time}`
+    );
   }
 
   return (
@@ -105,8 +136,8 @@ export default function Tournament() {
                     {/* <FormLabel>Username</FormLabel> */}
                     <FormControl>
                       <Select
-                        value={activity}
-                        onValueChange={handleActivityChange}
+                        value={field.value}
+                        onValueChange={field.onChange}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Activity Type" />
@@ -122,131 +153,139 @@ export default function Tournament() {
                   </FormItem>
                 )}
               />
+              {/* Level */}
+              <FormField
+                control={form.control}
+                name="mode"
+                render={({ field }) => (
+                  <FormItem>
+                    {/* <FormLabel>Username</FormLabel> */}
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="softie">Softie</SelectItem>
+                          <SelectItem value="casual">Casual</SelectItem>
+                          <SelectItem value="competetive">
+                            Competetive
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <span>Clara Zetkin Park</span>
-              {/* <Input placeholder="shadcn" {...field} /> */}
-              {/* date and time */}
-              <div className="flex ">
-                {/* date */}
+              {/* Date and Time */}
+              <div className="flex gap-2">
+                {/* Date */}
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full font-normal",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        {date ? (
+                          `${format(date, "PPP")}, ${time}`
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      captionLayout="dropdown"
+                      selected={date}
+                      onSelect={(selectedDate) => {
+                        const [hours, minutes] = time?.split(":")!;
+                        selectedDate?.setHours(
+                          parseInt(hours),
+                          parseInt(minutes)
+                        );
+                        form.setValue("date", selectedDate ?? new Date());
+                      }}
+                      onDayClick={() => setIsOpen(false)}
+                      fromYear={2020}
+                      toYear={new Date().getFullYear()}
+                      disabled={(date) =>
+                        Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
+                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                {/* Time */}
+                <Select
+                  defaultValue={time!}
+                  onValueChange={(e) => {
+                    form.setValue("time", e);
+                  }}
+                >
+                  <SelectTrigger className="font-normal focus:ring-0 w-[120px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <ScrollArea className="h-[15rem]">
+                      {Array.from({ length: 48 }).map((_, i) => {
+                        const hour = Math.floor(i / 2)
+                          .toString()
+                          .padStart(2, "0");
+                        const minute = ((i % 2) * 30)
+                          .toString()
+                          .padStart(2, "0");
+                        return (
+                          <SelectItem key={i} value={`${hour}:${minute}`}>
+                            {hour}:{minute}
+                          </SelectItem>
+                        );
+                      })}
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* Duration */}
+              <span className="font-bold">Duration: {duration} hours</span>
+              <div>
                 <FormField
                   control={form.control}
-                  name="datetime"
+                  name="duration"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col w-full">
-                      <Popover open={isOpen} onOpenChange={setIsOpen}>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                `${format(field.value, "PPP")}, ${time}`
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            captionLayout="dropdown"
-                            selected={date || field.value}
-                            onSelect={(selectedDate) => {
-                              const [hours, minutes] = time?.split(":")!;
-                              selectedDate?.setHours(
-                                parseInt(hours),
-                                parseInt(minutes)
-                              );
-                              setDate(selectedDate!);
-                              field.onChange(selectedDate);
-                            }}
-                            onDayClick={() => setIsOpen(false)}
-                            fromYear={2020}
-                            toYear={new Date().getFullYear()}
-                            disabled={(date) =>
-                              Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                              Number(date) >
-                                Date.now() + 1000 * 60 * 60 * 24 * 30
-                            }
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormDescription>Set your date and time.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* time */}
-                <FormField
-                  control={form.control}
-                  name="datetime"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
+                    <FormItem>
                       <FormControl>
-                        <Select
-                          defaultValue={time!}
-                          onValueChange={(e) => {
-                            setTime(e);
-                            if (date) {
-                              const [hours, minutes] = e.split(":");
-                              const newDate = new Date(date.getTime());
-                              newDate.setHours(
-                                parseInt(hours),
-                                parseInt(minutes)
-                              );
-                              setDate(newDate);
-                              field.onChange(newDate);
-                            }
+                        <Slider
+                          value={[field.value]}
+                          onValueChange={(values) => {
+                            field.onChange(values[0]);
                           }}
-                        >
-                          <SelectTrigger className="font-normal focus:ring-0 w-[120px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <ScrollArea className="h-[15rem]">
-                              {Array.from({ length: 48 }).map((_, i) => {
-                                const hour = Math.floor(i / 2)
-                                  .toString()
-                                  .padStart(2, "0");
-                                const minute = ((i % 2) * 30)
-                                  .toString()
-                                  .padStart(2, "0");
-                                return (
-                                  <SelectItem
-                                    key={i}
-                                    value={`${hour}:${minute}`}
-                                  >
-                                    {hour}:{minute}
-                                  </SelectItem>
-                                );
-                              })}
-                            </ScrollArea>
-                          </SelectContent>
-                        </Select>
+                          min={0.5}
+                          max={3}
+                          step={0.5}
+                          className="w-[270px]"
+                        />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              {/* to do: display duration */}
-              <span>Duration: {duration}</span>
-              <Slider
-                defaultValue={[duration]}
-                min={0.5}
-                max={3}
-                step={0.5}
-                className="w-full"
-              />
-              {/* privacy */}
+
+              {/* Privacy */}
               <FormField
                 control={form.control}
-                name="privacy"
+                name="public"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -260,10 +299,13 @@ export default function Tournament() {
                         >
                           Private
                         </span>
-                        <Switch onCheckedChange={setPrivacy} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                         <span
                           className={cn(
-                            privacy
+                            privacy === true
                               ? "text-black font-bold"
                               : "text-muted-foreground"
                           )}
@@ -282,7 +324,7 @@ export default function Tournament() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Participants" {...field} />
+                      <Input placeholder="Number of participants" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -296,7 +338,10 @@ export default function Tournament() {
                   <FormItem>
                     <FormControl>
                       <div className="flex gap-4">
-                        <Switch />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                         <span>Competetive</span>
                       </div>
                     </FormControl>
@@ -312,7 +357,10 @@ export default function Tournament() {
                   <FormItem>
                     <FormControl>
                       <div className="flex gap-4">
-                        <Switch />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                         <span>Recurring</span>
                       </div>
                     </FormControl>
@@ -320,7 +368,7 @@ export default function Tournament() {
                   </FormItem>
                 )}
               />
-              {/* Level ????? */}
+              {/* Equipment */}
               <FormField
                 control={form.control}
                 name="equipment"
@@ -328,12 +376,17 @@ export default function Tournament() {
                   <FormItem>
                     <FormLabel>Equipment</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Wich equipment is needed?" />
+                      <Textarea
+                        placeholder="Wich equipment is needed?"
+                        {...field}
+                        className="w-[270px]"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -341,7 +394,11 @@ export default function Tournament() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Add more Details" />
+                      <Textarea
+                        placeholder="Add more Details"
+                        {...field}
+                        className="w-[270px]"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
