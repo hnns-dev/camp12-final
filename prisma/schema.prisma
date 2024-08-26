@@ -55,7 +55,7 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
 
@@ -73,6 +73,7 @@ model Venue {
   tags        Tag[]
   tournaments Tournament[]
   meets       Meet[]
+  Report      Report[]
 }
 
 model Meet {
@@ -87,6 +88,16 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
+}
+
+model Report {
+  id      String   @id @default(uuid())
+  issue   String
+  date    DateTime
+  time    String
+  detail  String?
+  Venue   Venue    @relation(fields: [venueId], references: [id])
+  venueId String
 }
