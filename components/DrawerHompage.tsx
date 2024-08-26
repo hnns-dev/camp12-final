@@ -1,6 +1,7 @@
 import {
   Drawer,
-  DrawerClose,
+  DrawerPortal,
+  DrawerOverlay,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -17,6 +18,10 @@ export function DrawerHompage() {
       <DrawerTrigger>Open drawer for now</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
+          <DrawerTitle className="sr-only">Venue Information</DrawerTitle>
+          <DrawerDescription className="sr-only">
+            This needs to be here
+          </DrawerDescription>
           <div className="relative m-auto mb-5">
             <h4 className="absolute text-slate-200 text-xs ml-6 mt-2">
               Erich-Zeigner-Allee 76
@@ -35,9 +40,7 @@ export function DrawerHompage() {
                 Public
               </small>
             </div>
-            <small className="absolute mt-1 left-5 text-slate-700">
-              Distance: 300m
-            </small>
+            <p className="text-sm text-slate-700">Distance: 300m</p>
           </div>
         </DrawerHeader>
         <DrawerFooter>
