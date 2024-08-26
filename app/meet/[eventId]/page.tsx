@@ -22,7 +22,7 @@ export default function MeetDetail({
           creatorId={creatorId}
           isPublic={isPublic}
         />
-        <EditButton />
+        <EditButton userId={userId} creatorId={creatorId} />
       </header>
       {/* main */}
       <section>

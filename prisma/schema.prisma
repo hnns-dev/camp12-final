@@ -48,7 +48,7 @@ model Tournament {
   size         Int
   type         String
   Mode         String
-  public       Boolean  @default(true)
+  isPublic     Boolean  @default(true)
   creatorId    String
   creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
   participants User[]   @relation("ParticipatedTournaments")
@@ -81,7 +81,7 @@ model Meet {
   date         DateTime
   time         String
   duration     Float
-  private      Boolean  @default(false)
+  isPublic     Boolean  @default(false)
   creatorId    String
   creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
   participants User[]   @relation("ParticipatedMeets")
