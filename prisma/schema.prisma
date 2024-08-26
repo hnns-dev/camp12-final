@@ -16,13 +16,14 @@ datasource db {
 model User {
   id                       String       @id @default(uuid())
   email                    String       @unique
-  name                     String?
+  name                     String?      @unique
   Session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
   badges                   Badge[]
+  settings                 Settings?
 }
 
 model Badge {
@@ -55,7 +56,7 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
 
@@ -87,6 +88,13 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
+}
+
+model Settings {
+  friendsVisibility Boolean @default(false)
+  profileVisibility Boolean @default(false)
+  user              User    @relation(fields: [userId], references: [name])
+  userId            String  @unique
 }
