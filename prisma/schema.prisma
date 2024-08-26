@@ -23,6 +23,19 @@ model User {
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
   badges                   Badge[]
+  friendshipsSent          Friendship[] @relation("RequesterToFriendship")
+  friendshipsReceived      Friendship[] @relation("ResponderToFriendship")
+}
+
+model Friendship {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  requesterId String
+  responderId String
+  requester   User     @relation("RequesterToFriendship", fields: [requesterId], references: [id])
+  responder   User     @relation("ResponderToFriendship", fields: [responderId], references: [id])
+
+  @@unique([requesterId, responderId]) // Ensure uniqueness of friendships
 }
 
 model Badge {
@@ -55,7 +68,7 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
 
@@ -87,6 +100,6 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
