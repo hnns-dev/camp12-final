@@ -20,6 +20,8 @@ model User {
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
   badges                   Badge[]
+  friends                  User[]       @relation("Friends")
+  friendOf                 User[]       @relation("Friends")
   settings                 Settings?
 }
 
