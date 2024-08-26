@@ -1,7 +1,6 @@
 import { EditButton } from "@/components/EditButton";
 import { MeetDrawer } from "@/components/ui/meetDrawer";
 import { prisma } from "@/lib/db";
-import { PrismaClient } from "@prisma/client";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
 
