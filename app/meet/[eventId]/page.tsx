@@ -1,17 +1,41 @@
 import { EditButton } from "@/components/EditButton";
+import { ShareInvite } from "@/components/ShareInvite";
+import { MeetDrawer } from "@/components/ui/meetDrawer";
+import { prisma } from "@/lib/db";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
+const responseId = "123";
+const userId = "234";
+const creatorId = "234";
+const isPublic = false;
 
-export default function MeetDetail({
+export default async function MeetDetail({
   params,
 }: {
   params: { eventId: string };
 }) {
+  const tournament = await prisma.tournament.findUnique({
+    where: { id: params.eventId },
+    include: { participants: true },
+  });
+
+  if (!tournament) {
+    throw new Error("Tournament not found");
+  }
+
   const { eventId } = params;
   return (
     <main className="h-screen w-screen p-4">
       {/* Header */}
-      <EditButton />
+      <header className="flex justify-between p-3">
+        <ShareInvite
+          responseId={responseId}
+          userId={userId}
+          creatorId={creatorId}
+          isPublic={isPublic}
+        />
+        <EditButton userId={userId} creatorId={creatorId} />
+      </header>
       {/* main */}
       <section>
         {/* Hero */}
@@ -25,9 +49,12 @@ export default function MeetDetail({
             src="/example.png"
             alt="pic"
           />
-          <button className="bg-zinc-300 text-purple-700 text-xs rounded-full w-1/3 py-1">
-            Show it on the map
-          </button>
+          <div className="flex gap-3">
+            <button className="bg-zinc-300 text-purple-700 text-xs rounded-full py-1 px-2">
+              Show it on the map
+            </button>
+            <MeetDrawer tournament={tournament} />
+          </div>
         </div>
         {/* Tags and Form */}
         <div className="flex flex-col items-stretch justify-center text-center gap-2 py-2 min-h-1/3">
