@@ -10,7 +10,7 @@ export default async function MeetDetail({
   params: { eventId: string };
 }) {
   const tournament = await prisma.tournament.findUnique({
-    where: { id: "c9fc91d2-62de-46bb-a61e-abfc55e911bb" },
+    where: { id: params.eventId },
     include: { participants: true },
   });
 

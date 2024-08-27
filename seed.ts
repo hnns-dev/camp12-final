@@ -2,13 +2,27 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  const pamela = await prisma.user.findUnique({
-    where: { name: "pamela" },
+  await prisma.user.deleteMany();
+
+  const rainer = await prisma.user.create({
+    data: {
+      email: "rainer.werner@gmx.de",
+      name: "rainer"
+    }
   });
 
-  const rainer = await prisma.user.findUnique({
-    where: { name: "rainer" },
+  const pamela = await prisma.user.create({
+    data: {
+      email: "pamela.rosa@gmail.com",
+      name: "pamela"
+    }
   });
+
+  const venue = await prisma.venue.create({
+    data: {
+      location: "Erich-Zeigner-Allee 78"
+    }
+  })
 
   await prisma.tournament.create({
     data: {
@@ -21,8 +35,8 @@ async function main() {
       public: true,
       note: "This is a test tournament",
       guests: ["Tony Hawk", "Peter Gabriel"],
-      creatorId: "73889c55-0ac0-4eae-946b-d5a1ef60128b",
-      venueId: "9b7f554d-3252-4cf1-a3ac-d3ccac5d9649",
+      creatorId: rainer.id,
+      venueId: venue.id,
       participants: { connect: [{ id: pamela?.id }, { id: rainer?.id }] },
     },
   });
