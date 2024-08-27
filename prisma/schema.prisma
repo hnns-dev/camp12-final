@@ -11,13 +11,8 @@ datasource db {
 }
 
 model User {
-<<<<<<< HEAD
-  id                       String       @id @default(uuid())
-  googleId                 String?       @unique
-=======
   id                       String       @id
   googleId                 String?      @unique
->>>>>>> b6762b58be07c05384fae0529f15d44792847913
   email                    String       @unique
   name                     String?
   picture                  String?
