@@ -89,6 +89,12 @@ export async function GET(request: NextRequest) {
         googleId: googleUser.id,
         email: googleUser.email,
         picture: googleUser.picture,
+        settings: {
+          create: {
+            friendsVisibility: "PRIVATE",
+            profileVisibility: "PRIVATE",
+          },
+        },
       },
     });
 
