@@ -99,11 +99,7 @@ export async function GET(request: NextRequest) {
     });
 
     const session = await lucia.createSession(userId, {});
-    console.log({ session });
-
     const sessionCookie = await lucia.createSessionCookie(session.id);
-    console.log({ sessionCookie });
-
     cookies().set(
       sessionCookie.name,
       sessionCookie.value,
