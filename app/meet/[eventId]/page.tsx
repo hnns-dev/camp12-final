@@ -1,8 +1,13 @@
 import { EditButton } from "@/components/EditButton";
+import { ShareInvite } from "@/components/ShareInvite";
 import { MeetDrawer } from "@/components/ui/meetDrawer";
 import { prisma } from "@/lib/db";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
+const responseId = "123";
+const userId = "234";
+const creatorId = "234";
+const isPublic = false;
 
 export default async function MeetDetail({
   params,
@@ -22,7 +27,15 @@ export default async function MeetDetail({
   return (
     <main className="h-screen w-screen p-4">
       {/* Header */}
-      <EditButton />
+      <header className="flex justify-between p-3">
+        <ShareInvite
+          responseId={responseId}
+          userId={userId}
+          creatorId={creatorId}
+          isPublic={isPublic}
+        />
+        <EditButton userId={userId} creatorId={creatorId} />
+      </header>
       {/* main */}
       <section>
         {/* Hero */}

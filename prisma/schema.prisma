@@ -82,19 +82,19 @@ model Venue {
 }
 
 model Meet {
-  id             String       @id @default(uuid())
-  date           DateTime
-  time           String
-  duration       Float
-  private        Boolean      @default(false)
-  creatorId      String
-  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id])
-  participants   User[]       @relation("ParticipatedMeets")
-  guests         String[]
-  notes          String?
-  tags           Tag[]
-  venue          Venue        @relation(fields: [venueId], references: [id])
-  venueId        String
+  id           String   @id @default(uuid())
+  date         DateTime
+  time         String
+  duration     Float
+  isPublic     Boolean  @default(false)
+  creatorId    String
+  creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
+  participants User[]   @relation("ParticipatedMeets")
+  guests       String[]
+  notes        String?
+  tags         Tag[]
+  Venue        Venue    @relation(fields: [venueId], references: [id])
+  venueId      String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
 }
