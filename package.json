@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "bun seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -63,5 +64,8 @@
     "typescript": "^5"
   },
   "module": "index.ts",
-  "type": "module"
+  "type": "module",
+  "prisma": {
+    "seed": "bun seed.ts"
+  }
 }
