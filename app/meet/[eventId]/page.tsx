@@ -1,21 +1,15 @@
 import { EditButton } from "@/components/EditButton";
-<<<<<<< HEAD
 import { ShareInvite } from "@/components/ShareInvite";
+import { MeetDrawer } from "@/components/ui/meetDrawer";
+import { prisma } from "@/lib/db";
 
 const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
 const responseId = "123";
 const userId = "234";
 const creatorId = "234";
 const isPublic = false;
-export default function MeetDetail({
-=======
-import { MeetDrawer } from "@/components/ui/meetDrawer";
-import { prisma } from "@/lib/db";
-
-const placeHolder = ["Public", "Beginner friendly", "One on One", "1.5 h"];
 
 export default async function MeetDetail({
->>>>>>> main
   params,
 }: {
   params: { eventId: string };
