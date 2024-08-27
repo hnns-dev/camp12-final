@@ -1,36 +1,42 @@
-// app/components/MeetSection.tsx
+// app/components/DisplayWeather.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { fetchWeather } from "../lib/weather";
+import { fetchCityName } from "../lib/geoapify";
 
 interface Props {
-  location: string;
+  lat: number;
+  lon: number;
 }
 
-export default function DisplayWeather({ location }: Props) {
+export default function DisplayWeather({ lat, lon }: Props) {
   const [weather, setWeather] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null);
 
   useEffect(() => {
-    async function getWeather() {
+    async function getCityAndWeather() {
       try {
-        const data = await fetchWeather(location);
-        setWeather(data);
+        const cityName = await fetchCityName(lat, lon);
+        setCity(cityName);
+
+        const weatherData = await fetchWeather(cityName);
+        setWeather(weatherData);
       } catch (err: any) {
         setError(err.message);
       }
     }
-    getWeather();
-  }, [location]);
+    getCityAndWeather();
+  }, [lat, lon]);
 
   return (
     <div className="p-4">
-      <h2>Example Weather</h2>
-      {error && <p>Error fetching weather: {error}</p>}
+      <h2>Weather Information</h2>
+      {error && <p>Error: {error}</p>}
       {weather ? (
         <div>
-          <p>Location: {weather.location.name}</p>
+          <p>Location: {city}</p>
           <p>Temperature: {weather.current.temp_c}°C</p>
           <p>Weather: {weather.current.condition.text}</p>
         </div>
