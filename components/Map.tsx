@@ -90,8 +90,12 @@ export default function Map() {
         const newlocation = getNearestVenue(newUserPos);
         setlocation(newlocation);
         map.flyTo(newlocation, map.getZoom());
+        //////////////////////////////////////
+        // PUT HERE FUNCTION TO OPEN DRAWER //
+        //////////////////////////////////////
       },
     });
+
     return null;
   }
 
