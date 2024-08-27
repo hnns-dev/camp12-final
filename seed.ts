@@ -6,12 +6,13 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu392",
       email: "user1@example.com",
       name: "Hans Meiser",
       settings: {
         create: {
-          friendsVisibility: "Private",
-          profileVisibility: "Private",
+          friendsVisibility: "PRIVATE",
+          profileVisibility: "PRIVATE",
         },
       },
     },
@@ -19,12 +20,13 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu323",
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "OnlyFriends",
-          profileVisibility: "OnlyFriends",
+          friendsVisibility: "FRIENDS_ONLY",
+          profileVisibility: "FRIENDS_ONLY",
         },
       },
     },
@@ -32,12 +34,13 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
+      id: "as222fkt547eu392",
       email: "user3@example.com",
       name: "Conchita Wurst",
       settings: {
         create: {
-          friendsVisibility: "Public",
-          profileVisibility: "Public",
+          friendsVisibility: "PUBLIC",
+          profileVisibility: "PUBLIC",
         },
       },
     },

@@ -9,8 +9,8 @@ type Props = {
 
 export default function SettingsUser({ userId }: Props) {
   // State to hold the selected options for both settings categories
-  const [friendsListSetting, setFriendsListSetting] = useState("Private");
-  const [profileSetting, setProfileSetting] = useState("Only friends");
+  const [friendsListSetting, setFriendsListSetting] = useState("PRIVATE");
+  const [profileSetting, setProfileSetting] = useState("FRIENDS_ONLY");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault;
@@ -38,8 +38,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Private"
-              checked={friendsListSetting === "Private"}
-              onChange={() => setFriendsListSetting("Private")}
+              checked={friendsListSetting === "PRIVATE"}
+              onChange={() => setFriendsListSetting("PRIVATE")}
               className="mr-2"
             />
             Private
@@ -49,8 +49,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Only friends"
-              checked={friendsListSetting === "Only friends"}
-              onChange={() => setFriendsListSetting("Only friends")}
+              checked={friendsListSetting === "FRIENDS_ONLY"}
+              onChange={() => setFriendsListSetting("FRIENDS_ONLY")}
               className="mr-2"
             />
             Only friends
@@ -60,8 +60,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Public"
-              checked={friendsListSetting === "Public"}
-              onChange={() => setFriendsListSetting("Public")}
+              checked={friendsListSetting === "PUBLIC"}
+              onChange={() => setFriendsListSetting("PUBLIC")}
               className="mr-2"
             />
             Public
@@ -78,8 +78,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Private"
-              checked={profileSetting === "Private"}
-              onChange={() => setProfileSetting("Private")}
+              checked={profileSetting === "PRIVATE"}
+              onChange={() => setProfileSetting("PRIVATE")}
               className="mr-2"
             />
             Private
@@ -89,8 +89,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Only friends"
-              checked={profileSetting === "Only friends"}
-              onChange={() => setProfileSetting("Only friends")}
+              checked={profileSetting === "FRIENDS_ONLY"}
+              onChange={() => setProfileSetting("FRIENDS_ONLY")}
               className="mr-2"
             />
             Only friends
@@ -100,8 +100,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Public"
-              checked={profileSetting === "Public"}
-              onChange={() => setProfileSetting("Public")}
+              checked={profileSetting === "PUBLIC"}
+              onChange={() => setProfileSetting("PUBLIC")}
               className="mr-2"
             />
             Public
