@@ -39,6 +39,12 @@ export default function DisplayWeather({ lat, lon }: Props) {
           <p>Location: {city}</p>
           <p>Temperature: {weather.current.temp_c}°C</p>
           <p>Weather: {weather.current.condition.text}</p>
+          {weather.current.condition.icon && (
+            <img
+              src={`http:${weather.current.condition.icon}`} // Ensure to use full URL if it's already provided
+              alt="Weather Icon"
+            />
+          )}
         </div>
       ) : (
         <p>Loading weather...</p>
