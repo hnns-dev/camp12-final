@@ -1,3 +1,6 @@
+"use client";
+
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FcGoogle } from "react-icons/fc";
@@ -28,7 +31,11 @@ export default function Login() {
             <p className="text-muted-foreground text-xs">or continue with</p>
             <div className="h-px bg-muted-foreground/20 flex-1"></div>
           </div>
-          <Button variant="outline" className="w-full gap-2">
+          <Button
+            variant="outline"
+            className="w-full gap-2"
+            onClick={() => signIn("google")}
+          >
             <FcGoogle className="size-5" />
             Sign in with Google
           </Button>
