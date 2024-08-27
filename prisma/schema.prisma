@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-  id                       String       @id @default(uuid())
+  id                       String       @id
+  googleId                 String       @unique
   email                    String       @unique
   name                     String?
+  picture                  String?
   Session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
@@ -55,7 +57,7 @@ model Tournament {
   guests       String[]
   note         String
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
 
@@ -87,6 +89,6 @@ model Meet {
   guests       String[]
   notes        String?
   tags         Tag[]
-  Venue        Venue   @relation(fields: [venueId], references: [id])
+  Venue        Venue    @relation(fields: [venueId], references: [id])
   venueId      String
 }
