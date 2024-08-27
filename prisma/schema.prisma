@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,6 +20,8 @@ model User {
   meetsCreated             Meet[]       @relation("CreatedMeets")
   meetsParticipating       Meet[]       @relation("ParticipatedMeets")
   badges                   Badge[]
+  friends                  User[]       @relation("Friends")
+  friendOf                 User[]       @relation("Friends")
   settings                 Settings?
 }
 
@@ -42,55 +41,73 @@ model Session {
 }
 
 model Tournament {
-  id           String   @id @unique @default(uuid())
-  date         DateTime
-  time         String
-  duration     Float
-  size         Int
-  type         String
-  mode         String
-  public       Boolean  @default(true)
-  creatorId    String
-  creator      User     @relation("CreatedTournaments", fields: [creatorId], references: [id])
-  participants User[]   @relation("ParticipatedTournaments")
-  guests       String[]
-  note         String
-  tags         Tag[]
-  Venue        Venue    @relation(fields: [venueId], references: [id])
-  venueId      String
+  id             String       @id @default(uuid())
+  date           DateTime
+  time           String
+  duration       Float
+  size           Int
+  type           String
+  mode           String
+  public         Boolean      @default(true)
+  creatorId      String
+  creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  participants   User[]       @relation("ParticipatedTournaments")
+  guests         String[]
+  note           String
+  tags           Tag[]
+  venue          Venue        @relation(fields: [venueId], references: [id])
+  venueId        String
+  activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+  activityTypeId String
 }
 
 model Tag {
-  name        String       @id @unique
-  venues      Venue[]
-  meets       Meet[]
-  tournaments Tournament[]
+  name          String         @id @unique
+  venues        Venue[]
+  meets         Meet[]
+  tournaments   Tournament[]
+  activityTypes ActivityType[]
 }
 
 model Venue {
-  id          String       @id @default(uuid())
-  location    String
-  image       String?
-  tags        Tag[]
-  tournaments Tournament[]
-  meets       Meet[]
-  Report      Report[]
+  id            String         @id @default(uuid())
+  name          String
+  location      String
+  image         String?
+  tags          Tag[]
+  tournaments   Tournament[]
+  meets         Meet[]
+  activityTypes ActivityType[]
+  reports       Report[]
 }
 
 model Meet {
-  id           String   @id @default(uuid())
-  date         DateTime
-  time         String
-  duration     Float
-  private      Boolean  @default(false)
-  creatorId    String
-  creator      User     @relation("CreatedMeets", fields: [creatorId], references: [id])
-  participants User[]   @relation("ParticipatedMeets")
-  guests       String[]
-  notes        String?
-  tags         Tag[]
-  Venue        Venue    @relation(fields: [venueId], references: [id])
-  venueId      String
+  id             String       @id @default(uuid())
+  date           DateTime
+  time           String
+  duration       Float
+  private        Boolean      @default(false)
+  creatorId      String
+  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id])
+  participants   User[]       @relation("ParticipatedMeets")
+  guests         String[]
+  notes          String?
+  tags           Tag[]
+  venue          Venue        @relation(fields: [venueId], references: [id])
+  venueId        String
+  activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+  activityTypeId String
+}
+
+model ActivityType {
+  id                           String       @id @default(uuid())
+  name                         String       @unique
+  description                  String?
+  requiredNumberOfParticipants Int
+  tournaments                  Tournament[]
+  meets                        Meet[]
+  tags                         Tag[]
+  venues                       Venue[]
 }
 
 model Settings {
