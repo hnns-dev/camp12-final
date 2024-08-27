@@ -11,12 +11,17 @@ datasource db {
 }
 
 model User {
+<<<<<<< HEAD
   id                       String       @id @default(uuid())
   googleId                 String?       @unique
+=======
+  id                       String       @id
+  googleId                 String?      @unique
+>>>>>>> b6762b58be07c05384fae0529f15d44792847913
   email                    String       @unique
   name                     String?
   picture                  String?
-  Session                  Session[]
+  session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
   meetsCreated             Meet[]       @relation("CreatedMeets")
@@ -112,11 +117,23 @@ model ActivityType {
   venues                       Venue[]
 }
 
+enum FriendsVisibility {
+  PUBLIC
+  FRIENDS_ONLY
+  PRIVATE
+}
+
+enum ProfileVisibility {
+  PUBLIC
+  FRIENDS_ONLY
+  PRIVATE
+}
+
 model Settings {
-  friendsVisibility String
-  profileVisibility String
-  friend            User   @relation(fields: [userId], references: [id])
-  userId            String @unique
+  friendsVisibility FriendsVisibility
+  profileVisibility ProfileVisibility
+  user              User              @relation(fields: [userId], references: [id])
+  userId            String            @unique
 }
 
 model Report {
