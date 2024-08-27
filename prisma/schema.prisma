@@ -11,9 +11,11 @@ datasource db {
 }
 
 model User {
-  id                       String       @id @default(uuid())
+  id                       String       @id
+  googleId                 String       @unique
   email                    String       @unique
-  name                     String?      @unique
+  name                     String?
+  picture                  String?
   Session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
@@ -86,14 +88,14 @@ model Meet {
   date           DateTime
   time           String
   duration       Float
-  private        Boolean      @default(false)
+  isPublic       Boolean      @default(false)
   creatorId      String
   creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id])
   participants   User[]       @relation("ParticipatedMeets")
   guests         String[]
   notes          String?
   tags           Tag[]
-  venue          Venue        @relation(fields: [venueId], references: [id])
+  Venue          Venue        @relation(fields: [venueId], references: [id])
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String

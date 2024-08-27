@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FcGoogle } from "react-icons/fc";
 import React from "react";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -31,13 +32,11 @@ export default function Login() {
             <p className="text-muted-foreground text-xs">or continue with</p>
             <div className="h-px bg-muted-foreground/20 flex-1"></div>
           </div>
-          <Button
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => signIn("google")}
-          >
-            <FcGoogle className="size-5" />
-            Sign in with Google
+          <Button variant="outline" className="w-full gap-2" asChild>
+            <Link href="/api/oauth/google">
+              <FcGoogle className="size-5" />
+              Sign in with Google
+            </Link>
           </Button>
         </div>
       </div>
