@@ -12,9 +12,14 @@ import {
 import { Button } from "./ui/button";
 import { InteractionBar } from "./InteractionBar";
 
-export function DrawerHompage() {
+type DrawerProps = {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+};
+
+export function DrawerHompage({ isOpen, setIsOpen }: DrawerProps) {
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger>Open drawer for now</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

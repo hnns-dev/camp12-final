@@ -12,7 +12,11 @@ import {
 } from "react-leaflet";
 import data from "@/lib/filtered_output_data.json";
 
-export default function Map() {
+type MapProps = {
+  openDrawer: () => void;
+};
+
+export default function Map({ openDrawer }: MapProps) {
   // location of venue or view, etc..
   const [location, setlocation] = useState<LatLngExpression | null>(null);
   // location of user atm
@@ -93,6 +97,7 @@ export default function Map() {
         //////////////////////////////////////
         // PUT HERE FUNCTION TO OPEN DRAWER //
         //////////////////////////////////////
+        openDrawer();
       },
     });
 
