@@ -214,11 +214,6 @@ export default function CreateSession() {
                       captionLayout="dropdown"
                       selected={date}
                       onSelect={(selectedDate) => {
-                        // const [hours, minutes] = time?.split(":")!;
-                        // selectedDate?.setHours(
-                        //   parseInt(hours),
-                        //   parseInt(minutes)
-                        // );
                         form.setValue("date", selectedDate ?? new Date());
                       }}
                       onDayClick={() => setIsOpen(false)}
@@ -345,7 +340,15 @@ export default function CreateSession() {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        <span>Competetive</span>
+                        <span
+                          className={cn(
+                            field.value === true
+                              ? "text-black font-bold"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          Competetive
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -364,7 +367,15 @@ export default function CreateSession() {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        <span>Recurring</span>
+                        <span
+                          className={cn(
+                            field.value === true
+                              ? "text-black font-bold"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          Recurring
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
