@@ -33,5 +33,7 @@ export async function GET(request: NextRequest) {
     sameSite: "lax",
   });
 
+  console.log(authorizationUrl);
+
   return NextResponse.redirect(authorizationUrl);
 }
