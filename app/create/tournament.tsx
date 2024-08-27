@@ -37,6 +37,10 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
+// Venue hardcoded
+
+const venue = "Clara-Zetkin-Park";
+
 // Defining a schema for Tournament Creation
 const formSchema = z.object({
   activityType: z.enum(["pingpong", "basketball"], {
@@ -64,7 +68,7 @@ const formSchema = z.object({
   description: z.string().trim().optional(),
 });
 
-export default function Tournament() {
+export default function CreateSession() {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -122,11 +126,12 @@ export default function Tournament() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="space-y-8 w-full my-6 flex flex-col items-center"
         >
-          <div className="">
+          <div>
             <div className="flex flex-col gap-4 items-center">
-              <h2 className="text-xl font-bold">Create</h2>
+              <h2 className="text-xl font-bold pb-3">Create a Session</h2>
+              <span className="pb-6"> @ {venue}</span>
               {/* Activity Type */}
               <FormField
                 control={form.control}
@@ -159,7 +164,6 @@ export default function Tournament() {
                 name="mode"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Username</FormLabel> */}
                     <FormControl>
                       <Select
                         value={field.value}
@@ -182,7 +186,6 @@ export default function Tournament() {
                   </FormItem>
                 )}
               />
-              <span>Clara Zetkin Park</span>
               {/* Date and Time */}
               <div className="flex gap-2">
                 {/* Date */}
@@ -197,7 +200,7 @@ export default function Tournament() {
                         )}
                       >
                         {date ? (
-                          `${format(date, "PPP")}, ${time}`
+                          `${format(date, "PPP")}`
                         ) : (
                           <span>Pick a date</span>
                         )}
@@ -211,16 +214,16 @@ export default function Tournament() {
                       captionLayout="dropdown"
                       selected={date}
                       onSelect={(selectedDate) => {
-                        const [hours, minutes] = time?.split(":")!;
-                        selectedDate?.setHours(
-                          parseInt(hours),
-                          parseInt(minutes)
-                        );
+                        // const [hours, minutes] = time?.split(":")!;
+                        // selectedDate?.setHours(
+                        //   parseInt(hours),
+                        //   parseInt(minutes)
+                        // );
                         form.setValue("date", selectedDate ?? new Date());
                       }}
                       onDayClick={() => setIsOpen(false)}
-                      fromYear={2020}
-                      toYear={new Date().getFullYear()}
+                      fromYear={new Date().getFullYear()}
+                      toYear={new Date().getFullYear() + 1}
                       disabled={(date) =>
                         Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
                         Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
@@ -377,7 +380,7 @@ export default function Tournament() {
                     <FormLabel>Equipment</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Wich equipment is needed?"
+                        placeholder="What equipment is needed?"
                         {...field}
                         className="w-[270px]"
                       />
@@ -406,7 +409,7 @@ export default function Tournament() {
               />
             </div>
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-2/3">
             Create
           </Button>
         </form>
