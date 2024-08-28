@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="h-screen relative">
       <Map />
-      {/* <DrawerHomepage /> */}
+      <DrawerHomepage />
       <Navbar />
       <Search />
       <Filter />
