@@ -6,12 +6,13 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu392",
       email: "user1@example.com",
       name: "Hans Meiser",
       settings: {
         create: {
-          friendsVisibility: "Private",
-          profileVisibility: "Private",
+          friendsVisibility: "PRIVATE",
+          profileVisibility: "PRIVATE",
         },
       },
     },
@@ -19,12 +20,13 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu323",
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "OnlyFriends",
-          profileVisibility: "OnlyFriends",
+          friendsVisibility: "FRIENDS_ONLY",
+          profileVisibility: "FRIENDS_ONLY",
         },
       },
     },
@@ -32,12 +34,13 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
+      id: "as222fkt547eu392",
       email: "user3@example.com",
       name: "Conchita Wurst",
       settings: {
         create: {
-          friendsVisibility: "Public",
-          profileVisibility: "Public",
+          friendsVisibility: "PUBLIC",
+          profileVisibility: "PUBLIC",
         },
       },
     },
@@ -104,7 +107,7 @@ async function main() {
       date: new Date("2024-09-15"),
       time: "14:00",
       duration: 2,
-      private: false,
+      isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
       guests: ["Dieter Bohlen", "Thomas Gottschalk"],
@@ -120,7 +123,7 @@ async function main() {
       date: new Date("2024-09-20"),
       time: "10:00",
       duration: 1,
-      private: true,
+      isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
       notes: "Tennistraining",
@@ -211,8 +214,8 @@ async function main() {
 main()
   .catch((e) => {
     console.error(e);
-    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
+    process.exit(0);
   });
