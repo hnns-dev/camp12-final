@@ -1,9 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function EditButton() {
-  const [isCreator, setIsCreator] = useState(true);
+type EditProps = {
+  creatorId: string;
+  userId: string;
+};
+export function EditButton({ creatorId, userId }: EditProps) {
+  const [isCreator, setIsCreator] = useState(false);
+
+  useEffect(() => {
+    setIsCreator(userId === creatorId);
+  }, [userId, creatorId]);
+
   return (
     <div className="flex flex-row justify-end pb-8 w-full h-6">
       <svg

@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import { ArrowLeft } from "lucide-react";
+import QRCodeGenerator from "@/components/QRCodeGenerator";
 
 export default function QRPage() {
   return (
@@ -18,13 +20,7 @@ export default function QRPage() {
             grow your own community
           </p>
           <div className="m-14">
-            <img
-              src="/QRcode.svg"
-              alt="QR Code"
-              width={200}
-              height={200}
-              className="w-48 h-48"
-            />
+            <QRCodeGenerator />
           </div>
         </div>
       </div>
