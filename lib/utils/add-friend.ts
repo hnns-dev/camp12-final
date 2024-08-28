@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { redirect } from 'next/navigation';
-
-
-const prisma = new PrismaClient();
+import { prisma } from '../db';
 
 /**
  * Add two users as friends.
@@ -19,18 +17,16 @@ export async function addFriend(userIdOne: string, userIdTwo: string): Promise<v
           friends: {
             connect: { id: userIdTwo },
           },
+          friendOf: {
+            connect: { id: userIdTwo },
+          },
         },
       });
 
-      // ! future clean-up!
-      // console.log
-      console.log('Users have been added as friends.');
     } catch (error) {
       console.error('Error adding friends: ', error);
       throw new Error('Failed to add friends');
-    } finally {
-      await prisma.$disconnect();
     }
-    redirect("/profile")
+    // redirect("/profile")
   }
 
