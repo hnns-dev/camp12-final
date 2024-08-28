@@ -1,6 +1,6 @@
 import { DrawerHomepage } from "@/components/DrawerHomepage";
 import Navbar from "../components/Navbar";
-import { Map } from "@/components/Map";
+import { Map } from "@/components/map";
 import Search from "@/components/search";
 import Filter from "@/components/filter";
 
