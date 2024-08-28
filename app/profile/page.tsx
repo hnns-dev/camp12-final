@@ -25,9 +25,11 @@ export default function ProfilePage() {
             Add Friends
           </Button>
         </Link>
-        <Button variant={"ghost"}>
-          <img src="/settings.svg" alt="Settings" />
-        </Button>
+        <Link href={`/settings`}>
+          <Button variant={"ghost"}>
+            <img src="/settings.svg" alt="Settings" />
+          </Button>
+        </Link>
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center">
