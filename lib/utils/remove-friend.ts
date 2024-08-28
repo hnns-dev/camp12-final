@@ -29,6 +29,4 @@ export async function removeFriend(userIdOne: string, userIdTwo: string): Promis
       console.error('Error removing friend: ', error);
       throw new Error('Failed to remove friend');
     }
-    // ! or should it be just: "/friends" ?
-    redirect("/profile/friends")
   }

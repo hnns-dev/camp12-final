@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addFriend } from '@/lib/utils/add-friend'
+import { redirect } from 'next/navigation';
 
 
 export async function GET(req: NextRequest) {
@@ -8,7 +9,8 @@ export async function GET(req: NextRequest) {
   try {
     // Call the addFriend function to add a friend
     await addFriend(userIdOne, userIdTwo);
-    await addFriend(userIdTwo, userIdOne);
+        
+    // redirect("/profile")
     return NextResponse.json({ message: 'Added successfully to friends list' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to add into friends list' }, { status: 500 });

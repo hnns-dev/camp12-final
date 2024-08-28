@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
   try {
     // Call the removeFriend function to remove a friend
     await removeFriend(userIdOne, userIdTwo);
-    await removeFriend(userIdTwo, userIdOne);
 
     return NextResponse.json({ message: 'Removed successfully from friends list' }, { status: 200 });
   } catch (error) {
