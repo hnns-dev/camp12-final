@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { prisma } from '../db';
 
-
-const prisma = new PrismaClient();
 
 /**
  * Add two users as friends.
@@ -20,26 +19,15 @@ export async function removeFriend(userIdOne: string, userIdTwo: string): Promis
       friends: {
         disconnect: { id: userIdTwo }, // Remove userTwo from userOne's friends
       },
-    },
-  });
-
-  await prisma.user.update({
-    where: { id: userIdTwo },
-    data: {
-      friends: {
-        disconnect: { id: userIdOne }, // Remove userOne from userTwo's friends
+      friendOf: {
+        disconnect: { id: userIdTwo }, // Remove userTwo from userOne's friends
       },
     },
   });
 
-      // ! future clean-up!
-      // console.log
-      console.log('user is being unfreinded');
     } catch (error) {
       console.error('Error removing friend: ', error);
       throw new Error('Failed to remove friend');
-    } finally {
-      await prisma.$disconnect();
     }
     // ! or should it be just: "/friends" ?
     redirect("/profile/friends")

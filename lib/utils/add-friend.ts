@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { redirect } from 'next/navigation';
-
-
-const prisma = new PrismaClient();
+import { prisma } from '../db';
 
 /**
  * Add two users as friends.
@@ -17,6 +15,9 @@ export async function addFriend(userIdOne: string, userIdTwo: string): Promise<v
         where: { id: userIdOne },
         data: {
           friends: {
+            connect: { id: userIdTwo },
+          },
+          friendOf: {
             connect: { id: userIdTwo },
           },
         },
