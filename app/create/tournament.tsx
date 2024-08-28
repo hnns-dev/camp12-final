@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import GroupSizeSelect from "@/components/group-size-select";
 
 // Venue hardcoded
 
@@ -316,18 +317,9 @@ export default function CreateSession() {
                 )}
               />
               {/* Participants */}
-              <FormField
-                control={form.control}
-                name="participants"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Number of participants" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem>
+                <GroupSizeSelect groupSizes={[2, 4, 6]} />
+              </FormItem>
               {/* Competetive */}
               <FormField
                 control={form.control}
