@@ -1,4 +1,3 @@
-// app/components/DisplayWeather.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,7 +17,7 @@ export default function DisplayWeather({ lat, lon }: Props) {
   useEffect(() => {
     async function getCityAndWeather() {
       try {
-        const cityName = await fetchCityName(lat, lon);
+        const cityName = await fetchCityName(lat.toString(), lon.toString());
         setCity(cityName);
 
         const weatherData = await fetchWeather(cityName);
@@ -30,18 +29,17 @@ export default function DisplayWeather({ lat, lon }: Props) {
     getCityAndWeather();
   }, [lat, lon]);
 
+  console.log(weather);
+
   return (
     <div className="p-4">
-      <h2>Weather Information</h2>
       {error && <p>Error: {error}</p>}
       {weather ? (
         <div>
-          <p>Location: {city}</p>
-          <p>Temperature: {weather.current.temp_c}°C</p>
-          <p>Weather: {weather.current.condition.text}</p>
           {weather.current.condition.icon && (
             <img
-              src={`http:${weather.current.condition.icon}`} // Ensure to use full URL if it's already provided
+              src={weather.current.condition.icon}
+              // src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
               alt="Weather Icon"
             />
           )}

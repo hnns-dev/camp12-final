@@ -1,17 +1,9 @@
 import Image from "next/image";
 import exampleImage from "../../public/example.png";
-import { fetchCityName } from "@/lib/geoapify";
-import { fetchWeather } from "@/lib/weather";
+
+import DisplayWeather from "@/components/display-weather";
 
 const VenueDetailsPage = async () => {
-  // Fetch venue
-
-  const lat = "51.276939"; // dummy data
-  const lng = "12.352152"; // Markkleeberg
-
-  const city = await fetchCityName(lat, lng);
-  const weather = await fetchWeather(city);
-
   return (
     <div className="flex flex-col items-center p-4 space-y-4">
       {/* Date Navigation */}
@@ -23,6 +15,8 @@ const VenueDetailsPage = async () => {
 
       {/* Venue Name */}
       <h1 className="text-xl font-bold">Erich Zeigner Allee 78</h1>
+
+      <DisplayWeather lat={51.323402553555816} lon={12.336260685620882} />
 
       {/* Venue Image */}
       <div className="relative w-full max-w-md">
