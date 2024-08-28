@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "./ui/button";
 import {
   Select,
@@ -13,29 +16,45 @@ import {
 } from "./ui/select";
 import { DateTimePicker } from "./date-time-picker";
 import { Textarea } from "./ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+
+const formSchema = z.object({
+  issue: z.string().min(1, "Please select an issue"),
+  datetime: z.date({
+    required_error: "Please select a date and time",
+  }),
+  detail: z.string().optional(),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function ReportForm() {
-  const [issue, setIssue] = useState("");
-  const [datetime, setDatetime] = useState<Date | null>(null);
-  const [detail, setDetail] = useState("");
   const router = useRouter();
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      issue: "",
+      detail: "",
+    },
+  });
 
   const venueId = "920521f5-37a2-46ac-9e03-304763998903";
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!datetime) {
-      console.error("Datetime is not set");
-      return;
-    }
+  const onSubmit = async (data: FormData) => {
     const response = await fetch("/api/report-venue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        issue,
-        date: datetime.toISOString().split("T")[0],
-        time: datetime.toTimeString().split(" ")[0],
-        detail,
+        ...data,
+        date: data.datetime.toISOString().split("T")[0],
+        time: data.datetime.toTimeString().split(" ")[0],
         venueId,
       }),
     });
@@ -48,48 +67,83 @@ export default function ReportForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 m-10">
-      <div className="flex flex-col m-3 text-sm gap-7">
-        <p className="font-semibold">What is wrong with this venue?</p>
-        <Select onValueChange={setIssue}>
-          <SelectTrigger>
-            <SelectValue placeholder="Choose an issue" />
-          </SelectTrigger>
-          <SelectContent className="bg-white p-3">
-            <SelectGroup>
-              <SelectItem value="net">no net/net damaged</SelectItem>
-              <SelectItem value="surface">Surface severely damaged</SelectItem>
-              <SelectItem value="uneven">surface uneven</SelectItem>
-              <SelectItem value="edges">chipped edges</SelectItem>
-              <SelectItem value="safety">
-                safety hazards - please specify below
-              </SelectItem>
-              <SelectItem value="other">
-                other - please specify below
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col m-3 text-sm gap-7">
-        <p className="font-semibold">When did you see the problem?</p>
-        <div className="custom-date-time-picker [&_[id$='-description']]:hidden [&_button[type='submit']]:hidden">
-          <DateTimePicker onDateTimeChange={setDatetime} />
-        </div>
-      </div>
-      <div className="flex flex-col m-3 text-sm gap-7">
-        <p className="font-semibold">Do you have more details to report?</p>
-        <Textarea
-          placeholder="Type in details"
-          className="h-20"
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-            setDetail(e.target.value)
-          }
-        ></Textarea>
-      </div>
-      <Button type="submit" className="m-5">
-        Report
-      </Button>
-    </form>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 m-10"
+      >
+        <FormField
+          control={form.control}
+          name="issue"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What is wrong with this venue?</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose an issue" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="net">no net/net damaged</SelectItem>
+                    <SelectItem value="surface">
+                      Surface severely damaged
+                    </SelectItem>
+                    <SelectItem value="uneven">surface uneven</SelectItem>
+                    <SelectItem value="edges">chipped edges</SelectItem>
+                    <SelectItem value="safety">
+                      safety hazards - please specify below
+                    </SelectItem>
+                    <SelectItem value="other">
+                      other - please specify below
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="datetime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>When did you see the problem?</FormLabel>
+              <FormControl>
+                <DateTimePicker
+                  onDateTimeChange={(date) => field.onChange(date)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="detail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Do you have more details to report?</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Type in details"
+                  className="h-20"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="m-5">
+          Report
+        </Button>
+      </form>
+    </Form>
   );
 }
