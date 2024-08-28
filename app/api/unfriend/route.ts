@@ -9,8 +9,7 @@ export async function GET(req: NextRequest) {
     // Call the removeFriend function to remove a friend
     await removeFriend(userIdOne, userIdTwo);
 
-    // Re-direct to another page after removing a friend
-
+    // Redirect to another page after removing a friend
     return new Response(null, {
       status: 302,
       headers: {
