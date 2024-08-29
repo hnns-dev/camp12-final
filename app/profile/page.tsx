@@ -260,11 +260,13 @@ export default function ProfilePage() {
             <LuArrowRight className="size-5" />
           </Link>
         </div>
-        <Link href={"/qr-add-friend"}>
-          <Button variant="secondary" className="self-stretch block ml-5 mr-5">
-            Add Friend
-          </Button>
-        </Link>
+        <Button
+          variant="secondary"
+          className="self-stretch block ml-5 mr-5"
+          asChild
+        >
+          <Link href={"/qr-add-friend"}>Add Friend</Link>
+        </Button>
 
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5">
