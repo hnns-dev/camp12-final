@@ -6,7 +6,7 @@ import Filter from "@/components/filter";
 
 export default function Home() {
   return (
-    <div className="h-screen relative">
+    <div className="h-screen relative p-4">
       <Map />
       <DrawerHomepage />
       <Navbar />
