@@ -1,80 +1,77 @@
 "use client";
-import { LatLng, LatLngExpression } from "leaflet";
+
+import { LatLngExpression, LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   Marker,
-  TileLayer,
   Popup,
   useMapEvents,
   useMap,
+  TileLayer,
 } from "react-leaflet";
 import data from "@/lib/filtered_output_data.json";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import L from "leaflet";
+import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 
 type MapProps = {
   openDrawer: () => void;
 };
 
-export default function Map({ openDrawer }: MapProps) {
-  // location of venue or view, etc..
-  const [location, setlocation] = useState<LatLngExpression | null>(null);
-  // location of user atm
+const mtLayer = new MaptilerLayer();
+
+export default function MapComponent({ openDrawer }: MapProps) {
+  const [location, setLocation] = useState<LatLngExpression | null>(null);
   const [userPosition, setUserPosition] = useState<LatLngExpression | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(true);
+  const [initialBoundsSet, setInitialBoundsSet] = useState(false);
 
-  // Helper function to convert "LatLng(50,50) to [50, 50]. Maybe deserves its own issue of handling types"
   function latLngToArray(latLng: any): [number, number] {
     return [latLng.lat, latLng.lng];
   }
 
-  // function to locate nearest venue, takes userLocation as parameter
   function getNearestVenue(userLocation: LatLngExpression): LatLngExpression {
-    // More robust in declaring userLocation this way
     const userLoc = latLngToArray(userLocation);
     let result: LatLngExpression = userLocation;
     let minDistance = 9999;
-    //Go trough data
     for (let key in data) {
       const venueLoc: [number, number] = data[key].geolocation as [
         number,
         number
       ];
-      // calculate distance with absolute values
       let distance =
         Math.sqrt(Math.pow(userLoc[0] - venueLoc[0], 2)) +
         Math.sqrt(Math.pow(userLoc[1] - venueLoc[1], 2));
-      // If the distance is smaller then the current minDistance...
       if (distance < minDistance) {
-        // then make it the new minDistance
         minDistance = distance;
-        // and set the result to the location of the venue
         result = venueLoc;
       }
     }
     return result;
   }
 
-  // Ask if we can use geolocation of device
   useEffect(() => {
     if ("geolocation" in navigator) {
-      // if we have allowance, we can set the current position
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           const userPos: LatLngExpression = [latitude, longitude];
           setUserPosition(userPos);
-          setlocation(getNearestVenue(userPos));
+          setLocation(getNearestVenue(userPos));
           setLoading(false);
         },
-        //If permission denied, go to the custom location
         (error) => {
           console.error("Error getting User location", error);
           setUserPosition([51.3397, 12.3731]);
-          setlocation([51.3397, 12.3731]);
+          setLocation([51.3397, 12.3731]);
           setLoading(false);
+        },
+        {
+          enableHighAccuracy: true,
         }
       );
     } else {
@@ -91,16 +88,40 @@ export default function Map({ openDrawer }: MapProps) {
       locationfound(e) {
         const newUserPos = e.latlng;
         setUserPosition(newUserPos);
-        const newlocation = getNearestVenue(newUserPos);
-        setlocation(newlocation);
-        map.flyTo(newlocation, map.getZoom());
-        //////////////////////////////////////
-        // PUT HERE FUNCTION TO OPEN DRAWER //
-        //////////////////////////////////////
+        const newLocation = getNearestVenue(newUserPos);
+        setLocation(newLocation);
+        map.flyTo(newLocation, map.getZoom());
         openDrawer();
       },
     });
+    return null;
+  }
 
+  const bounds = useMemo(() => {
+    if (data.length === 0) return null;
+    const validLocations = data.filter(
+      (entry) =>
+        Array.isArray(entry.geolocation) && entry.geolocation.length === 2
+    ) as { geolocation: LatLngTuple }[];
+    if (validLocations.length === 0) return null;
+    const initialBounds = L.latLngBounds(
+      validLocations[0].geolocation,
+      validLocations[0].geolocation
+    );
+    validLocations.forEach((entry) => {
+      initialBounds.extend(entry.geolocation);
+    });
+    return initialBounds;
+  }, [data]);
+
+  function BoundsHandler() {
+    const map = useMap();
+    useEffect(() => {
+      if (bounds && !initialBoundsSet) {
+        map.fitBounds(bounds);
+        setInitialBoundsSet(true);
+      }
+    }, [map, bounds, initialBoundsSet]);
     return null;
   }
 
@@ -111,39 +132,81 @@ export default function Map({ openDrawer }: MapProps) {
       </div>
     );
   }
+  const apiKey = "t0PuwpKqOOMHjooJvwN7";
+  const useMaptiler = false; // Setzen Sie dies auf false, um die Standard-TileLayer zu verwenden
 
   if (typeof window !== "undefined" && userPosition !== null) {
     return (
       <MapContainer
         center={userPosition}
-        zoom={18}
+        zoom={13}
         scrollWheelZoom={false}
         className="w-screen h-screen-without-bar"
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {data.map((entry, index) => (
-          <Marker
-            key={index}
-            position={[
-              entry.geolocation[0] === null ? 0 : entry.geolocation[0],
-              entry.geolocation[1] === null ? 0 : entry.geolocation[1],
-            ]}
+        {useMaptiler ? (
+          <MaptilerLayer apiKey={apiKey} />
+        ) : (
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        ))}
+        )}
+        <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={(cluster) => {
+            return L.divIcon({
+              html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
+              className: "custom-cluster-icon",
+              iconSize: L.point(40, 40),
+            });
+          }}
+        >
+          {data.map((entry, index) => (
+            <Marker
+              key={index}
+              position={[
+                entry.geolocation[0] === null ? 0 : entry.geolocation[0],
+                entry.geolocation[1] === null ? 0 : entry.geolocation[1],
+              ]}
+              icon={L.icon({
+                iconUrl: "/placeholder.svg",
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+              })}
+            >
+              <Popup>{"Unnamed Venue"}</Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
         {userPosition && (
-          <Marker position={userPosition}>
+          <Marker
+            position={userPosition}
+            icon={L.icon({
+              iconUrl: "/user-icon.png",
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+            })}
+          >
             <Popup>You are here</Popup>
           </Marker>
         )}
         {location && (
-          <Marker position={location}>
+          <Marker
+            position={location}
+            icon={L.icon({
+              iconUrl: "/nearest-venue-icon.png",
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+            })}
+          >
             <Popup>Nearest Venue</Popup>
           </Marker>
         )}
         <MapEvents />
+        <BoundsHandler />
       </MapContainer>
     );
   } else {

@@ -20,7 +20,7 @@ type DrawerProps = {
 export function DrawerHompage({ isOpen, setIsOpen }: DrawerProps) {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger>Open drawer for now</DrawerTrigger>
+      <DrawerTrigger></DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle className="sr-only">Venue Information</DrawerTitle>
