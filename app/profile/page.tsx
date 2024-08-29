@@ -256,12 +256,16 @@ export default function ProfilePage() {
               <AvatarFallback>+15</AvatarFallback>
             </Avatar>
           </div>
-          <LuArrowRight className="size-5" />
+          <Link href={"/profile/friends"}>
+            <LuArrowRight className="size-5" />
+          </Link>
         </div>
+        <Link href={"/qr-add-friend"}>
+          <Button variant="secondary" className="self-stretch block ml-5 mr-5">
+            Add Friend
+          </Button>
+        </Link>
 
-        <Button variant="secondary" className="self-stretch block ml-5 mr-5">
-          Add Friend
-        </Button>
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5">
           <p className="font-semibold">Sessions</p>
