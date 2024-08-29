@@ -23,7 +23,6 @@ export const updateSettings = async ({
 };
 
 interface MeetProps {
-  id: string;
   date: Date;
   time: string;
   duration: number;
@@ -32,11 +31,10 @@ interface MeetProps {
   guests: number;
   notes?: string;
   venueId: string;
-  activityTypeId: string;
+  activityTypeName: string;
 }
 
 export const createMeet = async ({
-  id,
   date,
   time,
   duration,
@@ -45,20 +43,31 @@ export const createMeet = async ({
   guests,
   notes,
   venueId,
-  activityTypeId,
+  activityTypeName,
 }: MeetProps) => {
   await prisma.meet.create({
     data: {
-      id: id,
       date: date,
       time: time,
       duration: duration,
       isPublic: isPublic,
-      creatorId: creatorId,
+      creator: {
+        connect: {
+          id: creatorId,
+        },
+      },
+      Venue: {
+        connect: {
+          id: venueId,
+        },
+      },
+      activityType: {
+        connect: {
+          name: activityTypeName,
+        },
+      },
       guests: guests,
       notes: notes,
-      venueId: venueId,
-      activityTypeId: activityTypeId,
     },
   });
 };

@@ -44,18 +44,16 @@ import { createMeet } from "@/actions/settings";
 const venue = "Clara-Zetkin-Park";
 
 type Props = {
-  id: string;
   isPublic: boolean;
   creatorId: string;
   guests: number;
   notes?: string;
   venueId: string;
-  activityTypeId: string;
 };
 
 // Defining a schema for Tournament Creation
 const formSchema = z.object({
-  activityType: z.enum(["pingpong", "basketball"], {
+  activityType: z.enum(["Tennis", "Basketball"], {
     required_error: "Choose a Sport",
   }),
   mode: z.enum(["softie", "casual", "competetive"], {
@@ -81,13 +79,11 @@ const formSchema = z.object({
 });
 
 export default function UpdateMeet({
-  id,
   isPublic,
   creatorId,
   guests,
   notes,
   venueId,
-  activityTypeId,
 }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
@@ -128,15 +124,20 @@ export default function UpdateMeet({
     control: form.control,
     name: "time",
   });
+  const activityType = useWatch({
+    control: form.control,
+    name: "activityType",
+  });
 
   useEffect(() => {
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault;
+    event.preventDefault();
+    console.log("submitting");
+
     await createMeet({
-      id,
       date,
       time,
       duration,
@@ -145,8 +146,10 @@ export default function UpdateMeet({
       guests,
       notes,
       venueId,
-      activityTypeId,
+      activityTypeName: activityType,
     });
+
+    console.log("finished submitting");
   };
 
   return (
@@ -173,8 +176,8 @@ export default function UpdateMeet({
                           <SelectValue placeholder="Activity Type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pingpong">Ping Pong</SelectItem>
-                          <SelectItem value="basketball">Basketball</SelectItem>
+                          <SelectItem value="tennis">Tennis</SelectItem>
+                          <SelectItem value="Basketball">Basketball</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
