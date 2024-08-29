@@ -40,7 +40,7 @@ export default function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="-p-10">
+        <Button variant="ghost" size="icon">
           <LucideMoreVertical className="size-5" />
         </Button>
       </DropdownMenuTrigger>
