@@ -3,11 +3,37 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  const venueIds = {
-    weisseElster: "920521f5-37a2-46ac-9e03-304763998903",
-    musselGym: "a7c95541-5b37-4c1d-9394-bd5d6c990d66",
-    beachClubCossi: "f85a26bb-9f97-4a19-8e1c-5aa3c3f82ef2",
-  };
+  // Fetch venue IDs dynamically
+  const weisseElster = await prisma.venue.upsert({
+    where: { name: "Weisse Elster" },
+    update: {},
+    create: {
+      name: "Weisse Elster",
+      location: "Clara Park",
+      image: "/Elster.jpg",
+    },
+  });
+
+  const musselGym = await prisma.venue.upsert({
+    where: { name: "Mussel Gym" },
+    update: {},
+    create: {
+      name: "Mussel Gym",
+      location: "Zschochersche Str",
+      image: "/mussel.jpg",
+    },
+  });
+
+  const beachClubCossi = await prisma.venue.upsert({
+    where: { name: "Beach Club Cossi" },
+    update: {},
+    create: {
+      name: "Beach Club Cossi",
+      location: "Cospudener See",
+      image: "/LiCossi.jpg",
+    },
+  });
+
   // Users
   const user1 = await prisma.user.create({
     data: {
@@ -70,40 +96,6 @@ async function main() {
       name: "Yoga",
       description: "A physical and mental practice",
       requiredNumberOfParticipants: 1,
-    },
-  });
-
-  // Venues
-  const weisseElster = await prisma.venue.upsert({
-    where: { id: venueIds.weisseElster },
-    update: {},
-    create: {
-      id: venueIds.weisseElster,
-      name: "Weisse Elster",
-      location: "Clara Park",
-      image: "/Elster.jpg",
-    },
-  });
-
-  const musselGym = await prisma.venue.upsert({
-    where: { id: venueIds.musselGym },
-    update: {},
-    create: {
-      id: venueIds.musselGym,
-      name: "Mussel Gym",
-      location: "Zschochersche Str",
-      image: "/mussel.jpg",
-    },
-  });
-
-  const beachClubCossi = await prisma.venue.upsert({
-    where: { id: venueIds.beachClubCossi },
-    update: {},
-    create: {
-      id: venueIds.beachClubCossi,
-      name: "Beach Club Cossi",
-      location: "Cospudener See",
-      image: "/LiCossi.jpg",
     },
   });
 

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "./ui/button";
@@ -31,38 +31,76 @@ const formSchema = z.object({
     required_error: "Please select a date and time",
   }),
   detail: z.string().optional(),
+  venueId: z.string().min(1, "Please select a venue"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
+type Venue = {
+  id: string;
+  name: string;
+};
+
 export default function ReportForm() {
   const router = useRouter();
+  const [venues, setVenues] = useState<Venue[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       issue: "",
       detail: "",
+      venueId: "",
     },
   });
 
-  const venueId = "920521f5-37a2-46ac-9e03-304763998903";
+  useEffect(() => {
+    setLoading(true);
+    fetch("/api/venues")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Fetched venues:", data);
+        setVenues(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching venues:", error);
+        setError("Failed to load venues. Please try again later.");
+        setLoading(false);
+      });
+  }, []);
 
   const onSubmit = async (data: FormData) => {
-    const response = await fetch("/api/report-venue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...data,
-        date: data.datetime.toISOString().split("T")[0],
-        time: data.datetime.toTimeString().split(" ")[0],
-        venueId,
-      }),
-    });
+    console.log("Submitting form data:", data);
+    try {
+      const response = await fetch("/api/report-venue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          date: data.datetime.toISOString().split("T")[0],
+          time: data.datetime.toTimeString().split(" ")[0],
+        }),
+      });
 
-    if (response.ok) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit report");
+      }
+
+      const result = await response.json();
+      console.log("Report submitted successfully:", result);
       router.push("/thank-you");
-    } else {
-      console.error("Failed to submit report");
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      setError("Failed to submit report. Please try again.");
     }
   };
 
@@ -72,6 +110,42 @@ export default function ReportForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 m-10"
       >
+        <FormField
+          control={form.control}
+          name="venueId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Select Venue</FormLabel>
+              {loading ? (
+                <p>Loading venues...</p>
+              ) : error ? (
+                <p className="text-red-500">{error}</p>
+              ) : (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a venue" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {venues.map((venue) => (
+                        <SelectItem key={venue.id} value={venue.id}>
+                          {venue.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="issue"
@@ -143,6 +217,8 @@ export default function ReportForm() {
         <Button type="submit" className="m-5">
           Report
         </Button>
+
+        {error && <p className="text-red-500">{error}</p>}
       </form>
     </Form>
   );
