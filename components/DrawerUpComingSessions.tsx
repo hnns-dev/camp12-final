@@ -104,9 +104,6 @@ export function DrawerUpComingSessions({
 					alt={item.title}
 				/>
 			</CardContent>
-			<CardFooter>
-				<p>Created by: {item.creatorId === userId ? "You" : item.creatorId}</p>
-			</CardFooter>
 		</Card>
 	);
 
@@ -138,7 +135,7 @@ export function DrawerUpComingSessions({
 			<DrawerTrigger>Open drawer for now</DrawerTrigger>
 			<DrawerContent>
 				<DrawerHeader>
-					{/* for the screenreader */}
+					{/* For the screenreader */}
 					<DrawerTitle className='sr-only'>Upcoming sessions</DrawerTitle>
 					<DrawerDescription className='sr-only'>
 						You can see the upcoming sessions here: the ones near you, the ones
@@ -158,10 +155,6 @@ export function DrawerUpComingSessions({
 					<TabsContent value='own-meets'>{ownMeetsContent}</TabsContent>
 					<TabsContent value='tournaments'>{tournamentsContent}</TabsContent>
 				</Tabs>
-
-				<DrawerFooter>
-					<InteractionBar />
-				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	);
