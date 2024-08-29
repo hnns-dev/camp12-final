@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
+import { boolean, string, z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -37,10 +37,21 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GroupSizeSelect from "@/components/group-size-select";
+import { createMeet } from "@/actions/settings";
 
 // Venue hardcoded
 
 const venue = "Clara-Zetkin-Park";
+
+type Props = {
+  id: string;
+  isPublic: boolean;
+  creatorId: string;
+  guests: number;
+  notes?: string;
+  venueId: string;
+  activityTypeId: string;
+};
 
 // Defining a schema for Tournament Creation
 const formSchema = z.object({
@@ -69,7 +80,15 @@ const formSchema = z.object({
   description: z.string().trim().optional(),
 });
 
-export default function CreateSession() {
+export default function UpdateMeet({
+  id,
+  isPublic,
+  creatorId,
+  guests,
+  notes,
+  venueId,
+  activityTypeId,
+}: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -81,6 +100,7 @@ export default function CreateSession() {
       public: false,
       competetive: false,
       recurring: false,
+
       date: new Date(),
       time: "12:00",
       description: "",
@@ -113,22 +133,26 @@ export default function CreateSession() {
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
-  // Handling form submission
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("SUBMITTED", data);
-    // Shadcn Sonner pop up message
-    toast.success(
-      `Meeting at: ${format(data.date, "dd MMM yyyy")} ${data.time}`
-    );
-  }
+  const handleSubmit = async (event: React.FormEvent) => {
+    event?.preventDefault;
+    await createMeet({
+      id,
+      date,
+      time,
+      duration,
+      isPublic,
+      creatorId,
+      guests,
+      notes,
+      venueId,
+      activityTypeId,
+    });
+  };
 
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full my-6 flex flex-col items-center"
-        >
+        <form className="space-y-8 w-full my-6 flex flex-col items-center">
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
@@ -412,7 +436,7 @@ export default function CreateSession() {
               />
             </div>
           </div>
-          <Button type="submit" className="w-2/3">
+          <Button onClick={handleSubmit} type="submit" className="w-2/3">
             Create
           </Button>
         </form>

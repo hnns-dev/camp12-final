@@ -1,11 +1,18 @@
 import React from "react";
-import CreateSession from "./tournament";
+import CreateMeet from "./meet";
 
-export default function CreateMeet() {
+export default function UpdateMeet() {
   return (
     <div>
       {/* <TournamentPage /> */}
-      <CreateSession />
+      <CreateMeet
+        id={""}
+        isPublic={false}
+        creatorId={""}
+        guests={0}
+        venueId={""}
+        activityTypeId={""}
+      />
     </div>
   );
 }
