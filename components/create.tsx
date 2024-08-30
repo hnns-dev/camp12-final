@@ -19,16 +19,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { CalendarIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
+import { TagInput } from "./tagInput";
 import { Tag } from "@prisma/client";
+import { updateTags } from "@/actions/settings";
 
 type Props = {
-  tag: Tag;
+  suggestions: Tag[];
 };
 
-export default function Create({ tag }: Props) {
-  const [date, setDate] = React.useState<Date>();
+export default function Create({ suggestions }: Props) {
+  const [date, setDate] = useState<Date>();
+  const [value, setValue] = useState<string[]>([]);
+
+  // calls the uodate tags function from settings and adds new tags to it if they dont exist
+  const handleCreate = async () => {
+    try {
+      await updateTags({ names: value });
+      console.log("Tags updated successfully");
+    } catch (error) {
+      console.error("Failed to update tags:", error);
+    }
+  };
+
   return (
     <div className="h-screen w-screen py-8 px-8 flex flex-col gap-6 items-center">
       <div className="flex gap-4 items-center">
@@ -79,12 +93,14 @@ export default function Create({ tag }: Props) {
         </TabsList>
       </Tabs>
       <Input placeholder="Participants:" />
-      <p>{tag.name}</p>
+      <TagInput suggestions={suggestions} value={value} setValue={setValue} />
       <div className="flex flex-col w-full gap-2 grow">
         <span className="">Description:</span>
         <Textarea placeholder="Add some Details" className="grow" />
       </div>
-      <Button className="w-full mt-auto">Create</Button>
+      <Button className="w-full mt-auto" onClick={handleCreate}>
+        Create
+      </Button>
     </div>
   );
 }

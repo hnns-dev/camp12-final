@@ -1,9 +1,9 @@
 import Create from "@/components/create";
-import { Tag } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { useState } from "react";
 
-type Props = {
-  tag: Tag;
-};
-export default function CreateMeet({ tag }: Props) {
-  return <Create tag={tag} />;
+export default async function CreateMeet() {
+  const tags = await prisma.tag.findMany();
+
+  return <Create suggestions={tags} />;
 }
