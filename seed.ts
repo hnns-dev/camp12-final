@@ -3,6 +3,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.report.deleteMany();
+  await prisma.badge.deleteMany();
+  await prisma.tournament.deleteMany();
+  await prisma.meet.deleteMany();
+  await prisma.venue.deleteMany();
+  await prisma.settings.deleteMany();
+  await prisma.activityType.deleteMany();
+  await prisma.tag.deleteMany();
+  await prisma.user.deleteMany();
   // Users
   const user1 = await prisma.user.create({
     data: {
@@ -110,7 +119,7 @@ async function main() {
       isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: ["Dieter Bohlen", "Thomas Gottschalk"],
+      guests: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -126,6 +135,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
