@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     // Call the addFriend function to add a friend
     await addFriend(userIdOne, userIdTwo);
         
-    // Re-direct to another page after adding a friend
+    // Redirect to another page after adding a friend
     return new Response(null, {
       status: 302,
       headers: {

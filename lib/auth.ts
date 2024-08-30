@@ -1,9 +1,8 @@
-import { Lucia, Session, User } from "lucia";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { PrismaClient } from "@prisma/client";
-import { User as DBUser } from "@prisma/client";
-import { redirect } from "next/navigation";
+import { User as DBUser, PrismaClient } from "@prisma/client";
+import { Lucia, Session, User } from "lucia";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { cache } from "react";
 
 const client = new PrismaClient();
@@ -25,6 +24,7 @@ export const lucia = new Lucia(adapter, {
       id: attributes.id,
       email: attributes.email,
       name: attributes.name,
+      picture: attributes.picture,
     };
   },
 });
