@@ -1,3 +1,4 @@
+import { FaTableTennis } from "react-icons/fa";
 import { InteractionBar } from "./InteractionBar";
 import {
 	Card,
@@ -111,8 +112,6 @@ export function DrawerUpComingSessions() {
 		.filter((item) => item.creatorId === userId)
 		.map(renderCard);
 
-	const tournamentsList = tournaments.map(renderCard);
-
 	const renderEmptyState = (message: string) => <p>{message}</p>;
 
 	const nearMeContent =
@@ -121,14 +120,12 @@ export function DrawerUpComingSessions() {
 		ownMeets.length > 0
 			? ownMeets
 			: renderEmptyState("No events organized by you.");
-	const tournamentsContent =
-		tournamentsList.length > 0
-			? tournamentsList
-			: renderEmptyState("No tournaments found.");
 
 	return (
 		<Drawer>
-			<DrawerTrigger>Open drawer for now</DrawerTrigger>
+			<DrawerTrigger asChild>
+				<FaTableTennis className='size-8 fill-white' />
+			</DrawerTrigger>
 			<DrawerContent className='z-[9999] h-[calc(100vh-30vh)] flex flex-col'>
 				<DrawerHeader>
 					<DrawerTitle className='sr-only'>Upcoming sessions</DrawerTitle>
@@ -144,7 +141,6 @@ export function DrawerUpComingSessions() {
 					<TabsList className='flex justify-center'>
 						<TabsTrigger value='near-me'>Near me</TabsTrigger>
 						<TabsTrigger value='own-meets'>Own meets</TabsTrigger>
-						<TabsTrigger value='tournaments'>Tournaments</TabsTrigger>
 					</TabsList>
 					<TabsContent
 						value='near-me'
@@ -157,12 +153,6 @@ export function DrawerUpComingSessions() {
 						className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
 					>
 						{ownMeetsContent}
-					</TabsContent>
-					<TabsContent
-						value='tournaments'
-						className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
-					>
-						{tournamentsContent}
 					</TabsContent>
 				</Tabs>
 			</DrawerContent>
