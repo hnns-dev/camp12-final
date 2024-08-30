@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tag } from "@prisma/client";
-
+import { X } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -56,6 +56,10 @@ export function TagInput({ suggestions, value, setValue }: Props) {
     }
   };
 
+  const handleRemoveTag = (tagToRemove: string) => {
+    setValue((value) => value.filter((item) => item !== tagToRemove));
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -69,9 +73,12 @@ export function TagInput({ suggestions, value, setValue }: Props) {
             ? value.map((val, i) => (
                 <div
                   key={i}
-                  className="px-2 py-1 rounded-full border bg-slate-200 text-xs font-medium"
+                  className="flex justify-center items-center gap-1 px-2 rounded-full border bg-slate-200 text-xs font-medium"
                 >
                   {value.find((suggestion) => suggestion === val)}
+                  <button onClick={() => handleRemoveTag(val)}>
+                    <X className="w-3 aspect-square" />
+                  </button>
                 </div>
               ))
             : "Select Tag"}
@@ -98,14 +105,6 @@ export function TagInput({ suggestions, value, setValue }: Props) {
                     handleSetValue(suggestion.name);
                   }}
                 >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4 ",
-                      value.includes(suggestion.name)
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
                   {suggestion.name}
                 </CommandItem>
               ))}
