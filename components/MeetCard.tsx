@@ -10,17 +10,17 @@ import {
 // Define props type
 type MeetCardProps = {
 	venueId: string;
-	title: string;
 	venueImage: string;
 	activityType: string;
 	venueAddress: string;
 	date: string;
 	time: string;
 	numberOfParticipants: number;
-	creator: string;
+	creator?: string;
 };
 
 export default function MeetCard({
+	venueId,
 	venueImage,
 	activityType,
 	venueAddress,
@@ -29,10 +29,6 @@ export default function MeetCard({
 	creator,
 	numberOfParticipants,
 }: MeetCardProps) {
-	// venueImage = "/signin-hero.jpg";
-	// venueAddress = "Portitzer Str. 14, 04318 Leipzig";
-	// creator = "Arzhang";
-	// numberOfParticipants = 2;
 	return (
 		<Card className='max-w-md'>
 			<CardHeader className='flex flex-row gap-6'>
