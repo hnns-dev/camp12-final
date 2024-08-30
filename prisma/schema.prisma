@@ -91,7 +91,7 @@ model Meet {
   creatorId      String
   creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedMeets")
-  guests         String[]
+  guests         Int
   notes          String?
   tags           Tag[]
   Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)

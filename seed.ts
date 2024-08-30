@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+
   console.log("Cleaning Database...");
 
   await prisma.user.deleteMany();
@@ -12,7 +13,7 @@ async function main() {
   await prisma.badge.deleteMany();
 
   console.log("Cleaning Database finished");
-
+  
   // Users
   const user1 = await prisma.user.create({
     data: {
@@ -120,7 +121,7 @@ async function main() {
       isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: ["Dieter Bohlen", "Thomas Gottschalk"],
+      guests: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -136,6 +137,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
