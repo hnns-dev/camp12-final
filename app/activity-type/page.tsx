@@ -9,7 +9,6 @@ interface FormValues {
 }
 
 const CreateActivityTypePage: NextPage = () => {
-  // Initialize the form methods from react-hook-form
   const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       activityType: "",
@@ -40,11 +39,9 @@ const CreateActivityTypePage: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-      {/* Centered Headline */}
       <h1 className="text-2xl font-bold mb-6">Create Activity</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
-        {/* New Activity Type Input Field */}
         <input
           type="text"
           placeholder="Enter new activity type"
@@ -52,7 +49,6 @@ const CreateActivityTypePage: NextPage = () => {
           className="mb-4 p-2 border border-gray-300 rounded w-full"
         />
 
-        {/* Venue Text Field */}
         <input
           type="text"
           value="Erich-Zeigner-Allee"
@@ -60,7 +56,6 @@ const CreateActivityTypePage: NextPage = () => {
           className="mb-4 p-2 border border-gray-300 rounded text-center w-full"
         />
 
-        {/* Required Number of Participants */}
         <label className="text-lg font-semibold mb-2">
           Required Number of Participants
         </label>
@@ -69,21 +64,18 @@ const CreateActivityTypePage: NextPage = () => {
           min={1}
           {...register("requiredNumberOfParticipants", {
             required: true,
-            valueAsNumber: true, // Ensure the input is treated as a number
+            valueAsNumber: true,
           })}
           className="mb-4 p-2 border border-gray-300 rounded w-full"
         />
 
-        {/* Description Header */}
         <h2 className="text-lg font-semibold mb-2">Description</h2>
 
-        {/* Description Text Input Field */}
         <textarea
           {...register("description", { required: true })}
           className="mb-6 p-2 border border-gray-300 rounded w-full"
         />
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="bg-black text-white p-2 rounded w-full"
