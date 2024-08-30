@@ -4,8 +4,11 @@ import { prisma } from "@/lib/db"; // Import prisma for database interactions
 import { cookies } from "next/headers"; // Import cookies to handle sessions
 import { NextRequest, NextResponse } from "next/server"; // Import Next.js request/response objects
 
-export async function POST(request: NextRequest) {
-  const { email } = await request.json();
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const email = url.searchParams.get("email") as string;
+
+  // searchparams
 
   if (!email) {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -43,5 +46,5 @@ export async function POST(request: NextRequest) {
   );
 
   // Respond with a success message or redirect
-  return NextResponse.json({ message: "User logged in successfully" });
+  return NextResponse.redirect("/protected");
 }
