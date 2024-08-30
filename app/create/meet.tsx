@@ -38,6 +38,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GroupSizeSelect from "@/components/group-size-select";
 import { createMeet } from "@/actions/settings";
+import { Tag } from "@prisma/client";
+import { TagInput } from "@/components/tagInput";
 
 // Venue hardcoded
 
@@ -49,6 +51,7 @@ type Props = {
   guests: number;
   notes?: string;
   venueId: string;
+  tagSuggestions: Tag[];
 };
 
 // Defining a schema for Tournament Creation
@@ -80,6 +83,7 @@ const formSchema = z.object({
 
 export default function UpdateMeet({
   isPublic,
+  tagSuggestions,
   creatorId,
   guests,
   notes,
@@ -152,6 +156,8 @@ export default function UpdateMeet({
 
     console.log("finished submitting");
   };
+
+  const [value, setValue] = useState<string[]>([]);
 
   return (
     <>
@@ -348,6 +354,12 @@ export default function UpdateMeet({
               <FormItem>
                 <GroupSizeSelect groupSizes={[2, 4, 6]} />
               </FormItem>
+              {/* Tags */}
+              <TagInput
+                suggestions={tagSuggestions}
+                value={value}
+                setValue={setValue}
+              />
               {/* Competetive */}
               <FormField
                 control={form.control}
