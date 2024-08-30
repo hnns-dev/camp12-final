@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-import { redirect } from 'next/navigation';
 import { prisma } from '../db';
 
 /**
@@ -27,6 +25,5 @@ export async function addFriend(userIdOne: string, userIdTwo: string): Promise<v
       console.error('Error adding friends: ', error);
       throw new Error('Failed to add friends');
     }
-    // redirect("/profile")
   }
 
