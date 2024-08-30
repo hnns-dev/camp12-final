@@ -11,26 +11,23 @@ import { DrawerUpComingSessions } from "./DrawerUpComingSessions";
 export default function Navbar() {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-	const toggleDrawer = () => {
-		setIsDrawerOpen(!isDrawerOpen);
-	};
+	// const toggleDrawer = () => {
+	// 	setIsDrawerOpen(!isDrawerOpen);
+	// };
 
 	return (
 		<nav className='flex rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center'>
-			<button
+			<DrawerUpComingSessions />
+			{/* <button11
 				onClick={toggleDrawer}
 				className='nav-button'
-			>
-				{/* <div className="flex flex-col items-center justify-center">
+			> */}
+			{/* <div className="flex flex-col items-center justify-center">
           <FaTableTennis className="size-8 fill-white" />
         </div> */}
-				<DrawerUpComingSessions
-					meets={[]}
-					tournaments={[]}
-					userId={""}
-				/>
-				{/* Sessions Content*/}
-			</button>
+			{/* <DrawerUpComingSessions /> */}
+			{/* Sessions Content*/}
+			{/* </button> */}
 			<FaLocationCrosshairs className='size-8 fill-white' />
 			<Link
 				href='/profile'
