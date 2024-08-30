@@ -1,6 +1,9 @@
-import { prisma } from "../../lib/db";
+"use client";
+
 import { useForm } from "react-hook-form";
 import { NextPage } from "next";
+import { useState } from "react";
+import { createActivityType } from "./actions"; // Import the server action
 
 interface FormValues {
   activityType: string;
@@ -17,22 +20,15 @@ const CreateActivityTypePage: NextPage = () => {
     },
   });
 
-  // Server Action to handle form submission
+  const [error, setError] = useState<string | null>(null);
+
+  // Handle form submission
   const onSubmit = async (data: FormValues) => {
-    "use server"; // This directive makes this function a server action
-
     try {
-      const newActivity = await prisma.activityType.create({
-        data: {
-          name: data.activityType,
-          description: data.description,
-          requiredNumberOfParticipants: data.requiredNumberOfParticipants,
-        },
-      });
-
-      console.log("Activity created successfully:", newActivity);
+      await createActivityType(data); // Call the server action
       reset(); // Reset the form after successful submission
     } catch (error) {
+      setError("Error creating activity");
       console.error("Error creating activity:", error);
     }
   };
@@ -40,6 +36,8 @@ const CreateActivityTypePage: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
       <h1 className="text-2xl font-bold mb-6">Create Activity</h1>
+
+      {error && <p className="text-red-500 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
         <input
