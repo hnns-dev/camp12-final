@@ -121,10 +121,8 @@ export function DrawerUpComingSessions() {
 
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <button>
-          <FaTableTennis className="size-8 fill-white" />
-        </button>
+      <DrawerTrigger>
+        <FaTableTennis className="size-8 fill-white" />
       </DrawerTrigger>
       <DrawerContent className="z-[9999] h-[calc(100vh-16vh)] flex flex-col">
         <DrawerHeader>
