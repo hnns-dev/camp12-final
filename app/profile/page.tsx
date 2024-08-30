@@ -48,7 +48,7 @@ export default function ProfilePage() {
             {friendsImages.map((url, index) => (
               <Avatar
                 key={index}
-                className={`w-10 h-10 overflow-hidden relative ${
+                className={`w-10 h-10 overflow-hidden relative ring-2 ring-white ${
                   index !== 0 ? "-ml-2" : ""
                 } z-${10 - index}`}
               >
@@ -59,7 +59,7 @@ export default function ProfilePage() {
                 />
               </Avatar>
             ))}
-            <Avatar className="h-10 w-10 -ml-2">
+            <Avatar className="h-10 w-10 -ml-2 ring-2 ring-white">
               <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
               <AvatarFallback>+15</AvatarFallback>
             </Avatar>
@@ -70,7 +70,7 @@ export default function ProfilePage() {
         </div>
         <Button
           variant="secondary"
-          className="self-stretch block ml-5 mr-5"
+          className="self-stretch text-center block ml-5 mr-5"
           asChild
         >
           <Link href={"/qr-add-friend"}>Add Friend</Link>

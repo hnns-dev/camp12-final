@@ -115,6 +115,7 @@ export default function UpdateMeet({
     name: "public",
     defaultValue: false,
   });
+  console.log(privacy);
 
   const date = useWatch({
     control: form.control,
