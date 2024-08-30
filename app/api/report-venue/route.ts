@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const { issue, datetime, detail, venueId } = await request.json();
 
-    console.log("Received data:", { issue, datetime, detail, venueId }); 
+    console.log("Received data:", { issue, datetime, detail, venueId });
 
     if (!issue || !datetime || !venueId) {
       return NextResponse.json(
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("Created report:", report); 
+    console.log("Created report:", report);
 
     return NextResponse.json(report);
   } catch (error) {
