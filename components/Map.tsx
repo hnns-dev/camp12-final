@@ -49,7 +49,9 @@ export function Map() {
         center={location}
         zoom={13}
         scrollWheelZoom={false}
-        className="w-screen h-screen-without-bar"
+        zoomControl={false}
+        className="w-screen h-screen"
+        attributionControl={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -77,7 +79,7 @@ export function Map() {
     );
   } else {
     return (
-      <div className="w-screen h-screen-without-bar bg-zinc-300 text-center p-20">
+      <div className="w-screen h-screen bg-zinc-300 text-center p-20">
         Loading
       </div>
     );
