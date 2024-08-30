@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
         picture: googleUser.picture,
         settings: {
           create: {
-            friendsVisibility: "PRIVATE",
-            profileVisibility: "PRIVATE",
+            friendsVisibility: "Private",
+            profileVisibility: "Private",
           },
         },
       },

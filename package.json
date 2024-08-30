@@ -23,6 +23,7 @@
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
@@ -31,6 +32,7 @@
     "axios": "^1.7.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "date-fns": "^3.6.0",
     "install": "^0.13.0",
     "leaflet": "^1.9.4",
@@ -73,6 +75,6 @@
   "module": "index.ts",
   "type": "module",
   "prisma": {
-    "seed": "bun seed.ts"
+    "seed": "bun ./seed.ts"
   }
 }
