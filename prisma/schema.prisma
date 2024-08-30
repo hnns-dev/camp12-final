@@ -121,6 +121,6 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  Venue   Venue    @relation(fields: [venueId], references: [id])
+  venue   Venue    @relation(fields: [venueId], references: [id])
   venueId String
 }

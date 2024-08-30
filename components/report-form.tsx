@@ -24,6 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { reportVenue } from "@/actions/venues";
 
 const formSchema = z.object({
   issue: z.string().min(1, "Please select an issue"),
@@ -57,24 +58,14 @@ export default function ReportForm({ venues }: { venues: Venue[] }) {
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
     try {
-      const response = await fetch("/api/report-venue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          date: data.datetime.toISOString().split("T")[0],
-          time: data.datetime.toTimeString().split(" ")[0],
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to submit report");
-      }
-
-      const result = await response.json();
+      const result = await reportVenue(
+        data.issue,
+        data.datetime,
+        data.venueId,
+        data.detail
+      );
       console.log("Report submitted successfully:", result);
-      router.push("/thank-you");
+      router.push("/");
     } catch (error) {
       console.error("Error submitting report:", error);
       setError("Failed to submit report. Please try again.");
