@@ -4,6 +4,16 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Fetch venue IDs dynamically
+
+  console.log("Cleaning Database...");
+
+  await prisma.user.deleteMany();
+  await prisma.activityType.deleteMany();
+  await prisma.tag.deleteMany();
+  await prisma.badge.deleteMany();
+
+  console.log("Cleaning Database finished");
+
   const weisseElster = await prisma.venue.upsert({
     where: { name: "Weisse Elster" },
     update: {},
@@ -37,6 +47,7 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu392",
       email: "user1@example.com",
       name: "Hans Meiser",
       settings: {
@@ -50,12 +61,13 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
+      id: "aserifkt547eu323",
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "OnlyFriends",
-          profileVisibility: "OnlyFriends",
+          friendsVisibility: "Friends_Only",
+          profileVisibility: "Friends_Only",
         },
       },
     },
@@ -63,6 +75,7 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
+      id: "as222fkt547eu392",
       email: "user3@example.com",
       name: "Conchita Wurst",
       settings: {
@@ -110,10 +123,10 @@ async function main() {
       date: new Date("2024-09-15"),
       time: "14:00",
       duration: 2,
-      private: false,
+      isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: ["Dieter Bohlen", "Thomas Gottschalk"],
+      guests: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -126,9 +139,10 @@ async function main() {
       date: new Date("2024-09-20"),
       time: "10:00",
       duration: 1,
-      private: true,
+      isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
@@ -160,7 +174,11 @@ async function main() {
     data: {
       name: "Anzeigenhauptmeister",
       icon: "/parkverbot.png",
-      userId: user1.id,
+      users: {
+        connect: {
+          id: user2.id,
+        },
+      },
     },
   });
 
@@ -168,7 +186,6 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
-      userId: user2.id,
     },
   });
 
@@ -176,7 +193,6 @@ async function main() {
     data: {
       name: "Yoga-Meister",
       icon: "/yoga.svg",
-      userId: user3.id,
     },
   });
 
@@ -217,8 +233,8 @@ async function main() {
 main()
   .catch((e) => {
     console.error(e);
-    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
+    process.exit(0);
   });
