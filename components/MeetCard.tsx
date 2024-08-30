@@ -29,22 +29,44 @@ export default function MeetCard({
 	creator,
 	numberOfParticipants,
 }: MeetCardProps) {
-	venueImage = "/signin-hero.jpg";
+	// venueImage = "/signin-hero.jpg";
+	// venueAddress = "Portitzer Str. 14, 04318 Leipzig";
+	// creator = "Arzhang";
+	// numberOfParticipants = 2;
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>{activityType}</CardTitle>
-				<CardDescription>{venueAddress}</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<div className='flex w-full flex-row justify-between'>
-					<span>Date: {date}</span>
-					<span>Time: {time}</span>
-				</div>
+		<Card className='max-w-md'>
+			<CardHeader className='flex flex-row gap-6'>
 				<img
 					src={venueImage}
 					alt={activityType}
+					className='size-16 rounded-full'
 				/>
+				<div className='flex flex-col gap-2'>
+					<CardTitle>{activityType}</CardTitle>
+					<CardDescription className='text-base font-medium'>
+						{venueAddress}
+					</CardDescription>
+				</div>
+			</CardHeader>
+			<CardContent className='grid w-full grid-cols-3 grid-rows-3 gap-y-2  justify-center align-middle items-center'>
+				{/* First Row: Creator spanning across all three columns */}
+				<span className='col-span-3 pl-5'>
+					Creator name: <strong>{creator}</strong>
+				</span>
+				{/* Second Row: Labels */}
+				<span className='text-center'>Participants:</span>
+				<span className='text-center'>Date:</span>
+				<span className='text-center'>Time:</span>
+				{/* Third Row: Values */}
+				<span className='text-center'>
+					<strong>{numberOfParticipants}</strong>
+				</span>
+				<span className='text-center'>
+					<strong>{date}</strong>
+				</span>
+				<span className='text-center'>
+					<strong>{time}</strong>
+				</span>
 			</CardContent>
 		</Card>
 	);
