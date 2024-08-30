@@ -30,8 +30,7 @@ model User {
 model Badge {
   name      String   @id @unique
   icon      String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  users     User[]
   createdAt DateTime @default(now())
 }
 
@@ -52,7 +51,7 @@ model Tournament {
   mode           String
   public         Boolean      @default(true)
   creatorId      String
-  creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedTournaments")
   guests         String[]
   note           String
@@ -90,12 +89,12 @@ model Meet {
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
-  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id])
+  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
   tags           Tag[]
-  Venue          Venue        @relation(fields: [venueId], references: [id])
+  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
@@ -113,21 +112,21 @@ model ActivityType {
 }
 
 enum FriendsVisibility {
-  PUBLIC
-  FRIENDS_ONLY
-  PRIVATE
+  Public
+  Friends_Only
+  Private
 }
 
 enum ProfileVisibility {
-  PUBLIC
-  FRIENDS_ONLY
-  PRIVATE
+  Public
+  Friends_Only
+  Private
 }
 
 model Settings {
   friendsVisibility FriendsVisibility
   profileVisibility ProfileVisibility
-  user              User              @relation(fields: [userId], references: [id])
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String            @unique
 }
 
@@ -137,6 +136,6 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  Venue   Venue    @relation(fields: [venueId], references: [id])
+  Venue   Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId String
 }
