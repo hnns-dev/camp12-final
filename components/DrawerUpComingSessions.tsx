@@ -83,11 +83,7 @@ type DrawerUpComingSessionsProps = {
 	userId: string;
 };
 
-export function DrawerUpComingSessions({
-	meets,
-	tournaments,
-	userId,
-}: DrawerUpComingSessionsProps) {
+export function DrawerUpComingSessions() {
 	const filteredData = [...meets, ...tournaments];
 
 	const renderCard = (item: MeetOrTournament, key: number) => (
@@ -133,9 +129,8 @@ export function DrawerUpComingSessions({
 	return (
 		<Drawer>
 			<DrawerTrigger>Open drawer for now</DrawerTrigger>
-			<DrawerContent>
+			<DrawerContent className='z-[9999] h-[calc(100vh-30vh)] flex flex-col'>
 				<DrawerHeader>
-					{/* For the screenreader */}
 					<DrawerTitle className='sr-only'>Upcoming sessions</DrawerTitle>
 					<DrawerDescription className='sr-only'>
 						You can see the upcoming sessions here: the ones near you, the ones
@@ -143,17 +138,32 @@ export function DrawerUpComingSessions({
 					</DrawerDescription>
 				</DrawerHeader>
 				<Tabs
-					defaultValue='nearme'
-					className='w-[400px]'
+					defaultValue='near-me'
+					className='w-[350px] flex flex-col flex-1 mt-4 max-h-full'
 				>
-					<TabsList>
+					<TabsList className='flex justify-center'>
 						<TabsTrigger value='near-me'>Near me</TabsTrigger>
 						<TabsTrigger value='own-meets'>Own meets</TabsTrigger>
 						<TabsTrigger value='tournaments'>Tournaments</TabsTrigger>
 					</TabsList>
-					<TabsContent value='near-me'>{nearMeContent}</TabsContent>
-					<TabsContent value='own-meets'>{ownMeetsContent}</TabsContent>
-					<TabsContent value='tournaments'>{tournamentsContent}</TabsContent>
+					<TabsContent
+						value='near-me'
+						className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+					>
+						{nearMeContent}
+					</TabsContent>
+					<TabsContent
+						value='own-meets'
+						className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+					>
+						{ownMeetsContent}
+					</TabsContent>
+					<TabsContent
+						value='tournaments'
+						className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+					>
+						{tournamentsContent}
+					</TabsContent>
 				</Tabs>
 			</DrawerContent>
 		</Drawer>
