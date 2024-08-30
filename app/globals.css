@@ -58,6 +58,11 @@
     --chart-5: 340 75% 55%;
   }
 }
+@media (max-width: 640px) {
+  .rdp {
+    --rdp-cell-size: 20px; /* Adjust this value as needed */
+  }
+}
 
 @layer utilities {
   .text-balance {

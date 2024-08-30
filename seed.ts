@@ -3,17 +3,47 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Fetch venue IDs dynamically
 
   console.log("Cleaning Database...");
 
   await prisma.user.deleteMany();
-  await prisma.venue.deleteMany();
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
 
   console.log("Cleaning Database finished");
-  
+
+  const weisseElster = await prisma.venue.upsert({
+    where: { name: "Weisse Elster" },
+    update: {},
+    create: {
+      name: "Weisse Elster",
+      location: "Clara Park",
+      image: "/Elster.jpg",
+    },
+  });
+
+  const musselGym = await prisma.venue.upsert({
+    where: { name: "Mussel Gym" },
+    update: {},
+    create: {
+      name: "Mussel Gym",
+      location: "Zschochersche Str",
+      image: "/mussel.jpg",
+    },
+  });
+
+  const beachClubCossi = await prisma.venue.upsert({
+    where: { name: "Beach Club Cossi" },
+    update: {},
+    create: {
+      name: "Beach Club Cossi",
+      location: "Cospudener See",
+      image: "/LiCossi.jpg",
+    },
+  });
+
   // Users
   const user1 = await prisma.user.create({
     data: {
@@ -79,31 +109,6 @@ async function main() {
       name: "Yoga",
       description: "A physical and mental practice",
       requiredNumberOfParticipants: 1,
-    },
-  });
-
-  // Venues
-  const weisseElster = await prisma.venue.create({
-    data: {
-      name: "Weisse Elster",
-      location: "Clara Park",
-      image: "/elster.jpg",
-    },
-  });
-
-  const musselGym = await prisma.venue.create({
-    data: {
-      name: "Mussel Gym",
-      location: "Zschochersche Str",
-      image: "/mussel.jpg",
-    },
-  });
-
-  const beachClubCossi = await prisma.venue.create({
-    data: {
-      name: "Beach Club Cossi",
-      location: "Cospudener See",
-      image: "/cossi.jpg",
     },
   });
 

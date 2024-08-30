@@ -72,7 +72,7 @@ model Tag {
 
 model Venue {
   id            String         @id @default(uuid())
-  name          String
+  name          String         @unique
   location      String
   image         String?
   tags          Tag[]
@@ -136,6 +136,6 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  Venue   Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venue   Venue    @relation(fields: [venueId], references: [id])
   venueId String
 }
