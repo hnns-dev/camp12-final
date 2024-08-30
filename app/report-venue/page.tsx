@@ -1,8 +1,12 @@
 // app/report-venue/page.tsx
 import ReportForm from "@/components/report-form";
+import { prisma } from "@/lib/db";
 import Link from "next/link";
 
-export default function ReportVenuePage() {
+export default async function ReportVenuePage() {
+  const venues = await prisma.venue.findMany({
+    select: { id: true, name: true },
+  });
   return (
     <main className="m-4">
       <Link href="/" className="text-2xl ml-2">
@@ -13,7 +17,7 @@ export default function ReportVenuePage() {
         <h2 className="text-base">is there something wrong?</h2>
       </section>
       <section className="flex flex-col ">
-        <ReportForm />
+        <ReportForm venues={venues} />
       </section>
     </main>
   );

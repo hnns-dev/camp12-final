@@ -41,10 +41,8 @@ type Venue = {
   name: string;
 };
 
-export default function ReportForm() {
+export default function ReportForm({ venues }: { venues: Venue[] }) {
   const router = useRouter();
-  const [venues, setVenues] = useState<Venue[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormData>({
@@ -55,27 +53,6 @@ export default function ReportForm() {
       venueId: "",
     },
   });
-
-  useEffect(() => {
-    setLoading(true);
-    fetch("/api/venues")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Fetched venues:", data);
-        setVenues(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching venues:", error);
-        setError("Failed to load venues. Please try again later.");
-        setLoading(false);
-      });
-  }, []);
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
@@ -116,31 +93,24 @@ export default function ReportForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Select Venue</FormLabel>
-              {loading ? (
-                <p>Loading venues...</p>
-              ) : error ? (
-                <p className="text-red-500">{error}</p>
-              ) : (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a venue" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      {venues.map((venue) => (
-                        <SelectItem key={venue.id} value={venue.id}>
-                          {venue.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
+
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a venue" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    {venues.map((venue) => (
+                      <SelectItem key={venue.id} value={venue.id}>
+                        {venue.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               <FormMessage />
             </FormItem>
           )}
