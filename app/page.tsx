@@ -6,10 +6,10 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 
 export default function Home() {
-  const Map = useMemo(
+  const Map2 = useMemo(
     () =>
-      dynamic(() => import("@/components/Map"), {
-        loading: () => <p>A map is loading</p>,
+      dynamic(() => import("@/components/Map2"), {
+        loading: () => <p className="p-40 text-center">A map is loading</p>,
         ssr: false,
       }),
     []
@@ -21,10 +21,12 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <>
       <DrawerHompage isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
       <Navbar />
-      <Map openDrawer={openDrawer} />
-    </div>
+      {/*       <Map openDrawer={openDrawer} />
+       */}
+      <Map2 openDrawer={openDrawer} />
+    </>
   );
 }
