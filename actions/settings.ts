@@ -1,11 +1,11 @@
 "use server";
 import { prisma } from "@/lib/db";
 import { Tag } from "@prisma/client";
-import { FriendsVisibility, ProfileVisibility } from "@prisma/client";
+import { VisibilityStatus } from "@prisma/client";
 
 interface SettingsProps {
-  friendsVisible: FriendsVisibility;
-  profileVisible: ProfileVisibility;
+  friendsVisible: VisibilityStatus;
+  profileVisible: VisibilityStatus;
   userId: string;
 }
 
