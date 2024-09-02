@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-import { redirect } from 'next/navigation';
 import { prisma } from '../db';
 
 
@@ -25,8 +23,10 @@ export async function removeFriend(userIdOne: string, userIdTwo: string): Promis
     },
   });
 
+
+
     } catch (error) {
       console.error('Error removing friend: ', error);
       throw new Error('Failed to remove friend');
-    }
+    } 
   }
