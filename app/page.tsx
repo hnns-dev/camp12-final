@@ -1,14 +1,16 @@
 "use client";
-import { DrawerHompage } from "@/components/DrawerHompage";
+
 import Navbar from "../components/Navbar";
-// import Map from "@/components/Map";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import Search from "@/components/Search";
+import Filter from "@/components/Filter";
+import { DrawerHompage } from "@/components/DrawerHomepage";
 
 export default function Home() {
-  const Map2 = useMemo(
+  const Map = useMemo(
     () =>
-      dynamic(() => import("@/components/Map2"), {
+      dynamic(() => import("@/components/Map"), {
         loading: () => <p className="p-40 text-center">A map is loading</p>,
         ssr: false,
       }),
@@ -21,12 +23,12 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div className="h-screen relative">
+      <Map openDrawer={openDrawer}  />
       <DrawerHompage isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
       <Navbar />
-      {/*       <Map openDrawer={openDrawer} />
-       */}
-      <Map2 openDrawer={openDrawer} />
-    </>
+      <Search />
+      <Filter />
+    </div>
   );
 }
