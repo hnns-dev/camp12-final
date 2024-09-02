@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { redirect } from 'next/navigation';
-import { prisma } from '../db';
+import { prisma } from "../db";
 
 /**
  * Add two users as friends.
@@ -8,25 +6,25 @@ import { prisma } from '../db';
  * @param userIdTwo - ID of the second user.
  */
 
-export async function addFriend(userIdOne: string, userIdTwo: string): Promise<void> {
-    try {
-      // Add the user to other user's friend list
-      await prisma.user.update({
-        where: { id: userIdOne },
-        data: {
-          friends: {
-            connect: { id: userIdTwo },
-          },
-          friendOf: {
-            connect: { id: userIdTwo },
-          },
+export async function addFriend(
+  userIdOne: string,
+  userIdTwo: string
+): Promise<void> {
+  try {
+    // Add the user to other user's friend list
+    await prisma.user.update({
+      where: { id: userIdOne },
+      data: {
+        friends: {
+          connect: { id: userIdTwo },
         },
-      });
-
-    } catch (error) {
-      console.error('Error adding friends: ', error);
-      throw new Error('Failed to add friends');
-    }
-    // redirect("/profile")
+        friendOf: {
+          connect: { id: userIdTwo },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error adding friends: ", error);
+    throw new Error("Failed to add friends");
   }
-
+}
