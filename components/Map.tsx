@@ -39,9 +39,6 @@ export default function Map2({ openDrawer }: MapProps) {
         zoomControl: false, // Disable the default zoom control position
       });
 
-      // Add zoom control to a different position
-      L.control.zoom({ position: "bottomright" }).addTo(map.current);
-
       // Vector layer
       const mtLayer = new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
