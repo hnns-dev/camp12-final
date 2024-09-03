@@ -1,5 +1,3 @@
-"use client";
-
 import Navbar from "../components/Navbar";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
@@ -7,7 +5,7 @@ import Search from "@/components/Search";
 import Filter from "@/components/Filter";
 import { DrawerHompage } from "@/components/DrawerHomepage";
 
-export default function Home() {
+export default async function Home() {
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {
@@ -24,7 +22,7 @@ export default function Home() {
 
   return (
     <div className="h-screen relative overflow-hidden">
-      <Map openDrawer={openDrawer} />
+      <Map openDrawer={openDrawer} venues={venues} />
       <DrawerHompage isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
       <Navbar />
       <Search />

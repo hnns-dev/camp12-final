@@ -62,7 +62,7 @@ export default function Map2({ openDrawer }: MapProps, { venues }: MapProps) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, []);
+  }, [venues]);
 
   // Ask Permission if we can locate the user
   useEffect(() => {

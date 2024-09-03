@@ -73,7 +73,7 @@ model Tag {
 model Venue {
   id            String         @id @default(uuid())
   name          String         @unique
-  location      String
+  location      Float[]
   image         String?
   tags          Tag[]
   tournaments   Tournament[]
@@ -98,6 +98,7 @@ model Meet {
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+  competitive    Boolean?
 }
 
 model ActivityType {
