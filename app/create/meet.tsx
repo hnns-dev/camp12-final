@@ -40,7 +40,6 @@ import GroupSizeSelect from "@/components/group-size-select";
 import { createMeet, updateTags } from "@/actions/settings";
 import { Tag } from "@prisma/client";
 import { TagInput } from "@/components/tagInput";
-import { log } from "console";
 
 // Venue hardcoded
 
@@ -99,7 +98,6 @@ export default function UpdateMeet({
   const [isOpen, setIsOpen] = useState(false);
   // filling the value array with all selected tags
   const [frontendTags, setFrontendTags] = useState<string[]>([]);
-  console.log(frontendTags, "we are here in meet page");
 
   // Setting up React Hook Form with Zod resolver for validation
   const form = useForm<z.infer<typeof formSchema>>({
