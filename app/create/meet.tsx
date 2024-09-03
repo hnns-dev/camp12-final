@@ -43,7 +43,7 @@ import { TagInput } from "@/components/tagInput";
 
 // Venue hardcoded
 
-const venue = "Clara-Zetkin-Park";
+const venue = "Mussel Gym";
 
 type Props = {
   isPublic: boolean;
@@ -137,7 +137,7 @@ export default function UpdateMeet({
     control: form.control,
     name: "time",
   });
-  const activityType = useWatch({
+  let activityType = useWatch({
     control: form.control,
     name: "activityType",
   });
@@ -152,7 +152,8 @@ export default function UpdateMeet({
     const formattedValue = frontendTags.map((tag) => ({ name: tag }));
     const names = frontendTags;
     await updateTags({ names, tag });
-    console.log(tags);
+    // Change the first letter of activity type to uppercase so it can be found in the db
+    activityType = activityType.charAt(0).toUpperCase() + activityType.slice(1);
     await createMeet({
       date,
       time,

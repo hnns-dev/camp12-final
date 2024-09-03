@@ -80,8 +80,6 @@ export const createMeet = async ({
   activityType,
   tags,
 }: MeetProps) => {
-  console.log(tags);
-
   await prisma.meet.create({
     data: {
       date: date,
@@ -95,7 +93,7 @@ export const createMeet = async ({
       },
       Venue: {
         connect: {
-          id: "43352dce-f6af-4f70-99e4-8cb6aad02609",
+          id: venueId,
         },
       },
       activityType: {
