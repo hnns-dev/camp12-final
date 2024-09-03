@@ -6,12 +6,14 @@ import data from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
+import { GetVenuesResult } from "@/app/api/data-acces/venues";
 
 type MapProps = {
   openDrawer: () => void;
+  venues: GetVenuesResult;
 };
 
-export default function Map2({ openDrawer }: MapProps) {
+export default function Map2({ openDrawer }: MapProps, { venues }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,10 +46,10 @@ export default function Map2({ openDrawer }: MapProps) {
 
       // Markers beeing clustered
       const markers = L.markerClusterGroup();
-      data.forEach((entry) => {
+      venues.forEach((venue) => {
         // Check if data is in correct format
-        if (entry.geolocation && entry.geolocation.length === 2) {
-          const marker = L.marker(entry.geolocation as L.LatLngTuple).bindPopup(
+        if (venue.location && venue.location.length === 2) {
+          const marker = L.marker(venue.location as L.LatLngTuple).bindPopup(
             "Unnamed Venue"
           );
           markers.addLayer(marker);
