@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
-import data from "@/lib/filtered_output_data.json";
+import data from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
@@ -113,9 +113,16 @@ export default function Map2({ openDrawer }: MapProps) {
     map.current.on("click", handleClick);
   });
 
+  // After loading, recalculate size of map
+  useEffect(() => {
+    if (map.current) {
+      map.current.invalidateSize();
+    }
+  }, [loading]);
+
   return (
-    <div className="h-screen-without-bar w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute" />
+    <div className="h-screen w-screen relative">
+      <div ref={mapContainer} className="h-full w-full absolute " />
       {loading && <div>Loading...</div>}
     </div>
   );
