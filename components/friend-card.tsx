@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Trash2, CalendarDays } from "lucide-react";
+import { removeFriend } from "@/actions/friends"; // Import the server action
 
 interface FriendCardProps {
   username: string;
   picture: string;
   location: string;
   friendsSince: string;
+  userIdOne: string; // Add user ID props
+  userIdTwo: string; // Add user ID props
 }
 
 export function FriendCard({
@@ -15,7 +18,32 @@ export function FriendCard({
   picture,
   location,
   friendsSince,
+  userIdOne,
+  userIdTwo,
 }: FriendCardProps) {
+  const [loading, setLoading] = useState(false);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
+
+  const handleRemoveFriend = async () => {
+    setLoading(true);
+    setResponseMessage(null);
+
+    try {
+      const response = await removeFriend(userIdOne, userIdTwo);
+      if (response.success) {
+        setResponseMessage("Friendship removed successfully");
+        // Optionally, trigger a re-fetch of data or update the UI here
+      } else {
+        setResponseMessage("Failed to remove friendship");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      setResponseMessage("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative shadow-md border border-gray-200 rounded-md bg-background text-foreground">
       <div className="p-4">
@@ -24,7 +52,7 @@ export function FriendCard({
             <Avatar className="h-10 w-10">
               <AvatarImage src={picture} alt={username} />
               <AvatarFallback>
-                {username.slice(1, 3).toUpperCase()}
+                {username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="pl-4">
@@ -45,12 +73,27 @@ export function FriendCard({
             variant="ghost"
             size="icon"
             className="top-2 right-2 text-destructive hover:bg-transparent"
+            onClick={handleRemoveFriend} // Attach the click handler
+            disabled={loading} // Disable button while loading
           >
             <div className="absolute top-3 right-3 border p-2 rounded-md">
               <Trash2 className="h-4 w-4" />
             </div>
           </Button>
         </div>
+
+        {/* Conditionally render the response message */}
+        {responseMessage && (
+          <p
+            className={`mt-2 text-sm ${
+              responseMessage.includes("successfully")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {responseMessage}
+          </p>
+        )}
       </div>
     </div>
   );
