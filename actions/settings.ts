@@ -64,7 +64,8 @@ interface MeetProps {
   guests: number;
   notes?: string;
   venueId: string;
-  activityTypeName: string;
+  activityType: string;
+  tags: Tag[];
 }
 
 export const createMeet = async ({
@@ -76,8 +77,11 @@ export const createMeet = async ({
   guests,
   notes,
   venueId,
-  activityTypeName,
+  activityType,
+  tags,
 }: MeetProps) => {
+  console.log(tags);
+
   await prisma.meet.create({
     data: {
       date: date,
@@ -91,16 +95,19 @@ export const createMeet = async ({
       },
       Venue: {
         connect: {
-          id: venueId,
+          id: "43352dce-f6af-4f70-99e4-8cb6aad02609",
         },
       },
       activityType: {
         connect: {
-          name: activityTypeName,
+          name: activityType,
         },
       },
       guests: guests,
       notes: notes,
+      tags: {
+        connect: tags,
+      },
     },
   });
 };

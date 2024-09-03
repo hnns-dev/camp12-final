@@ -30,16 +30,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
+
 import React from "react";
-import { Input } from "@/components/ui/input";
+
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GroupSizeSelect from "@/components/group-size-select";
-import { createMeet } from "@/actions/settings";
+import { createMeet, updateTags } from "@/actions/settings";
 import { Tag } from "@prisma/client";
 import { TagInput } from "@/components/tagInput";
+import { log } from "console";
 
 // Venue hardcoded
 
@@ -52,6 +53,8 @@ type Props = {
   notes?: string;
   venueId: string;
   tagSuggestions: Tag[];
+  tags: Tag[];
+  tag: Tag;
 };
 
 // Defining a schema for Tournament Creation
@@ -79,6 +82,7 @@ const formSchema = z.object({
   recurring: z.boolean(),
   equipment: z.string().trim().optional(),
   description: z.string().trim().optional(),
+  value: z.array(z.string()),
 });
 
 export default function UpdateMeet({
@@ -88,9 +92,14 @@ export default function UpdateMeet({
   guests,
   notes,
   venueId,
+  tags,
+  tag,
 }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
+  // filling the value array with all selected tags
+  const [frontendTags, setFrontendTags] = useState<string[]>([]);
+  console.log(frontendTags, "we are here in meet page");
 
   // Setting up React Hook Form with Zod resolver for validation
   const form = useForm<z.infer<typeof formSchema>>({
@@ -105,6 +114,7 @@ export default function UpdateMeet({
       time: "12:00",
       description: "",
       equipment: "",
+      value: [],
     },
   });
 
@@ -141,7 +151,10 @@ export default function UpdateMeet({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log("submitting");
-
+    const formattedValue = frontendTags.map((tag) => ({ name: tag }));
+    const names = frontendTags;
+    await updateTags({ names, tag });
+    console.log(tags);
     await createMeet({
       date,
       time,
@@ -151,13 +164,12 @@ export default function UpdateMeet({
       guests,
       notes,
       venueId,
-      activityTypeName: activityType,
+      activityType,
+      tags: formattedValue,
     });
 
     console.log("finished submitting");
   };
-
-  const [value, setValue] = useState<string[]>([]);
 
   return (
     <>
@@ -355,11 +367,19 @@ export default function UpdateMeet({
                 <GroupSizeSelect groupSizes={[2, 4, 6]} />
               </FormItem>
               {/* Tags */}
-              <TagInput
-                suggestions={tagSuggestions}
-                value={value}
-                setValue={setValue}
-              />
+              <FormField
+                control={form.control}
+                name="value"
+                render={() => (
+                  <FormControl>
+                    <TagInput
+                      suggestions={tagSuggestions}
+                      value={frontendTags}
+                      onChange={setFrontendTags}
+                    />
+                  </FormControl>
+                )}
+              ></FormField>
               {/* Competetive */}
               <FormField
                 control={form.control}
