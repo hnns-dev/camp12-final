@@ -1,13 +1,17 @@
-"use client";
+import { prisma } from "@/lib/db";
+import { notFound } from "next/navigation";
+import { User, Badge } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LuArrowRight } from "react-icons/lu";
-
 import HeaderNav from "@/components/HeaderNav";
-import { Card } from "@/components/ui/card";
 import { CalendarDaysIcon } from "lucide-react";
 import Link from "next/link";
+
+interface UserData extends User {
+  badges: Badge[];
+}
 
 const friendsImages = [
   "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -17,7 +21,7 @@ const friendsImages = [
   "https://images.unsplash.com/photo-1514626585111-9aa86183ac98?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
-export default function ProfilePage() {
+function ProfileContent({ userData }: { userData: UserData }) {
   return (
     <div>
       <HeaderNav />
@@ -26,7 +30,7 @@ export default function ProfilePage() {
           <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
           <AvatarFallback>BB</AvatarFallback>
         </Avatar>
-        <div className="pt-4 text-lg font-semibold">Sam Jones</div>
+        <div className="pt-4 text-lg font-semibold">{userData.name}</div>
         <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
           Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
         </div>
@@ -34,12 +38,19 @@ export default function ProfilePage() {
           Leipzig
         </div>
         <Separator className="my-5" />
-        <div className="flex px-4 justify-around w-full items-center">
-          <img src="/badges/one.svg" alt="" />
-          <img src="/badges/two.svg" alt="" />
-          <img src="/badges/three.svg" alt="" />
-          <img src="/badges/four.svg" alt="" />
-          <img src="/badges/five.svg" alt="" />
+        <div className="w-full px-4">
+          <div className="flex overflow-x-auto py-2 space-x-4 scrollbar-hide">
+            {userData.badges.map((badge, index) => (
+              <div key={index} className="flex-shrink-0">
+                <img
+                  src={badge.icon || undefined}
+                  alt={badge.name}
+                  className="w-12 h-12 object-contain"
+                  title={badge.name}
+                />
+              </div>
+            ))}
+          </div>
         </div>
         <Separator className="my-5" />
 
@@ -83,7 +94,7 @@ export default function ProfilePage() {
             view all
           </Button>
         </div>
-        <Card className="grid grid-cols-5 self-stretch p-4 gap-4 m-5 shadow-md">
+        <div className="grid grid-cols-5 self-stretch p-4 gap-4 m-5 shadow-md">
           <img
             className="max-h-full object-cover col-span-2 rounded-md"
             src="signin-hero.jpg"
@@ -98,8 +109,25 @@ export default function ProfilePage() {
               <p className="text-xs text-muted-foreground">August 24th 2024</p>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
+}
+
+export default async function ProfilePage({
+  params,
+}: {
+  params: { userId: string };
+}) {
+  const userData = await prisma.user.findUnique({
+    where: { id: params.userId },
+    include: { badges: true },
+  });
+
+  if (!userData) {
+    notFound();
+  }
+
+  return <ProfileContent userData={userData} />;
 }

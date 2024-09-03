@@ -12,7 +12,7 @@ export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // const toggleDrawer = () => {
-  // 	setIsDrawerOpen(!isDrawerOpen);
+  //   setIsDrawerOpen(!isDrawerOpen);
   // };
 
   return (
