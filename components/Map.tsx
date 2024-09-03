@@ -30,12 +30,17 @@ export default function Map2({ openDrawer }: MapProps) {
     if (map.current || !mapContainer.current) return;
 
     try {
+      // Inside your useEffect where the map is initialized
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
         zoom: 13,
         minZoom: 3,
         maxZoom: 18,
+        zoomControl: false, // Disable the default zoom control position
       });
+
+      // Add zoom control to a different position
+      L.control.zoom({ position: "bottomright" }).addTo(map.current);
 
       // Vector layer
       const mtLayer = new MaptilerLayer({
