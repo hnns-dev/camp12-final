@@ -12,10 +12,15 @@ import {
 import { Button } from "./ui/button";
 import { InteractionBar } from "./InteractionBar";
 
-export function DrawerHomepage() {
+type DrawerProps = {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+};
+
+export function DrawerHompage({ isOpen, setIsOpen }: DrawerProps) {
   return (
-    <Drawer>
-      <DrawerTrigger>Open drawer for now</DrawerTrigger>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger></DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle className="sr-only">Venue Information</DrawerTitle>
