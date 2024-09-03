@@ -65,7 +65,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]
+  meets         Meet[]         @relation("Meet tags")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -93,7 +93,7 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-  tags           Tag[]
+  tags           Tag[]        @relation("Meet tags")
   Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
