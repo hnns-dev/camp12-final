@@ -230,7 +230,7 @@ async function main() {
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
-main()
+await main()
   .catch((e) => {
     console.error(e);
   })
