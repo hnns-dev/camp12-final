@@ -27,19 +27,6 @@ export async function GET() {
       include: {
         settings: true,
         badges: true,
-        meetsCreated: {
-          include: {
-            Venue: true,
-            activityType: true,
-          },
-          take: 1, // Fetch only the latest meet
-          orderBy: {
-            date: "desc",
-          },
-        },
-        friends: {
-          take: 5, // Fetch only 5 friends
-        },
       },
     });
 
