@@ -23,8 +23,8 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen relative">
-      <Map openDrawer={openDrawer}  />
+    <div className="h-screen relative overflow-hidden">
+      <Map openDrawer={openDrawer} />
       <DrawerHompage isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
       <Navbar />
       <Search />
