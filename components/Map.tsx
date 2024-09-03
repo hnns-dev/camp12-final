@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
-import data from "@/lib/filtered_output_data.json";
+import data from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
@@ -39,15 +39,27 @@ export default function Map2({ openDrawer }: MapProps) {
         zoomControl: false, // Disable the default zoom control position
       });
 
-      // Add zoom control to a different position
-      L.control.zoom({ position: "bottomright" }).addTo(map.current);
-
       // Vector layer
       const mtLayer = new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
-      // Markers beeing clustered
+      // Custom zoom control position, adjusted upwards
+      L.control
+        .zoom({
+          position: "bottomright", // Keep the control in the bottom-right corner
+        })
+        .addTo(map.current);
+
+      // Move zoom control slightly upwards
+      const zoomControlElement = document.querySelector(
+        ".leaflet-control-zoom"
+      ) as HTMLElement; // Cast to HTMLElement
+      if (zoomControlElement) {
+        zoomControlElement.style.marginBottom = "80px"; // Adjust this value to move the zoom control upwards
+      }
+
+      // Markers being clustered
       const markers = L.markerClusterGroup();
       data.forEach((entry) => {
         // Check if data is in correct format
@@ -118,9 +130,16 @@ export default function Map2({ openDrawer }: MapProps) {
     map.current.on("click", handleClick);
   });
 
+  // After loading, recalculate size of map
+  useEffect(() => {
+    if (map.current) {
+      map.current.invalidateSize();
+    }
+  }, [loading]);
+
   return (
-    <div className="h-screen-without-bar w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute" />
+    <div className="h-screen w-screen relative">
+      <div ref={mapContainer} className="h-full w-full absolute " />
       {loading && <div>Loading...</div>}
     </div>
   );
