@@ -38,7 +38,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GroupSizeSelect from "@/components/group-size-select";
 import { createMeet } from "@/actions/settings";
-import { Tag } from "@prisma/client";
+import { Meet, Tag } from "@prisma/client";
 import { TagInput } from "@/components/tagInput";
 
 // Venue hardcoded
@@ -52,6 +52,7 @@ type Props = {
   notes?: string;
   venueId: string;
   tagSuggestions: Tag[];
+  meet?: Meet;
 };
 
 // Defining a schema for Tournament Creation
@@ -75,19 +76,20 @@ const formSchema = z.object({
         "Please enter a number of people, you'd like to play with",
     })
     .positive({ message: "this👏is👏too👏low" }),
-  competetive: z.boolean(),
+  competitive: z.boolean(),
   recurring: z.boolean(),
   equipment: z.string().trim().optional(),
   description: z.string().trim().optional(),
 });
 
-export default function UpdateMeet({
+export default function updateMeet({
   isPublic,
   tagSuggestions,
   creatorId,
   guests,
   notes,
   venueId,
+  meet,
 }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
@@ -96,15 +98,13 @@ export default function UpdateMeet({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      duration: 0.5,
-      public: false,
-      competetive: false,
-      recurring: false,
-
-      date: new Date(),
-      time: "12:00",
-      description: "",
-      equipment: "",
+      duration: meet?.duration ? meet.duration : 0.5,
+      public: meet?.isPublic ? meet.isPublic : false,
+      competitive: meet?.isCompetitive ? meet.isCompetitive : false,
+      recurring: meet?.isRecurring ? meet.isRecurring : false,
+      date: meet?.date ? meet.date : new Date(),
+      time: meet?.time ? meet.time : "12:00",
+      description: meet?.notes ? meet.notes : "",
     },
   });
 
@@ -142,7 +142,7 @@ export default function UpdateMeet({
     event.preventDefault();
     console.log("submitting");
 
-    await createMeet({
+    const meetData = {
       date,
       time,
       duration,
@@ -152,11 +152,18 @@ export default function UpdateMeet({
       notes,
       venueId,
       activityTypeName: activityType,
-    });
+    };
 
-    console.log("finished submitting");
+    if (meet && meet.id) {
+      // If meet exists and has an id, update the existing meet
+      await updateMeet(meet.id, meetData);
+      console.log("finished updating");
+    } else {
+      // If meet doesn't exist or doesn't have an id, create a new meet
+      await createMeet(meetData);
+      console.log("finished creating");
+    }
   };
-
   const [value, setValue] = useState<string[]>([]);
 
   return (
@@ -210,8 +217,8 @@ export default function UpdateMeet({
                         <SelectContent>
                           <SelectItem value="softie">Softie</SelectItem>
                           <SelectItem value="casual">Casual</SelectItem>
-                          <SelectItem value="competetive">
-                            Competetive
+                          <SelectItem value="competitive">
+                            Competitive
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -360,10 +367,10 @@ export default function UpdateMeet({
                 value={value}
                 setValue={setValue}
               />
-              {/* Competetive */}
+              {/* Competitive */}
               <FormField
                 control={form.control}
-                name="competetive"
+                name="competitive"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -379,7 +386,7 @@ export default function UpdateMeet({
                               : "text-muted-foreground"
                           )}
                         >
-                          Competetive
+                          Competitive
                         </span>
                       </div>
                     </FormControl>
