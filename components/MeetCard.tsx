@@ -1,7 +1,6 @@
 import {
 	Card,
 	CardHeader,
-	CardFooter,
 	CardTitle,
 	CardDescription,
 	CardContent,
@@ -20,7 +19,6 @@ type MeetCardProps = {
 };
 
 export default function MeetCard({
-	venueId,
 	venueImage,
 	activityType,
 	venueAddress,

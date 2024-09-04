@@ -22,6 +22,19 @@ type MeetCardProps = {
 };
 
 export default async function ShowMeets() {
+	const renderCard = (meetProp: MeetCardProps, key: number) => (
+		<MeetCard
+			key={key}
+			venueId={meetProp.venueId}
+			venueImage={meetProp.venueImage}
+			activityType={meetProp.activityType}
+			venueAddress={meetProp.venueAddress}
+			date={meetProp.date}
+			time={meetProp.time}
+			numberOfParticipants={meetProp.numberOfParticipants}
+			creator={meetProp.creator}
+		/>
+	);
 	async function getUserCreatedMeets() {
 		const meets = await prisma.meet.findMany({
 			where: { creatorId: userId },
@@ -35,25 +48,30 @@ export default async function ShowMeets() {
 				participants: true,
 				Venue: true,
 				creatorId: true,
+				creator: true,
 			},
 		});
 		return meets;
 	}
 
-	const result = await getUserCreatedMeets();
+	const userCreatedMeets = await getUserCreatedMeets();
 
-	const userCreatedMeets = result.map((meet) => ({
-		venueId: meet.Venue.id,
-		venueImage: meet.Venue.image,
-		activityType: meet.activityType.name,
-		venueAddress: meet.Venue.location,
-		date: meet.date.toISOString().split("T")[0],
-		time: meet.time,
-		numberOfParticipants: meet.participants.length + meet.guests,
-		creator: meet.creatorId,
-	}));
+	// Fist map assigns db results into the props
+	// second map passes the data into html card
+	const userCreatedMeetsCards = userCreatedMeets
+		.map((meet) => ({
+			venueId: meet.Venue.id,
+			venueImage: meet.Venue.image,
+			activityType: meet.activityType.name,
+			venueAddress: meet.Venue.location,
+			date: meet.date.toISOString().split("T")[0],
+			time: meet.time,
+			numberOfParticipants: meet.participants.length + meet.guests,
+			creator: meet.creator.name,
+		}))
+		.map(renderCard);
 
-	// console.log(formatedMeets);
+	console.log(userCreatedMeets);
 
 	async function getUserParticipatingMeets() {
 		const meets = await prisma.meet.findMany({
@@ -67,6 +85,7 @@ export default async function ShowMeets() {
 				participants: true,
 				Venue: true,
 				creatorId: true,
+				creator: true,
 			},
 		});
 		// console.log(meets);
@@ -83,68 +102,25 @@ export default async function ShowMeets() {
 		date: meet.date.toISOString().split("T")[0],
 		time: meet.time,
 		numberOfParticipants: meet.participants.length + meet.guests,
-		creator: meet.creatorId,
+		creator: meet.creator.name,
 	}));
 
 	console.log(userParticipatingMeets);
 
-	const renderCard = (meet: MeetCardProps, key: number) => (
-		<MeetCard
-			key={key}
-			venueId={meet.venueId}
-			venueImage={meet.venueImage}
-			activityType={meet.activityType}
-			venueAddress={meet.venueAddress}
-			date={meet.date}
-			time={meet.time}
-			numberOfParticipants={meet.numberOfParticipants}
-			creator={meet.creator}
-		/>
-		// <Card key={key}>
-		// 	<CardHeader>
-		// 		<CardTitle>{item.title}</CardTitle>
-		// 		<CardDescription>{item.address}</CardDescription>
-		// 	</CardHeader>
-		// 	<CardContent>
-		// 		<p>Date: {item.date}</p>
-		// 		{item.time && <p>Time: {item.time}</p>}
-		// 		<img
-		// 			src={item.img}
-		// 			alt={item.title}
-		// 		/>
-		// 	</CardContent>
-		// </Card>
-	);
-
-	// const allMeets = meets.map(renderCard);
-
-	// const myOwnMeets = meets;
-	// .filter((item) => item.creator === userId)
-	// .map(renderCard);
-
-	// const renderEmptyState = (message: string) => <p>{message}</p>;
-
-	// const allMeetsContent =
-	// 	allMeets.length > 0 ? allMeets : renderEmptyState("No events found.");
-	// const myOwnMeetsContent =
-	// 	myOwnMeets.length > 0
-	// 		? myOwnMeets
-	// 		: renderEmptyState("No events is created by you.");
-
 	return (
 		<Tabs
-			defaultValue='myown-meets'
+			defaultValue='own-meets'
 			className='w-[350px] flex flex-col flex-1 mt-4 max-h-full'
 		>
 			<TabsList className='flex justify-center'>
-				<TabsTrigger value='myown-meets'>Own meets</TabsTrigger>
-				<TabsTrigger value='all-meets'>Near me</TabsTrigger>
+				<TabsTrigger value='own-meets'>Own meets</TabsTrigger>
+				<TabsTrigger value='all-meets'>Participating meets</TabsTrigger>
 			</TabsList>
 			<TabsContent
-				value='myown-meets'
+				value='own-meets'
 				className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
 			>
-				{/* {myOwnMeetsContent} */}
+				{userCreatedMeetsCards}
 			</TabsContent>
 			<TabsContent
 				value='all-meets'
