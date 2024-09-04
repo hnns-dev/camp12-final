@@ -88,46 +88,53 @@ export default async function ShowMeets() {
 				creator: true,
 			},
 		});
-		// console.log(meets);
 		return meets;
 	}
 
 	const participatingMeets = await getUserParticipatingMeets();
 
-	const userParticipatingMeets = participatingMeets.map((meet) => ({
-		venueId: meet.Venue.id,
-		venueImage: meet.Venue.image,
-		activityType: meet.activityType.name,
-		venueAddress: meet.Venue.location,
-		date: meet.date.toISOString().split("T")[0],
-		time: meet.time,
-		numberOfParticipants: meet.participants.length + meet.guests,
-		creator: meet.creator.name,
-	}));
-
-	console.log(userParticipatingMeets);
+	const userParticipatingMeetsCards = participatingMeets
+		.map((meet) => ({
+			venueId: meet.Venue.id,
+			venueImage: meet.Venue.image,
+			activityType: meet.activityType.name,
+			venueAddress: meet.Venue.location,
+			date: meet.date.toISOString().split("T")[0],
+			time: meet.time,
+			numberOfParticipants: meet.participants.length + meet.guests,
+			creator: meet.creator.name,
+		}))
+		.map(renderCard);
 
 	return (
-		<Tabs
-			defaultValue='own-meets'
-			className='w-[350px] flex flex-col flex-1 mt-4 max-h-full'
-		>
-			<TabsList className='flex justify-center'>
-				<TabsTrigger value='own-meets'>Own meets</TabsTrigger>
-				<TabsTrigger value='all-meets'>Participating meets</TabsTrigger>
-			</TabsList>
-			<TabsContent
-				value='own-meets'
-				className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+		<div>
+			<Tabs
+				defaultValue='own-meets'
+				className='w-[350px] flex flex-col flex-1 mt-4 max-h-full'
 			>
-				{userCreatedMeetsCards}
-			</TabsContent>
-			<TabsContent
-				value='all-meets'
-				className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
-			>
-				{/* {allMeetsContent} */}
-			</TabsContent>
-		</Tabs>
+				<TabsList className='flex justify-center'>
+					<TabsTrigger value='own-meets'>Own meets</TabsTrigger>
+					<TabsTrigger value='all-meets'>Participating meets</TabsTrigger>
+				</TabsList>
+				<TabsContent
+					value='own-meets'
+					className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+				>
+					{userCreatedMeetsCards}
+				</TabsContent>
+				<TabsContent
+					value='all-meets'
+					className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
+				>
+					<p>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem
+						tempora deleniti voluptates vero quisquam, consequatur accusantium
+						ipsam deserunt nobis a. Cum ipsa officiis similique incidunt est
+						ullam accusamus excepturi sed?
+					</p>
+				</TabsContent>
+			</Tabs>
+			{userParticipatingMeetsCards}
+		</div>
 	);
 }
