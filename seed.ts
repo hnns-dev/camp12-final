@@ -18,6 +18,7 @@ async function main() {
 		where: { name: "Weisse Elster" },
 		update: {},
 		create: {
+			id: "51061930-e1a1-4e20-a792-0bdcaeb92004",
 			name: "Weisse Elster",
 			location: "Clara Park",
 			image: "/Elster.jpg",
@@ -28,6 +29,7 @@ async function main() {
 		where: { name: "Mussel Gym" },
 		update: {},
 		create: {
+			id: "cac656e2-3565-4387-9e03-cb80ab885a16",
 			name: "Mussel Gym",
 			location: "Zschochersche Str",
 			image: "/mussel.jpg",
@@ -38,6 +40,7 @@ async function main() {
 		where: { name: "Beach Club Cossi" },
 		update: {},
 		create: {
+			id: "1e8323f1-7be0-481f-bae7-88ecd259c739",
 			name: "Beach Club Cossi",
 			location: "Cospudener See",
 			image: "/LiCossi.jpg",
@@ -66,8 +69,8 @@ async function main() {
 			name: "Tine Wittler",
 			settings: {
 				create: {
-					friendsVisibility: "Friends_Only",
-					profileVisibility: "Friends_Only",
+					friendsVisibility: "FriendsOnly",
+					profileVisibility: "FriendsOnly",
 				},
 			},
 		},
