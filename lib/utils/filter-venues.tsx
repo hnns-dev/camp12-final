@@ -89,3 +89,9 @@ export function filterVenues(
     return true;
   });
 }
+
+// Wann test the fi?
+// Mussel gym yoga rummelsdorf free planned both
+// Weisse Elster basketball alt-treptow private in past free competitive
+// Beach club cossi tennis rummelsdorf-oben free non-competitive
+//Boule bahn berlin boule Friedrichshain occupied both
