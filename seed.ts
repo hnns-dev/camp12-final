@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "./lib/db";
+import { generateIdFromEntropySize } from "lucia";
 
 async function main() {
   // Fetch venue IDs dynamically
@@ -8,6 +7,7 @@ async function main() {
   console.log("Cleaning Database...");
 
   await prisma.user.deleteMany();
+  await prisma.venue.deleteMany();
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
@@ -25,7 +25,7 @@ async function main() {
   });
 
   const musselGym = await prisma.venue.upsert({
-    where: { name: "Mussel Gym" },
+    where: { id: "adafcc83-1859-4b43-b5f7-6ed6bf5856c9" },
     update: {},
     create: {
       name: "Mussel Gym",
@@ -47,7 +47,7 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user1@example.com",
       name: "Hans Meiser",
       settings: {
@@ -61,7 +61,7 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu323",
+      id: generateIdFromEntropySize(10),
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
@@ -75,7 +75,7 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
-      id: "as222fkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user3@example.com",
       name: "Conchita Wurst",
       settings: {
@@ -169,7 +169,7 @@ async function main() {
     },
   });
 
-  // Badges
+  //Badges;
   await prisma.badge.create({
     data: {
       name: "Anzeigenhauptmeister",

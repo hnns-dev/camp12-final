@@ -1,15 +1,9 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-const MePage = () => {
-  const router = useRouter();
-  const ownUserId = "ownUserId";
-
-  useEffect(() => {
-    router.push(`/profile/${ownUserId}`);
-  }, [ownUserId]);
+const MePage = async () => {
+  // const user = await protectPage()
+  const ownUserId = "jhvrihll2lalvsug";
+  redirect(`/profile/${ownUserId}`);
 
   return null;
 };

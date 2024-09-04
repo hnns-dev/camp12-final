@@ -8,8 +8,10 @@ export async function GET(
   try {
     const userId = params.userId;
 
+    // Abfrage des Benutzers zusammen mit den Einstellungen
     const profile = await prisma.user.findUnique({
       where: { id: userId },
+      include: { settings: true }, // Einschließen der verknüpften Einstellungen
     });
 
     if (!profile) {
@@ -37,9 +39,19 @@ export async function PUT(
     const userId = params.userId;
     const body = await req.json();
 
+    // Aktualisiere den Benutzer und dessen Einstellungen
     const updatedProfile = await prisma.user.update({
       where: { id: userId },
-      data: { name: body.name },
+      data: {
+        name: body.name,
+        settings: {
+          update: {
+            friendsVisibility: body.settings?.friendsVisibility || undefined,
+            profileVisibility: body.settings?.profileVisibility || undefined,
+          },
+        },
+      },
+      include: { settings: true }, // Einschließen der aktualisierten Einstellungen
     });
 
     return NextResponse.json(updatedProfile);
