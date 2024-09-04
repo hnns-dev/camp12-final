@@ -22,8 +22,8 @@ import { Switch } from "./ui/switch";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LuFilter } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import Filter from "@/components/Filter";
 
 const activities = [
   "tennis",
@@ -90,9 +90,7 @@ export function FilterDrawer() {
     <>
       <Drawer>
         <DrawerTrigger>
-          <div className="flex w-11 h-11 rounded-xl absolute z-[999] top-4 right-4 p-3 bg-white/80 justify-between items-center">
-            <LuFilter className="size-8" />
-          </div>
+          <Filter />
         </DrawerTrigger>
         <DrawerContent className="z-[9998]">
           <DrawerHeader>

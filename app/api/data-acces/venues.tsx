@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { Venue } from "@prisma/client";
 
 export async function getVenues() {
   const venues = await prisma.venue.findMany({

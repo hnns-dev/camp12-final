@@ -1,11 +1,7 @@
 import { Meet, Venue as PrismaVenue } from "@prisma/client";
-import { Filters } from "./types";
+import { Filters, Venue } from "./types";
 import { GetVenuesResult } from "@/app/api/data-acces/venues";
 
-type Venue = PrismaVenue & {
-  activityTypes: { name: string }[];
-  meets: Meet[];
-};
 export function filterVenues(
   venues: GetVenuesResult,
   filters: Filters

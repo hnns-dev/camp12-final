@@ -1,32 +1,33 @@
 import Navbar from "../components/Navbar";
-import { useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import Search from "@/components/Search";
-import Filter from "@/components/Filter";
-import { DrawerHompage } from "@/components/DrawerHomepage";
+import MapAndDrawer from "@/components/MapAndDrawer";
+import { getVenues } from "./api/data-acces/venues";
+import { FilterDrawer } from "@/components/FilterDrawer";
+import { filterVenues } from "@/lib/utils/filter-venues";
 
-export default async function Home() {
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("@/components/Map"), {
-        loading: () => <p className="p-40 text-center">A map is loading</p>,
-        ssr: false,
-      }),
-    []
-  );
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] };
+}) {
+  const venues = await getVenues();
 
-  const openDrawer = () => {
-    setIsDrawerOpen(true);
+  const parseBoolean = (val: string) => (val === "true" ? true : false);
+
+  const filters = {
+    activity: searchParams.activity as string,
+    status: searchParams.status as string,
+    competitive: parseBoolean(searchParams.competitive as string),
   };
-
+  const filteredVenues = filterVenues(venues, filters);
+  console.log("test in homepage 1");
   return (
     <div className="h-screen relative overflow-hidden">
-      <Map openDrawer={openDrawer} venues={venues} />
-      <DrawerHompage isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
+      <MapAndDrawer venues={filteredVenues} />
       <Navbar />
+
       <Search />
-      <Filter />
+      <FilterDrawer />
     </div>
   );
 }
