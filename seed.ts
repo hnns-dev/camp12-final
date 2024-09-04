@@ -198,7 +198,7 @@ async function main() {
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
-      time: "10:00",
+      time: "20:00",
       duration: 1,
       isPublic: true,
       creatorId: user2.id,

@@ -79,11 +79,11 @@ export function filterVenues(
       if (venue.meets.some(isMeetPlanned)) return true;
       else return false;
     }
-
-    if (filters.competitive) {
+    if (filters.competitive === "both") return true;
+    if (filters.competitive === "yes") {
       return venue.meets.some((meet) => meet.competitive === true);
     }
-    if (filters.competitive === false) {
+    if (filters.competitive === "no") {
       return venue.meets.some((meet) => meet.competitive === false);
     }
     return true;

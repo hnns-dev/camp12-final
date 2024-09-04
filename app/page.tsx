@@ -15,10 +15,13 @@ export default async function Home({
   const parseBoolean = (val: string) => (val === "true" ? true : false);
 
   const filters = {
-    activity: searchParams.activity as string,
-    status: searchParams.status as string,
-    competitive: parseBoolean(searchParams.competitive as string),
+    activity: (searchParams.activity as string) ?? "",
+    status: (searchParams.status as string) ?? "",
+    competitive: searchParams.competitive as "yes" | "no" | "both",
   };
+
+  console.log(filters);
+
   const filteredVenues = filterVenues(venues, filters);
   console.log("test in homepage 1");
   return (
@@ -31,3 +34,8 @@ export default async function Home({
     </div>
   );
 }
+// Wann test the fi?
+// Mussel gym yoga rummelsdorf free planned both
+// Weisse Elster basketball alt-treptow private in past free competitive
+// Beach club cossi tennis rummelsdorf-oben free non-competitive
+//Boule bahn berlin boule Friedrichshain occupied both

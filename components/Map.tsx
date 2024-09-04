@@ -6,13 +6,15 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import { Venue } from "@/lib/utils/types";
+import { GetVenuesResult } from "@/app/api/data-acces/venues";
 
 type MapProps = {
   openDrawer: () => void;
-  venues: Venue[];
+  venues: GetVenuesResult;
 };
-
 export default function Map2({ openDrawer, venues }: MapProps) {
+  console.log(venues, "Map");
+
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +35,7 @@ export default function Map2({ openDrawer, venues }: MapProps) {
     try {
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
-        zoom: 13,
+        zoom: 12,
         minZoom: 3,
         maxZoom: 18,
       });

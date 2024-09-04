@@ -24,6 +24,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import Filter from "@/components/Filter";
+import { Filters } from "@/lib/utils/types";
 
 const activities = [
   "tennis",
@@ -37,15 +38,9 @@ const activities = [
   "badminton",
 ];
 
-type Filters = {
-  activity?: string;
-  status?: string;
-  competitive?: string;
-};
-
-type FilterDrawerProps = {
-  onFiltersApplied: (filters: Filters) => void;
-};
+// type FilterDrawerProps = {
+//   onFiltersApplied: (filters: Filters) => void;
+// };
 
 export function FilterDrawer() {
   const router = useRouter();
@@ -62,8 +57,14 @@ export function FilterDrawer() {
     if (status) {
       filters.status = status;
     }
-    if (!excludeCompetitive) {
-      filters.competitive = isCompetitive.toString();
+    if (excludeCompetitive) {
+      filters.competitive = "both";
+    }
+    if (!excludeCompetitive && isCompetitive) {
+      filters.competitive = "yes";
+    }
+    if (!excludeCompetitive && !isCompetitive) {
+      filters.competitive = "no";
     }
 
     return filters;
@@ -83,8 +84,17 @@ export function FilterDrawer() {
     router.push("/");
   }
 
+  // function handleApplyFilters() {
+  //   router.push(url);
+  //   window.location.href = fullUrl;
+  // }
+
   function handleApplyFilters() {
-    router.push(url);
+    // Construct the full URL with the query parameters
+    const fullUrl = `${window.location.origin}${url}`;
+
+    // Force a page reload with the updated URL
+    window.location.href = fullUrl;
   }
   return (
     <>

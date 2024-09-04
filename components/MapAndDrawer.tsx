@@ -5,6 +5,8 @@ import { DrawerHompage } from "./DrawerHomepage";
 import { GetVenuesResult } from "@/app/api/data-acces/venues";
 
 export default function MapAndDrawer({ venues }: { venues: GetVenuesResult }) {
+  console.log(venues);
+
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {
