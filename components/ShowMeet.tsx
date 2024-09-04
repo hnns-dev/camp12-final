@@ -109,6 +109,20 @@ export default async function ShowMeets() {
 	return (
 		<div>
 			<Tabs
+				defaultValue='account'
+				className='w-[400px]'
+			>
+				<TabsList>
+					<TabsTrigger value='account'>Account</TabsTrigger>
+					<TabsTrigger value='password'>Password</TabsTrigger>
+				</TabsList>
+				<TabsContent value='account'>
+					Make changes to your account here.
+				</TabsContent>
+				<TabsContent value='password'>Change your password here.</TabsContent>
+			</Tabs>
+
+			<Tabs
 				defaultValue='own-meets'
 				className='w-[350px] flex flex-col flex-1 mt-4 max-h-full'
 			>
