@@ -113,7 +113,7 @@ model ActivityType {
 
 enum VisibilityStatus {
   Public
-  Friends_Only
+  FriendsOnly
   Private
 }
 

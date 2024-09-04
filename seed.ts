@@ -29,7 +29,7 @@ async function main() {
     where: { name: "Mussel Gym" },
     update: {},
     create: {
-      id:"cac656e2-3565-4387-9e03-cb80ab885a16",
+      id: "cac656e2-3565-4387-9e03-cb80ab885a16",
       name: "Mussel Gym",
       location: "Zschochersche Str",
       image: "/mussel.jpg",
@@ -69,8 +69,8 @@ async function main() {
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "Friends_Only",
-          profileVisibility: "Friends_Only",
+          friendsVisibility: "FriendsOnly",
+          profileVisibility: "FriendsOnly",
         },
       },
     },
