@@ -1,11 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { useForm, useWatch } from "react-hook-form";
-import { boolean, string, z } from "zod";
-import { cn } from "@/lib/utils";
+import { createMeet, updateMeet } from "@/actions/meet";
+import GroupSizeSelect from "@/components/group-size-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -21,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -29,79 +25,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
-import React from "react";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import GroupSizeSelect from "@/components/group-size-select";
-import { createMeet } from "@/actions/settings";
-import { Meet, Tag } from "@prisma/client";
-import { TagInput } from "@/components/tagInput";
+import { cn } from "@/lib/utils";
+import { meetSchema } from "@/lib/validation/meet";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Meet } from "@prisma/client";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
 // Venue hardcoded
 
 const venue = "Clara-Zetkin-Park";
 
 type Props = {
-  isPublic: boolean;
-  creatorId: string;
-  guests: number;
-  notes?: string;
-  venueId: string;
-  tagSuggestions: Tag[];
   meet?: Meet;
 };
 
 // Defining a schema for Tournament Creation
-const formSchema = z.object({
-  activityType: z.enum(["Tennis", "Basketball"], {
-    required_error: "Choose a Sport",
-  }),
-  mode: z.enum(["softie", "casual", "competetive"], {
-    required_error: "Choose a Mode",
-  }),
-  // tournamentType: z.enum(["single", "round"], {
-  //   required_error: "Choose a tournament type",
-  // }),
-  public: z.boolean(),
-  date: z.date({ required_error: "Date is required" }),
-  time: z.string({ required_error: "Time is required" }),
-  duration: z.number(),
-  participants: z.coerce
-    .number({
-      invalid_type_error:
-        "Please enter a number of people, you'd like to play with",
-    })
-    .positive({ message: "this👏is👏too👏low" }),
-  competitive: z.boolean(),
-  recurring: z.boolean(),
-  equipment: z.string().trim().optional(),
-  description: z.string().trim().optional(),
-});
 
-export default function updateMeet({
-  isPublic,
-  tagSuggestions,
-  creatorId,
-  guests,
-  notes,
-  venueId,
-  meet,
-}: Props) {
+export default function UpdateMeet({ meet }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
   // Setting up React Hook Form with Zod resolver for validation
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof meetSchema>>({
+    resolver: zodResolver(meetSchema),
     defaultValues: {
       duration: meet?.duration ? meet.duration : 0.5,
       public: meet?.isPublic ? meet.isPublic : false,
       competitive: meet?.isCompetitive ? meet.isCompetitive : false,
       recurring: meet?.isRecurring ? meet.isRecurring : false,
+      participants: meet?.guests ? meet.guests.toString() : "0",
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
@@ -114,6 +73,7 @@ export default function updateMeet({
     name: "duration",
     defaultValue: 0.5,
   });
+
   const privacy = useWatch({
     control: form.control,
     name: "public",
@@ -138,38 +98,27 @@ export default function updateMeet({
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
-
-    const meetData = {
-      date,
-      time,
-      duration,
-      isPublic,
-      creatorId,
-      guests,
-      notes,
-      venueId,
-      activityTypeName: activityType,
-    };
 
     if (meet && meet.id) {
       // If meet exists and has an id, update the existing meet
-      await updateMeet(meet.id, meetData);
+      await updateMeet(meet.id, values);
       console.log("finished updating");
     } else {
       // If meet doesn't exist or doesn't have an id, create a new meet
-      await createMeet(meetData);
+      await createMeet(values);
       console.log("finished creating");
     }
   };
-  const [value, setValue] = useState<string[]>([]);
 
   return (
     <>
       <Form {...form}>
-        <form className="space-y-8 w-full my-6 flex flex-col items-center">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full my-6 flex flex-col items-center"
+        >
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
@@ -358,15 +307,25 @@ export default function updateMeet({
                 )}
               />
               {/* Participants */}
-              <FormItem>
-                <GroupSizeSelect groupSizes={[2, 4, 6]} />
-              </FormItem>
+              <FormField
+                control={form.control}
+                name="participants"
+                render={({ field }) => (
+                  <FormItem>
+                    <GroupSizeSelect
+                      onChange={field.onChange}
+                      value={field.value}
+                      groupSizes={["0", "2", "4", "6"]}
+                    />
+                  </FormItem>
+                )}
+              ></FormField>
               {/* Tags */}
-              <TagInput
+              {/* <TagInput
                 suggestions={tagSuggestions}
                 value={value}
                 setValue={setValue}
-              />
+              /> */}
               {/* Competitive */}
               <FormField
                 control={form.control}
@@ -459,7 +418,7 @@ export default function updateMeet({
               />
             </div>
           </div>
-          <Button onClick={handleSubmit} type="submit" className="w-2/3">
+          <Button type="submit" className="w-2/3">
             Create
           </Button>
         </form>
