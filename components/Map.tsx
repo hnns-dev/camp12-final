@@ -30,11 +30,13 @@ export default function Map2({ openDrawer }: MapProps) {
     if (map.current || !mapContainer.current) return;
 
     try {
+      // Inside your useEffect where the map is initialized
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
         zoom: 13,
         minZoom: 3,
         maxZoom: 18,
+        zoomControl: false, // Disable the default zoom control position
       });
 
       // Vector layer
@@ -42,7 +44,22 @@ export default function Map2({ openDrawer }: MapProps) {
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
-      // Markers beeing clustered
+      // Custom zoom control position, adjusted upwards
+      L.control
+        .zoom({
+          position: "bottomright", // Keep the control in the bottom-right corner
+        })
+        .addTo(map.current);
+
+      // Move zoom control slightly upwards
+      const zoomControlElement = document.querySelector(
+        ".leaflet-control-zoom"
+      ) as HTMLElement; // Cast to HTMLElement
+      if (zoomControlElement) {
+        zoomControlElement.style.marginBottom = "80px"; // Adjust this value to move the zoom control upwards
+      }
+
+      // Markers being clustered
       const markers = L.markerClusterGroup();
       data.forEach((entry) => {
         // Check if data is in correct format
