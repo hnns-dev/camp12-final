@@ -1,50 +1,52 @@
-"use client";
-import React from "react";
+"use server";
+
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { FriendCard } from "@/components/friend-card";
+import { fiendFriends } from "@/actions/friends";
 
 type Friend = {
-  username: string;
-  picture: string;
-  location: string;
-  friendsSince: string;
+  userIdOne: string;
+  userIdTwo: string;
 };
 
-const friends: Friend[] = [
-  {
-    username: "@pong-empress",
-    picture: "/placeholder.svg?height=40&width=40",
-    location: "Leipzig",
-    friendsSince: "August 2024",
-  },
-  {
-    username: "@pong-empress",
-    picture: "/placeholder.svg?height=40&width=40",
-    location: "Leipzig",
-    friendsSince: "August 2024",
-  },
-  {
-    username: "@pong-empress",
-    picture: "/placeholder.svg?height=40&width=40",
-    location: "Leipzig",
-    friendsSince: "August 2024",
-  },
-  {
-    username: "@pong-empress",
-    picture: "/placeholder.svg?height=40&width=40",
-    location: "Leipzig",
-    friendsSince: "August 2024",
-  },
-  {
-    username: "@pong-empress",
-    picture: "/placeholder.svg?height=40&width=40",
-    location: "Leipzig",
-    friendsSince: "August 2024",
-  },
-];
+// const friends: Friend[] = [
+//   {
+//     username: "@pong-empress",
+//     picture: "/placeholder.svg?height=40&width=40",
+//     location: "Leipzig",
+//     friendsSince: "August 2024",
+//   },
+//   {
+//     username: "@pong-empress",
+//     picture: "/placeholder.svg?height=40&width=40",
+//     location: "Leipzig",
+//     friendsSince: "August 2024",
+//   },
+//   {
+//     username: "@pong-empress",
+//     picture: "/placeholder.svg?height=40&width=40",
+//     location: "Leipzig",
+//     friendsSince: "August 2024",
+//   },
+//   {
+//     username: "@pong-empress",
+//     picture: "/placeholder.svg?height=40&width=40",
+//     location: "Leipzig",
+//     friendsSince: "August 2024",
+//   },
+//   {
+//     username: "@pong-empress",
+//     picture: "/placeholder.svg?height=40&width=40",
+//     location: "Leipzig",
+//     friendsSince: "August 2024",
+//   },
+// ];
 
-export default function FriendsListPage() {
+export default async function FriendsListPage({ userId }: { userId: string }) {
+  const friends: Record<string, any>[] = ([] = await fiendFriends({ userId }));
+  console.log(friends);
+
   return (
     <div className="max-w-md mx-auto bg-background text-foreground">
       <div className="flex items-center pt-5 pb-2 pl-2 pr-2">
@@ -60,10 +62,12 @@ export default function FriendsListPage() {
         {friends.map((friend, index) => (
           <FriendCard
             key={index}
-            username={friend.username}
+            username={friend.name}
             picture={friend.picture}
             location={friend.location}
             friendsSince={friend.friendsSince}
+            userIdOne={friend.userIdOne}
+            userIdTwo={friend.userIdTwo}
           />
         ))}
       </div>

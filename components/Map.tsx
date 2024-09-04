@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
-import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import data from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
