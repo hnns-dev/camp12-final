@@ -30,7 +30,9 @@ function ProfileContent({ userData }: { userData: UserData }) {
           <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
           <AvatarFallback>BB</AvatarFallback>
         </Avatar>
-        <div className="pt-4 text-lg font-semibold">{userData.name}</div>
+        <div className="pt-4 text-lg font-semibold">
+          {userData.name ?? "No name provided"}
+        </div>
         <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
           Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
         </div>
