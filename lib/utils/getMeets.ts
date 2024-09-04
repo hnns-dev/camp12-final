@@ -1,6 +1,7 @@
 import { prisma } from "../db";
 
-export async function getUserCreatedMeets(userId: string) {
+export async function getUserCreatedMeets(userId?: string) {
+	if (!userId) return [];
 	const meets = await prisma.meet.findMany({
 		where: { creatorId: userId },
 
@@ -19,7 +20,12 @@ export async function getUserCreatedMeets(userId: string) {
 	return meets;
 }
 
-export async function getUserParticipatingMeets(userId: string) {
+export type UserCreatedMeet = Awaited<
+	ReturnType<typeof getUserCreatedMeets>
+>[number];
+
+export async function getUserParticipatingMeets(userId?: string) {
+	if (!userId) return [];
 	const meets = await prisma.meet.findMany({
 		where: { participants: { some: { id: userId } } },
 		select: {
@@ -36,3 +42,7 @@ export async function getUserParticipatingMeets(userId: string) {
 	});
 	return meets;
 }
+
+export type UserParticipatingMeet = Awaited<
+	ReturnType<typeof getUserParticipatingMeets>
+>[number];
