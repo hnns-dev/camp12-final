@@ -1,87 +1,174 @@
-"use client";
-import { LatLngExpression, divIcon } from "leaflet";
+import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import data from "@/lib/output_data.json";
-import { VenuePin } from "./VenuePin";
-import ReactDOMServer from "react-dom/server";
+import L, { LatLngExpression } from "leaflet";
+import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
+import data from "../lib/filtered_output_data.json";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
 
-// Define the structure of each entry in the data
-interface DataEntry {
-  geolocation: number[] | null[];
-  state?: "intended" | "playing" | "free"; // Optional state property
-}
+type MapProps = {
+  openDrawer: () => void;
+};
 
-export function Map() {
-  const [location, setLocation] = useState<LatLngExpression | null>(null);
+export default function Map2({ openDrawer }: MapProps) {
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userPosition, setUserPosition] = useState<LatLngExpression | null>(
+    null
+  );
+  // reference is used to ensure that the coordinates are not null in important calculations
+  const userPositionRef = useRef<LatLngExpression | null>(null);
+  useEffect(() => {
+    userPositionRef.current = userPosition;
+  }, [userPosition]);
 
+  // build map
+  useEffect(() => {
+    // if the map exists, or if the mapContainer is missing, abort the useEffect
+    if (map.current || !mapContainer.current) return;
+
+    try {
+      // Inside your useEffect where the map is initialized
+      map.current = L.map(mapContainer.current, {
+        center: [51.3397, 12.3731],
+        zoom: 13,
+        minZoom: 3,
+        maxZoom: 18,
+        zoomControl: false, // Disable the default zoom control position
+      });
+
+      // Vector layer
+      const mtLayer = new MaptilerLayer({
+        apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
+      }).addTo(map.current);
+
+      // Custom zoom control position, adjusted upwards
+      L.control
+        .zoom({
+          position: "bottomright", // Keep the control in the bottom-right corner
+        })
+        .addTo(map.current);
+
+      // Move zoom control slightly upwards
+      const zoomControlElement = document.querySelector(
+        ".leaflet-control-zoom"
+      ) as HTMLElement; // Cast to HTMLElement
+      if (zoomControlElement) {
+        zoomControlElement.style.marginBottom = "80px"; // Adjust this value to move the zoom control upwards
+      }
+
+      // Markers being clustered
+      const markers = L.markerClusterGroup();
+      data.forEach((entry) => {
+        // Check if data is in correct format
+        if (entry.geolocation && entry.geolocation.length === 2) {
+          const marker = L.marker(entry.geolocation as L.LatLngTuple).bindPopup(
+            "Unnamed Venue"
+          );
+          markers.addLayer(marker);
+        }
+      });
+      map.current.addLayer(markers);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error initializing map:", error);
+      setLoading(false);
+    }
+  }, []);
+
+  // Ask Permission if we can locate the user
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation([latitude, longitude]);
+          const userPos: LatLngExpression = [latitude, longitude];
+          setUserPosition(userPos);
           setLoading(false);
-          console.log(`Latitude: ${latitude}, longitude: ${longitude}`);
+          if (map.current) {
+            map.current.setView(userPos, 13);
+            L.marker(userPos).addTo(map.current).bindPopup("You are here");
+          }
         },
         (error) => {
-          console.error("Error getting User location", error);
-          setLocation([51.3397, 12.3731]); // Default location
+          console.error("Error getting user location:", error);
+          setUserPosition([51.3397, 12.3731]);
           setLoading(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
         }
       );
     } else {
-      console.error("Geo location is not supported by the browser");
+      console.error("Geolocation is not supported by this browser");
       setLoading(false);
     }
   }, []);
 
-  if (loading) {
-    console.log("Waiting for your location");
-    setLoading(false);
-  }
+  // Event handling
+  useEffect(() => {
+    // if there is no map, return
+    if (!map.current) return;
 
-  if (typeof window !== "undefined" && location !== null && loading === false) {
-    return (
-      <MapContainer
-        center={location}
-        zoom={13}
-        scrollWheelZoom={false}
-        zoomControl={false}
-        className="w-screen h-screen"
-        attributionControl={false}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    function handleClick() {
+      if (userPositionRef.current) {
+        const nearestVenue = getNearestVenue(userPositionRef.current);
+        if (nearestVenue) {
+          map.current?.flyTo(nearestVenue, 16);
+          // a little delay for opening the drawer
+          setTimeout(() => openDrawer(), 1500);
+        }
+      } else {
+        console.error("User position is not available");
+      }
+    }
 
-        {data.map((entry: DataEntry, index: number) => (
-          <Marker
-            key={index}
-            position={[
-              entry.geolocation[0] === null ? 0 : entry.geolocation[0],
-              entry.geolocation[1] === null ? 0 : entry.geolocation[1],
-            ]}
-            icon={divIcon({
-              className: "custom-icon",
-              html: ReactDOMServer.renderToString(
-                <VenuePin state={entry.state} /> // If `state` is undefined, VenuePin defaults to white
-              ),
-              iconSize: [24, 24], // Size of your icon
-              iconAnchor: [12, 24], // Point of the icon which will correspond to marker's location
-            })}
-          />
-        ))}
-      </MapContainer>
+    map.current.on("click", handleClick);
+  });
+
+  // After loading, recalculate size of map
+  useEffect(() => {
+    if (map.current) {
+      map.current.invalidateSize();
+    }
+  }, [loading]);
+
+  return (
+    <div className="h-screen w-screen relative">
+      <div ref={mapContainer} className="h-full w-full absolute " />
+      {loading && <div>Loading...</div>}
+    </div>
+  );
+}
+
+// helper function
+function getNearestVenue(
+  userLocation: LatLngExpression
+): LatLngExpression | null {
+  const userLoc = userLocation as [number, number];
+  let result: LatLngExpression = userLocation;
+  let minDistance = Infinity;
+
+  for (let key in data) {
+    const venueLoc: [number, number] = data[key].geolocation as [
+      number,
+      number
+    ];
+    if (!venueLoc) continue;
+
+    const distance = Math.sqrt(
+      Math.pow(userLoc[0] - venueLoc[0], 2) +
+        Math.pow(userLoc[1] - venueLoc[1], 2)
     );
-  } else {
-    return (
-      <div className="w-screen h-screen bg-zinc-300 text-center p-20">
-        Loading
-      </div>
-    );
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      result = venueLoc;
+    }
   }
+  return result;
 }

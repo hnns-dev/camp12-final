@@ -2,15 +2,24 @@
 
 import { useState } from "react";
 import { updateSettings } from "@/actions/settings";
+import { Settings } from "@prisma/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   userId: string;
+  settings: Settings;
 };
 
-export default function SettingsUser({ userId }: Props) {
+export default function SettingsUser({ userId, settings }: Props) {
   // State to hold the selected options for both settings categories
-  const [friendsListSetting, setFriendsListSetting] = useState("PRIVATE");
-  const [profileSetting, setProfileSetting] = useState("FRIENDS_ONLY");
+  const [friendsListSetting, setFriendsListSetting] = useState(
+    settings.friendsVisibility
+  );
+  const [profileSetting, setProfileSetting] = useState(
+    settings.profileVisibility
+  );
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault;
@@ -19,6 +28,8 @@ export default function SettingsUser({ userId }: Props) {
       profileVisible: profileSetting,
       userId,
     });
+    toast("Settings updated");
+    router.push("/profile");
   };
 
   return (
@@ -38,8 +49,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Private"
-              checked={friendsListSetting === "PRIVATE"}
-              onChange={() => setFriendsListSetting("PRIVATE")}
+              checked={friendsListSetting === "Private"}
+              onChange={() => setFriendsListSetting("Private")}
               className="mr-2"
             />
             Private
@@ -49,8 +60,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Only friends"
-              checked={friendsListSetting === "FRIENDS_ONLY"}
-              onChange={() => setFriendsListSetting("FRIENDS_ONLY")}
+              checked={friendsListSetting === "Friends_Only"}
+              onChange={() => setFriendsListSetting("Friends_Only")}
               className="mr-2"
             />
             Only friends
@@ -60,8 +71,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="friendsList"
               value="Public"
-              checked={friendsListSetting === "PUBLIC"}
-              onChange={() => setFriendsListSetting("PUBLIC")}
+              checked={friendsListSetting === "Public"}
+              onChange={() => setFriendsListSetting("Public")}
               className="mr-2"
             />
             Public
@@ -78,8 +89,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Private"
-              checked={profileSetting === "PRIVATE"}
-              onChange={() => setProfileSetting("PRIVATE")}
+              checked={profileSetting === "Private"}
+              onChange={() => setProfileSetting("Private")}
               className="mr-2"
             />
             Private
@@ -89,8 +100,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Only friends"
-              checked={profileSetting === "FRIENDS_ONLY"}
-              onChange={() => setProfileSetting("FRIENDS_ONLY")}
+              checked={profileSetting === "Friends_Only"}
+              onChange={() => setProfileSetting("Friends_Only")}
               className="mr-2"
             />
             Only friends
@@ -100,8 +111,8 @@ export default function SettingsUser({ userId }: Props) {
               type="radio"
               name="profile"
               value="Public"
-              checked={profileSetting === "PUBLIC"}
-              onChange={() => setProfileSetting("PUBLIC")}
+              checked={profileSetting === "Public"}
+              onChange={() => setProfileSetting("Public")}
               className="mr-2"
             />
             Public

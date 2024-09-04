@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
+import { boolean, string, z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,21 +30,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
+
 import React from "react";
-import { Input } from "@/components/ui/input";
+
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import GroupSizeSelect from "@/components/group-size-select";
+import { createMeet, updateTags } from "@/actions/settings";
+import { Tag } from "@prisma/client";
+import { TagInput } from "@/components/tagInput";
 
 // Venue hardcoded
 
-const venue = "Clara-Zetkin-Park";
+const venue = "Mussel Gym";
+
+type Props = {
+  isPublic: boolean;
+  creatorId: string;
+  guests: number;
+  notes?: string;
+  venueId: string;
+  tagSuggestions: Tag[];
+  tags: Tag[];
+  tag: Tag;
+};
 
 // Defining a schema for Tournament Creation
 const formSchema = z.object({
-  activityType: z.enum(["pingpong", "basketball"], {
+  activityType: z.enum(["Tennis", "Basketball"], {
     required_error: "Choose a Sport",
   }),
   mode: z.enum(["softie", "casual", "competetive"], {
@@ -67,11 +81,23 @@ const formSchema = z.object({
   recurring: z.boolean(),
   equipment: z.string().trim().optional(),
   description: z.string().trim().optional(),
+  value: z.array(z.string()),
 });
 
-export default function CreateSession() {
+export default function UpdateMeet({
+  isPublic,
+  tagSuggestions,
+  creatorId,
+  guests,
+  notes,
+  venueId,
+  tags,
+  tag,
+}: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
+  // filling the value array with all selected tags
+  const [frontendTags, setFrontendTags] = useState<string[]>([]);
 
   // Setting up React Hook Form with Zod resolver for validation
   const form = useForm<z.infer<typeof formSchema>>({
@@ -81,10 +107,12 @@ export default function CreateSession() {
       public: false,
       competetive: false,
       recurring: false,
+
       date: new Date(),
       time: "12:00",
       description: "",
       equipment: "",
+      value: [],
     },
   });
 
@@ -99,6 +127,7 @@ export default function CreateSession() {
     name: "public",
     defaultValue: false,
   });
+  console.log(privacy);
 
   const date = useWatch({
     control: form.control,
@@ -108,27 +137,43 @@ export default function CreateSession() {
     control: form.control,
     name: "time",
   });
+  let activityType = useWatch({
+    control: form.control,
+    name: "activityType",
+  });
 
   useEffect(() => {
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
-  // Handling form submission
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("SUBMITTED", data);
-    // Shadcn Sonner pop up message
-    toast.success(
-      `Meeting at: ${format(data.date, "dd MMM yyyy")} ${data.time}`
-    );
-  }
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("submitting");
+    const formattedValue = frontendTags.map((tag) => ({ name: tag }));
+    const names = frontendTags;
+    await updateTags({ names, tag });
+    // Change the first letter of activity type to uppercase so it can be found in the db
+    activityType = activityType.charAt(0).toUpperCase() + activityType.slice(1);
+    await createMeet({
+      date,
+      time,
+      duration,
+      isPublic,
+      creatorId,
+      guests,
+      notes,
+      venueId,
+      activityType,
+      tags: formattedValue,
+    });
+
+    console.log("finished submitting");
+  };
 
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full my-6 flex flex-col items-center"
-        >
+        <form className="space-y-8 w-full my-6 flex flex-col items-center">
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
@@ -149,8 +194,8 @@ export default function CreateSession() {
                           <SelectValue placeholder="Activity Type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pingpong">Ping Pong</SelectItem>
-                          <SelectItem value="basketball">Basketball</SelectItem>
+                          <SelectItem value="tennis">Tennis</SelectItem>
+                          <SelectItem value="Basketball">Basketball</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -320,6 +365,20 @@ export default function CreateSession() {
               <FormItem>
                 <GroupSizeSelect groupSizes={[2, 4, 6]} />
               </FormItem>
+              {/* Tags */}
+              <FormField
+                control={form.control}
+                name="value"
+                render={() => (
+                  <FormControl>
+                    <TagInput
+                      suggestions={tagSuggestions}
+                      value={frontendTags}
+                      onChange={setFrontendTags}
+                    />
+                  </FormControl>
+                )}
+              ></FormField>
               {/* Competetive */}
               <FormField
                 control={form.control}
@@ -412,7 +471,7 @@ export default function CreateSession() {
               />
             </div>
           </div>
-          <Button type="submit" className="w-2/3">
+          <Button onClick={handleSubmit} type="submit" className="w-2/3">
             Create
           </Button>
         </form>

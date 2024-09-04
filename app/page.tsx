@@ -1,14 +1,12 @@
-import { DrawerHomepage } from "@/components/DrawerHomepage";
 import Navbar from "../components/Navbar";
-import { Map } from "@/components/Map";
-import Search from "@/components/search";
-import Filter from "@/components/filter";
+import Search from "@/components/Search";
+import Filter from "@/components/Filter";
+import MapAndDrawer from "@/components/MapAndDrawer";
 
 export default function Home() {
   return (
-    <div className="h-screen relative p-4">
-      <Map />
-      <DrawerHomepage />
+    <div className="h-screen relative overflow-hidden">
+      <MapAndDrawer />
       <Navbar />
       <Search />
       <Filter />

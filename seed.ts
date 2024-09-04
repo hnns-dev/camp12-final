@@ -3,6 +3,50 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Fetch venue IDs dynamically
+
+  console.log("Cleaning Database...");
+
+  await prisma.user.deleteMany();
+  await prisma.activityType.deleteMany();
+  await prisma.tag.deleteMany();
+  await prisma.badge.deleteMany();
+
+  console.log("Cleaning Database finished");
+
+  const weisseElster = await prisma.venue.upsert({
+    where: { name: "Weisse Elster" },
+    update: {},
+    create: {
+      id: "51061930-e1a1-4e20-a792-0bdcaeb92004",
+      name: "Weisse Elster",
+      location: "Clara Park",
+      image: "/Elster.jpg",
+    },
+  });
+
+  const musselGym = await prisma.venue.upsert({
+    where: { name: "Mussel Gym" },
+    update: {},
+    create: {
+      id: "cac656e2-3565-4387-9e03-cb80ab885a16",
+      name: "Mussel Gym",
+      location: "Zschochersche Str",
+      image: "/mussel.jpg",
+    },
+  });
+
+  const beachClubCossi = await prisma.venue.upsert({
+    where: { name: "Beach Club Cossi" },
+    update: {},
+    create: {
+      id: "1e8323f1-7be0-481f-bae7-88ecd259c739",
+      name: "Beach Club Cossi",
+      location: "Cospudener See",
+      image: "/LiCossi.jpg",
+    },
+  });
+
   // Users
   const user1 = await prisma.user.create({
     data: {
@@ -71,31 +115,6 @@ async function main() {
     },
   });
 
-  // Venues
-  const weisseElster = await prisma.venue.create({
-    data: {
-      name: "Weisse Elster",
-      location: "Clara Park",
-      image: "/elster.jpg",
-    },
-  });
-
-  const musselGym = await prisma.venue.create({
-    data: {
-      name: "Mussel Gym",
-      location: "Zschochersche Str",
-      image: "/mussel.jpg",
-    },
-  });
-
-  const beachClubCossi = await prisma.venue.create({
-    data: {
-      name: "Beach Club Cossi",
-      location: "Cospudener See",
-      image: "/cossi.jpg",
-    },
-  });
-
   // Tags
   const outdoorTag = await prisma.tag.create({ data: { name: "Outdoor" } });
   const indoorTag = await prisma.tag.create({ data: { name: "Indoor" } });
@@ -110,7 +129,7 @@ async function main() {
       isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: ["Dieter Bohlen", "Thomas Gottschalk"],
+      guests: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -126,6 +145,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
@@ -157,7 +177,11 @@ async function main() {
     data: {
       name: "Anzeigenhauptmeister",
       icon: "/parkverbot.png",
-      userId: user1.id,
+      users: {
+        connect: {
+          id: user2.id,
+        },
+      },
     },
   });
 
@@ -165,7 +189,6 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
-      userId: user2.id,
     },
   });
 
@@ -173,7 +196,6 @@ async function main() {
     data: {
       name: "Yoga-Meister",
       icon: "/yoga.svg",
-      userId: user3.id,
     },
   });
 
@@ -211,7 +233,7 @@ async function main() {
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
-main()
+await main()
   .catch((e) => {
     console.error(e);
   })

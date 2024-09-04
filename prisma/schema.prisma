@@ -30,8 +30,7 @@ model User {
 model Badge {
   name      String   @id @unique
   icon      String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  users     User[]
   createdAt DateTime @default(now())
 }
 
@@ -52,7 +51,7 @@ model Tournament {
   mode           String
   public         Boolean      @default(true)
   creatorId      String
-  creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id])
+  creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedTournaments")
   guests         String[]
   note           String
@@ -66,14 +65,14 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]
+  meets         Meet[]         @relation("Meet tags")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
 
 model Venue {
   id            String         @id @default(uuid())
-  name          String
+  name          String         @unique
   location      String
   image         String?
   tags          Tag[]
@@ -90,12 +89,12 @@ model Meet {
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
-  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id])
+  creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedMeets")
-  guests         String[]
+  guests         Int
   notes          String?
-  tags           Tag[]
-  Venue          Venue        @relation(fields: [venueId], references: [id])
+  tags           Tag[]        @relation("Meet tags")
+  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
@@ -121,7 +120,7 @@ enum VisibilityStatus {
 model Settings {
   friendsVisibility VisibilityStatus
   profileVisibility VisibilityStatus
-  user              User             @relation(fields: [userId], references: [id])
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String           @unique
 }
 
@@ -131,6 +130,6 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  Venue   Venue    @relation(fields: [venueId], references: [id])
+  venue   Venue    @relation(fields: [venueId], references: [id])
   venueId String
 }
