@@ -1,79 +1,14 @@
 // import { FaTableTennis } from "react-icons/fa";
 // import { InteractionBar } from "./InteractionBar";
 import MeetCard from "./MeetCard";
+// import { prisma } from "../lib/db";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 
-const userId = "123";
-
-const meets = [
-	{
-		venueId: "123456",
-		venueImage: "/signin-hero.jpg",
-		activityType: "Pingpong",
-		venueAddress: "Erich Zeigner Allee",
-		date: "28.08.2024",
-		time: "3:00 PM",
-		numberOfParticipants: 2,
-		creator: "234",
-	},
-
-	{
-		venueId: "123456",
-		venueImage: "/signin-hero.jpg",
-		activityType: "Pingpong",
-		venueAddress: "Erich Zeigner Allee",
-		date: "30:08.2024",
-		time: "3:00 PM",
-		numberOfParticipants: 2,
-		creator: "123",
-	},
-
-	{
-		venueId: "654321",
-		venueImage: "/cossi.jpg",
-		activityType: "Sweeming",
-		venueAddress: "Cossi - find it on google map, lazy ass!",
-		date: "30:08.2024",
-		time: "10:00 AM",
-		numberOfParticipants: 3,
-		creator: "123",
-	},
-
-	{
-		venueId: "654321",
-		venueImage: "/cossi.jpg",
-		activityType: "Sweeming",
-		venueAddress: "Cossi - find it on google map, lazy ass!",
-		date: "29:08.2024",
-		time: "11:00 AM",
-		numberOfParticipants: 10,
-		creator: "234",
-	},
-
-	{
-		venueId: "123456",
-		venueImage: "/signin-hero.jpg",
-		activityType: "Pingpong",
-		venueAddress: "Erich Zeigner Allee",
-		date: "31:08.2024",
-		time: "3:00 PM",
-		numberOfParticipants: 2,
-		creator: "234",
-	},
-
-	{
-		venueId: "987654",
-		venueImage:
-			"/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-		activityType: "Hide & Seek",
-		venueAddress: "Behind Bushes",
-		date: "01:09.2024",
-		time: "6:00 PM",
-		numberOfParticipants: 20,
-		creatorId: "234",
-	},
-];
+const userId = "aserifkt547eu323";
 
 type MeetCardProps = {
 	venueId: string;
@@ -86,7 +21,73 @@ type MeetCardProps = {
 	creator?: string;
 };
 
-export default function ShowMeets() {
+export default async function ShowMeets() {
+	async function getUserCreatedMeets() {
+		const meets = await prisma.meet.findMany({
+			where: { creatorId: userId },
+
+			select: {
+				venueId: true,
+				activityType: true,
+				date: true,
+				time: true,
+				guests: true,
+				participants: true,
+				Venue: true,
+				creatorId: true,
+			},
+		});
+		return meets;
+	}
+
+	const result = await getUserCreatedMeets();
+
+	const userCreatedMeets = result.map((meet) => ({
+		venueId: meet.Venue.id,
+		venueImage: meet.Venue.image,
+		activityType: meet.activityType.name,
+		venueAddress: meet.Venue.location,
+		date: meet.date.toISOString().split("T")[0],
+		time: meet.time,
+		numberOfParticipants: meet.participants.length + meet.guests,
+		creator: meet.creatorId,
+	}));
+
+	// console.log(formatedMeets);
+
+	async function getUserParticipatingMeets() {
+		const meets = await prisma.meet.findMany({
+			where: { participants: { some: { id: userId } } },
+			select: {
+				venueId: true,
+				activityType: true,
+				date: true,
+				time: true,
+				guests: true,
+				participants: true,
+				Venue: true,
+				creatorId: true,
+			},
+		});
+		// console.log(meets);
+		return meets;
+	}
+
+	const participatingMeets = await getUserParticipatingMeets();
+
+	const userParticipatingMeets = participatingMeets.map((meet) => ({
+		venueId: meet.Venue.id,
+		venueImage: meet.Venue.image,
+		activityType: meet.activityType.name,
+		venueAddress: meet.Venue.location,
+		date: meet.date.toISOString().split("T")[0],
+		time: meet.time,
+		numberOfParticipants: meet.participants.length + meet.guests,
+		creator: meet.creatorId,
+	}));
+
+	console.log(userParticipatingMeets);
+
 	const renderCard = (meet: MeetCardProps, key: number) => (
 		<MeetCard
 			key={key}
@@ -115,20 +116,20 @@ export default function ShowMeets() {
 		// </Card>
 	);
 
-	const allMeets = meets.map(renderCard);
+	// const allMeets = meets.map(renderCard);
 
-	const myOwnMeets = meets
-		.filter((item) => item.creator === userId)
-		.map(renderCard);
+	// const myOwnMeets = meets;
+	// .filter((item) => item.creator === userId)
+	// .map(renderCard);
 
-	const renderEmptyState = (message: string) => <p>{message}</p>;
+	// const renderEmptyState = (message: string) => <p>{message}</p>;
 
-	const allMeetsContent =
-		allMeets.length > 0 ? allMeets : renderEmptyState("No events found.");
-	const myOwnMeetsContent =
-		myOwnMeets.length > 0
-			? myOwnMeets
-			: renderEmptyState("No events is created by you.");
+	// const allMeetsContent =
+	// 	allMeets.length > 0 ? allMeets : renderEmptyState("No events found.");
+	// const myOwnMeetsContent =
+	// 	myOwnMeets.length > 0
+	// 		? myOwnMeets
+	// 		: renderEmptyState("No events is created by you.");
 
 	return (
 		<Tabs
@@ -143,13 +144,13 @@ export default function ShowMeets() {
 				value='myown-meets'
 				className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
 			>
-				{myOwnMeetsContent}
+				{/* {myOwnMeetsContent} */}
 			</TabsContent>
 			<TabsContent
 				value='all-meets'
 				className='px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]'
 			>
-				{allMeetsContent}
+				{/* {allMeetsContent} */}
 			</TabsContent>
 		</Tabs>
 	);
