@@ -11,8 +11,8 @@ async function main() {
       name: "Hans Meiser",
       settings: {
         create: {
-          friendsVisibility: "PRIVATE",
-          profileVisibility: "PRIVATE",
+          friendsVisibility: "Private",
+          profileVisibility: "Private",
         },
       },
     },
@@ -25,8 +25,8 @@ async function main() {
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "FRIENDS_ONLY",
-          profileVisibility: "FRIENDS_ONLY",
+          friendsVisibility: "FriendsOnly",
+          profileVisibility: "FriendsOnly",
         },
       },
     },
@@ -39,8 +39,8 @@ async function main() {
       name: "Conchita Wurst",
       settings: {
         create: {
-          friendsVisibility: "PUBLIC",
-          profileVisibility: "PUBLIC",
+          friendsVisibility: "Public",
+          profileVisibility: "Public",
         },
       },
     },

@@ -112,23 +112,17 @@ model ActivityType {
   venues                       Venue[]
 }
 
-enum FriendsVisibility {
-  PUBLIC
-  FRIENDS_ONLY
-  PRIVATE
-}
-
-enum ProfileVisibility {
-  PUBLIC
-  FRIENDS_ONLY
-  PRIVATE
+enum VisibilityStatus {
+  Public
+  FriendsOnly
+  Private
 }
 
 model Settings {
-  friendsVisibility FriendsVisibility
-  profileVisibility ProfileVisibility
-  user              User              @relation(fields: [userId], references: [id])
-  userId            String            @unique
+  friendsVisibility VisibilityStatus
+  profileVisibility VisibilityStatus
+  user              User             @relation(fields: [userId], references: [id])
+  userId            String           @unique
 }
 
 model Report {
