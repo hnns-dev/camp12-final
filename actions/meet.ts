@@ -81,16 +81,6 @@ export async function updateMeet(
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
-      creator: {
-        connect: {
-          id: values.creatorId,
-        },
-      },
-      Venue: {
-        connect: {
-          id: values.venueId,
-        },
-      },
       guests: values.guests,
       notes: values.notes,
     },
