@@ -65,6 +65,7 @@ export default function UpdateMeet({ meet }: Props) {
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
+      activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
     },
   });
 
