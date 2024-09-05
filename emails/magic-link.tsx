@@ -24,12 +24,12 @@ export const MagicLinkTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
         <p className="leading-8 text-md">
           Hey {name || "friend"},
           {isNewUser
-            ? "thank you for joining us! You're just a few steps away from your new hub for effortless sports meetups. Let's get you started with your account!"
-            : " we're glad to see you again! Click the link below to securely log in to your Bounce account."}
+            ? "we're excited to have you on board! You're just a few steps away from your new hub for effortless sports meetups. Let's get you set up!"
+            : "great to see you again! Use the link below to securely log in and jump right back in."}
         </p>
         <p className="text-xs text-zinc-500">
           —click the link below to securely log in{" "}
-          {isNewUser ? "and get started with Bounce" : "to your Bounce account"}
+          {isNewUser ? "and start using Bounce" : "and access your account"}
         </p>
         <div className="mt-10 flex justify-center">
           <Button
