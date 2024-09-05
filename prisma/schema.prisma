@@ -25,6 +25,7 @@ model User {
   friends                  User[]       @relation("Friends")
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
+  checkIns                 CheckIn[]
 }
 
 model Badge {
@@ -80,6 +81,7 @@ model Venue {
   meets         Meet[]
   activityTypes ActivityType[]
   reports       Report[]
+  checkIns      CheckIn[]
 }
 
 model Meet {
@@ -98,6 +100,16 @@ model Meet {
   venueId        String
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+}
+
+model CheckIn {
+  id       String   @id @default(uuid())
+  time     DateTime @default(now())
+  duration Float
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venueId  String
+  venue    Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
 }
 
 model ActivityType {
