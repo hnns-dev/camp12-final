@@ -40,7 +40,7 @@ import { z } from "zod";
 
 // Venue hardcoded
 
-const venue = "Clara-Zetkin-Park";
+const venue = "Mussel Gym";
 
 type Props = {
   meet?: Meet & { activityType: ActivityType };
@@ -51,6 +51,8 @@ type Props = {
 export default function UpdateMeet({ meet }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
+  // filling the value array with all selected tags
+  const [frontendTags, setFrontendTags] = useState<string[]>([]);
 
   // Setting up React Hook Form with Zod resolver for validation
   const form = useForm<z.infer<typeof meetSchema>>({
@@ -91,7 +93,7 @@ export default function UpdateMeet({ meet }: Props) {
     control: form.control,
     name: "time",
   });
-  const activityType = useWatch({
+  let activityType = useWatch({
     control: form.control,
     name: "activityType",
   });

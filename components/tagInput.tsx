@@ -1,8 +1,5 @@
 "use client";
 import * as React from "react";
-import { Check } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,15 +16,15 @@ import {
 } from "@/components/ui/popover";
 import { Tag } from "@prisma/client";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
 type Props = {
   suggestions: Tag[];
   value: string[];
-  setValue: React.Dispatch<React.SetStateAction<string[]>>;
+  onChange: React.Dispatch<SetStateAction<string[]>>;
 };
 
-export function TagInput({ suggestions, value, setValue }: Props) {
+export function TagInput({ suggestions, value, onChange: setValue }: Props) {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -53,6 +50,7 @@ export function TagInput({ suggestions, value, setValue }: Props) {
     setInputValue("");
     if (value.length >= 6) {
       alert("this is an alert bro");
+      setValue([...value]);
     }
   };
 
@@ -76,9 +74,9 @@ export function TagInput({ suggestions, value, setValue }: Props) {
                   className="flex justify-center items-center gap-1 px-2 rounded-full border bg-slate-200 text-xs font-medium"
                 >
                   {value.find((suggestion) => suggestion === val)}
-                  <button onClick={() => handleRemoveTag(val)}>
+                  <span onClick={() => handleRemoveTag(val)}>
                     <X className="w-3 aspect-square" />
-                  </button>
+                  </span>
                 </div>
               ))
             : "Select Tag"}
