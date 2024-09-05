@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import Search from "@/components/Search";
 import MapAndDrawer from "@/components/MapAndDrawer";
-import { getVenues } from "./api/data-acces/venues";
+import { getVenues } from "./api/data-acces/get-venues";
 import { FilterDrawer } from "@/components/FilterDrawer";
 import { filterVenues } from "@/lib/utils/filter-venues";
 
