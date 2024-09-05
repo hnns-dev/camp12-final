@@ -31,7 +31,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { meetSchema } from "@/lib/validation/meet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Meet } from "@prisma/client";
+import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -43,7 +43,7 @@ import { z } from "zod";
 const venue = "Clara-Zetkin-Park";
 
 type Props = {
-  meet?: Meet;
+  meet?: Meet & { activityType: ActivityType };
 };
 
 // Defining a schema for Tournament Creation
@@ -56,6 +56,7 @@ export default function UpdateMeet({ meet }: Props) {
   const form = useForm<z.infer<typeof meetSchema>>({
     resolver: zodResolver(meetSchema),
     defaultValues: {
+      activityType: meet?.activityType ? meet.activityType.name : undefined,
       duration: meet?.duration ? meet.duration : 0.5,
       public: meet?.isPublic ? meet.isPublic : false,
       competitive: meet?.isCompetitive ? meet.isCompetitive : false,
@@ -124,33 +125,37 @@ export default function UpdateMeet({ meet }: Props) {
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
               <span className="pb-6"> @ {venue}</span>
               {/* Activity Type */}
-              <FormField
-                control={form.control}
-                name="activityType"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Username</FormLabel> */}
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Activity Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="tennis">Tennis</SelectItem>
-                          <SelectItem value="Basketball">Basketball</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+              {!meet ? (
+                <FormField
+                  control={form.control}
+                  name="activityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      {/* <FormLabel>Username</FormLabel> */}
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Activity Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="tennis">Tennis</SelectItem>
+                            <SelectItem value="Basketball">
+                              Basketball
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
               {/* Level */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="mode"
                 render={({ field }) => (
@@ -176,7 +181,7 @@ export default function UpdateMeet({ meet }: Props) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* Date and Time */}
               <div className="flex gap-2">
                 {/* Date */}

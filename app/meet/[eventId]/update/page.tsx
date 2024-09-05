@@ -10,6 +10,7 @@ export default async function UpdateMeetPage({
 
   const meet = await prisma.meet.findUnique({
     where: { id: params.eventId },
+    include: { activityType: true },
   });
   console.log(meet);
 

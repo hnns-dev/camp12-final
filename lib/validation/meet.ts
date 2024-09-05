@@ -1,12 +1,10 @@
 import { z } from "zod";
 
 export const meetSchema = z.object({
-  activityType: z.enum(["Tennis", "Basketball"], {
-    required_error: "Choose a Sport",
-  }),
-  mode: z.enum(["softie", "casual", "competetive"], {
-    required_error: "Choose a Mode",
-  }),
+  activityType: z.string().min(1, "Choose a Sport"),
+  // mode: z.enum(["softie", "casual", "competetive"], {
+  //   required_error: "Choose a Mode",
+  // }),
   // tournamentType: z.enum(["single", "round"], {
   //   required_error: "Choose a tournament type",
   // }),
