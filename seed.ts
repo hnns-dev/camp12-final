@@ -134,6 +134,8 @@ async function main() {
 			tags: { connect: [{ name: "Outdoor" }] },
 			venueId: weisseElster.id,
 			activityTypeId: basketball.id,
+			isCompetitive: false,
+			isRecurring: false,
 		},
 	});
 
@@ -150,6 +152,8 @@ async function main() {
 			tags: { connect: [{ name: "Outdoor" }] },
 			venueId: beachClubCossi.id,
 			activityTypeId: tennis.id,
+			isCompetitive: false,
+			isRecurring: false,
 		},
 	});
 
@@ -166,6 +170,8 @@ async function main() {
 			tags: { connect: [{ name: "Outdoor" }] },
 			venueId: beachClubCossi.id,
 			activityTypeId: tennis.id,
+			isCompetitive: false,
+			isRecurring: false,
 		},
 	});
 	await prisma.meet.create({
@@ -181,6 +187,8 @@ async function main() {
 			tags: { connect: [{ name: "Outdoor" }] },
 			venueId: weisseElster.id,
 			activityTypeId: basketball.id,
+			isCompetitive: false,
+			isRecurring: false,
 		},
 	});
 
@@ -197,6 +205,8 @@ async function main() {
 			tags: { connect: [{ name: "Outdoor" }] },
 			venueId: musselGym.id,
 			activityTypeId: tennis.id,
+			isCompetitive: false,
+			isRecurring: false,
 		},
 	});
 
