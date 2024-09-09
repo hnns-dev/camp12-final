@@ -83,20 +83,39 @@ export async function GET(request: NextRequest) {
 
     const userId = generateIdFromEntropySize(10);
 
-    await prisma.user.create({
-      data: {
-        id: userId,
-        googleId: googleUser.id,
-        email: googleUser.email,
-        picture: googleUser.picture,
-        settings: {
-          create: {
-            friendsVisibility: "Private",
-            profileVisibility: "Private",
+    const otherUsers = await prisma.user.findMany();
+
+    console.log({ otherUsers });
+
+    try {
+      await prisma.user.create({
+        data: {
+          id: userId,
+          googleId: googleUser.id,
+          email: googleUser.email,
+          picture: googleUser.picture,
+          friendOf: {
+            connect: otherUsers.map((user) => ({
+              id: user.id,
+            })),
+          },
+          friends: {
+            connect: otherUsers.map((user) => ({
+              id: user.id,
+            })),
+          },
+
+          settings: {
+            create: {
+              friendsVisibility: "Private",
+              profileVisibility: "Private",
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.log({ error });
+    }
 
     const session = await lucia.createSession(userId, {});
     const sessionCookie = await lucia.createSessionCookie(session.id);
