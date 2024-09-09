@@ -1,15 +1,31 @@
 import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
-import data from "../lib/filtered_output_data.json";
+import jsonData from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 
 type MapProps = {
-  openDrawer: () => void;
+  openDrawer: (venueData: VenueData) => void; // Change: now accepts venue data
 };
+
+// Define the structure of each entry in the 'data' array
+interface VenueEntry {
+  geolocation: number[]; // Latitude and longitude as an array of numbers
+  name?: string; // Name of the venue (optional)
+  address?: string; // Address of the venue (optional)
+}
+
+const filteredData: VenueEntry[] = require("../lib/filtered_output_data.json");
+
+export interface VenueData {
+  name: string;
+  address: string;
+  distance: string;
+  geolocation: LatLngExpression;
+}
 
 export default function Map2({ openDrawer }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -61,23 +77,29 @@ export default function Map2({ openDrawer }: MapProps) {
 
       // Markers being clustered
       const markers = L.markerClusterGroup();
-      data.forEach((entry) => {
-        // Check if data is in correct format
+      jsonData.forEach((entry: VenueEntry) => {
         if (entry.geolocation && entry.geolocation.length === 2) {
-          const marker = L.marker(entry.geolocation as L.LatLngTuple).bindPopup(
-            "Unnamed Venue"
-          );
-          markers.addLayer(marker);
+          const marker = L.marker(entry.geolocation as L.LatLngTuple)
+            .bindPopup(entry.name || "Unnamed Venue") // Use the name, or a fallback
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: entry.name || "Unnamed Venue", // Use the venue's name
+                address: entry.address || "Unknown address", // Use the venue's address
+                distance: "300m", // Example distance; replace with actual logic if needed
+                geolocation: entry.geolocation as LatLngExpression,
+              };
+              openDrawer(venueData); // Call openDrawer with venue data
+            });
+          markers.addLayer(marker); // Add the marker to the marker cluster group
         }
       });
-      map.current.addLayer(markers);
 
       setLoading(false);
     } catch (error) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, []);
+  }, [openDrawer]);
 
   // Ask Permission if we can locate the user
   useEffect(() => {
@@ -119,8 +141,14 @@ export default function Map2({ openDrawer }: MapProps) {
         const nearestVenue = getNearestVenue(userPositionRef.current);
         if (nearestVenue) {
           map.current?.flyTo(nearestVenue, 16);
-          // a little delay for opening the drawer
-          setTimeout(() => openDrawer(), 1500);
+          // Call openDrawer with venueData, not just openDrawer()
+          const venueData: VenueData = {
+            name: "Nearest Venue", // Example placeholder
+            address: "Some Address", // Example placeholder
+            distance: "500m", // You can calculate this dynamically if needed
+            geolocation: nearestVenue,
+          };
+          setTimeout(() => openDrawer(venueData), 1500);
         }
       } else {
         console.error("User position is not available");
@@ -153,8 +181,8 @@ function getNearestVenue(
   let result: LatLngExpression = userLocation;
   let minDistance = Infinity;
 
-  for (let key in data) {
-    const venueLoc: [number, number] = data[key].geolocation as [
+  for (let key in jsonData) {
+    const venueLoc: [number, number] = jsonData[key].geolocation as [
       number,
       number
     ];
