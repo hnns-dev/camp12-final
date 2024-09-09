@@ -5,6 +5,7 @@ import data from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
+import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 
 type MapProps = {
   openDrawer: () => void;
