@@ -1,4 +1,5 @@
 import HeaderNav from "@/components/HeaderNav";
+import MeetCard from "@/components/MeetCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -27,6 +28,14 @@ export default async function ProfilePage({
     include: {
       badges: true,
       friends: true,
+      meetsCreated: {
+        include: {
+          venue: true,
+          activityType: true,
+          participants: true,
+          creator: true,
+        },
+      },
     },
   });
 
@@ -114,27 +123,16 @@ export default async function ProfilePage({
         </Button>
 
         <Separator className="my-5" />
-        <div className="flex items-center w-full justify-between px-5">
+        <div className="flex items-center w-full justify-between px-5 mb-4">
           <p className="font-semibold">Sessions</p>
           <Button className="text-xs underline" variant="link">
             view all
           </Button>
         </div>
-        <div className="grid grid-cols-5 self-stretch p-4 gap-4 m-5 shadow-md">
-          <img
-            className="max-h-full object-cover col-span-2 rounded-md"
-            src="signin-hero.jpg"
-            alt="Person sitting on a ping pong table"
-          />
-          <div className="flex flex-col justify-center col-span-3 gap-1">
-            <p className="font-semibold text-sm">Ping Pong</p>
-            <p className="text-sm">Erich-Zeigner-Allee 64b</p>
-            <div className="flex flex-row gap-2 items-center">
-              <CalendarDaysIcon className="text-muted-foreground size-4" />
-
-              <p className="text-xs text-muted-foreground">August 24th 2024</p>
-            </div>
-          </div>
+        <div className="space-y-3 px-5">
+          {user.meetsCreated.map((meet) => (
+            <MeetCard key={meet.id} meet={meet} />
+          ))}
         </div>
       </div>
     </div>
