@@ -25,6 +25,7 @@ model User {
   friends                  User[]       @relation("Friends")
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
+  checkIns                 CheckIn[]
 }
 
 model Badge {
@@ -75,17 +76,21 @@ model Venue {
   name          String         @unique
   location      String
   image         String?
+  address       String?        // New field for address
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
   activityTypes ActivityType[]
   reports       Report[]
+  checkIns      CheckIn[]
 }
 
 model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
+  isCompetitive  Boolean
+  isRecurring    Boolean
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
@@ -94,10 +99,23 @@ model Meet {
   guests         Int
   notes          String?
   tags           Tag[]        @relation("Meet tags")
-  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String
+  venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venueId        String?
+  address        String?      // New field for storing address if no venue is selected
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+}
+
+model CheckIn {
+  id             String       @id @default(uuid())
+  activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+  activityTypeId String
+  time           DateTime     @default(now())
+  duration       Float
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venueId        String
+  venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
 }
 
 model ActivityType {
@@ -109,6 +127,7 @@ model ActivityType {
   meets                        Meet[]
   tags                         Tag[]
   venues                       Venue[]
+  checkIns                     CheckIn[]
 }
 
 enum VisibilityStatus {
