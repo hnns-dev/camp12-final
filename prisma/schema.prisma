@@ -94,8 +94,10 @@ model Meet {
   guests         Int
   notes          String?
   tags           Tag[]
-  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String
+  Venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venueId        String?
+  address        String?
+  location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
