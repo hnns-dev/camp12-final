@@ -5,6 +5,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "target": "ES2020",
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -12,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "plugins": [
       {
         "name": "next"
@@ -21,6 +23,15 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/parser.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "lib/parser.js",
+    "src/**/*",
+    "types/**/*",
+    "maptiler-leaflet-maptilersdk.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
