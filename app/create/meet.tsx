@@ -1,11 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { useForm, useWatch } from "react-hook-form";
-import { boolean, string, z } from "zod";
-import { cn } from "@/lib/utils";
+import { createMeet, updateMeet } from "@/actions/meet";
+import GroupSizeSelect from "@/components/group-size-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -21,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -29,90 +25,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-import React from "react";
-
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import GroupSizeSelect from "@/components/group-size-select";
-import { createMeet, updateTags } from "@/actions/settings";
-import { Tag } from "@prisma/client";
-import { TagInput } from "@/components/tagInput";
+import { cn } from "@/lib/utils";
+import { meetSchema } from "@/lib/validation/meet";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ActivityType, Meet } from "@prisma/client";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
 // Venue hardcoded
 
 const venue = "Mussel Gym";
 
 type Props = {
-  isPublic: boolean;
-  creatorId: string;
-  guests: number;
-  notes?: string;
-  venueId: string;
-  tagSuggestions: Tag[];
-  tags: Tag[];
-  tag: Tag;
+  meet?: Meet & { activityType: ActivityType };
 };
 
 // Defining a schema for Tournament Creation
-const formSchema = z.object({
-  activityType: z.enum(["Tennis", "Basketball"], {
-    required_error: "Choose a Sport",
-  }),
-  mode: z.enum(["softie", "casual", "competetive"], {
-    required_error: "Choose a Mode",
-  }),
-  // tournamentType: z.enum(["single", "round"], {
-  //   required_error: "Choose a tournament type",
-  // }),
-  public: z.boolean(),
-  date: z.date({ required_error: "Date is required" }),
-  time: z.string({ required_error: "Time is required" }),
-  duration: z.number(),
-  participants: z.coerce
-    .number({
-      invalid_type_error:
-        "Please enter a number of people, you'd like to play with",
-    })
-    .positive({ message: "this👏is👏too👏low" }),
-  competetive: z.boolean(),
-  recurring: z.boolean(),
-  equipment: z.string().trim().optional(),
-  description: z.string().trim().optional(),
-  value: z.array(z.string()),
-});
 
-export default function UpdateMeet({
-  isPublic,
-  tagSuggestions,
-  creatorId,
-  guests,
-  notes,
-  venueId,
-  tags,
-  tag,
-}: Props) {
+export default function UpdateMeet({ meet }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
   // filling the value array with all selected tags
   const [frontendTags, setFrontendTags] = useState<string[]>([]);
 
   // Setting up React Hook Form with Zod resolver for validation
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof meetSchema>>({
+    resolver: zodResolver(meetSchema),
     defaultValues: {
-      duration: 0.5,
-      public: false,
-      competetive: false,
-      recurring: false,
-
-      date: new Date(),
-      time: "12:00",
-      description: "",
-      equipment: "",
-      value: [],
+      activityType: meet?.activityType ? meet.activityType.name : undefined,
+      duration: meet?.duration ? meet.duration : 0.5,
+      public: meet?.isPublic ? meet.isPublic : false,
+      competitive: meet?.isCompetitive ? meet.isCompetitive : false,
+      recurring: meet?.isRecurring ? meet.isRecurring : false,
+      participants: meet?.guests ? meet.guests.toString() : "0",
+      date: meet?.date ? meet.date : new Date(),
+      time: meet?.time ? meet.time : "12:00",
+      description: meet?.notes ? meet.notes : "",
+      activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
     },
   });
 
@@ -122,6 +77,7 @@ export default function UpdateMeet({
     name: "duration",
     defaultValue: 0.5,
   });
+
   const privacy = useWatch({
     control: form.control,
     name: "public",
@@ -146,66 +102,63 @@ export default function UpdateMeet({
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
-    const formattedValue = frontendTags.map((tag) => ({ name: tag }));
-    const names = frontendTags;
-    await updateTags({ names, tag });
-    // Change the first letter of activity type to uppercase so it can be found in the db
-    activityType = activityType.charAt(0).toUpperCase() + activityType.slice(1);
-    await createMeet({
-      date,
-      time,
-      duration,
-      isPublic,
-      creatorId,
-      guests,
-      notes,
-      venueId,
-      activityType,
-      tags: formattedValue,
-    });
 
-    console.log("finished submitting");
+    if (meet && meet.id) {
+      // If meet exists and has an id, update the existing meet
+      await updateMeet(meet.id, values);
+      console.log("finished updating");
+    } else {
+      // If meet doesn't exist or doesn't have an id, create a new meet
+      await createMeet(values);
+      console.log("finished creating");
+    }
   };
 
   return (
     <>
       <Form {...form}>
-        <form className="space-y-8 w-full my-6 flex flex-col items-center">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full my-6 flex flex-col items-center"
+        >
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
               <span className="pb-6"> @ {venue}</span>
               {/* Activity Type */}
-              <FormField
-                control={form.control}
-                name="activityType"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Username</FormLabel> */}
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Activity Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="tennis">Tennis</SelectItem>
-                          <SelectItem value="Basketball">Basketball</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+              {!meet ? (
+                <FormField
+                  control={form.control}
+                  name="activityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      {/* <FormLabel>Username</FormLabel> */}
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Activity Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="tennis">Tennis</SelectItem>
+                            <SelectItem value="Basketball">
+                              Basketball
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
               {/* Level */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="mode"
                 render={({ field }) => (
@@ -221,8 +174,8 @@ export default function UpdateMeet({
                         <SelectContent>
                           <SelectItem value="softie">Softie</SelectItem>
                           <SelectItem value="casual">Casual</SelectItem>
-                          <SelectItem value="competetive">
-                            Competetive
+                          <SelectItem value="competitive">
+                            Competitive
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -231,7 +184,7 @@ export default function UpdateMeet({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* Date and Time */}
               <div className="flex gap-2">
                 {/* Date */}
@@ -362,27 +315,29 @@ export default function UpdateMeet({
                 )}
               />
               {/* Participants */}
-              <FormItem>
-                <GroupSizeSelect groupSizes={[2, 4, 6]} />
-              </FormItem>
-              {/* Tags */}
               <FormField
                 control={form.control}
-                name="value"
-                render={() => (
-                  <FormControl>
-                    <TagInput
-                      suggestions={tagSuggestions}
-                      value={frontendTags}
-                      onChange={setFrontendTags}
+                name="participants"
+                render={({ field }) => (
+                  <FormItem>
+                    <GroupSizeSelect
+                      onChange={field.onChange}
+                      value={field.value}
+                      groupSizes={["0", "2", "4", "6"]}
                     />
-                  </FormControl>
+                  </FormItem>
                 )}
               ></FormField>
-              {/* Competetive */}
+              {/* Tags */}
+              {/* <TagInput
+                suggestions={tagSuggestions}
+                value={value}
+                setValue={setValue}
+              /> */}
+              {/* Competitive */}
               <FormField
                 control={form.control}
-                name="competetive"
+                name="competitive"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -398,7 +353,7 @@ export default function UpdateMeet({
                               : "text-muted-foreground"
                           )}
                         >
-                          Competetive
+                          Competitive
                         </span>
                       </div>
                     </FormControl>
@@ -471,7 +426,7 @@ export default function UpdateMeet({
               />
             </div>
           </div>
-          <Button onClick={handleSubmit} type="submit" className="w-2/3">
+          <Button type="submit" className="w-2/3">
             Create
           </Button>
         </form>
