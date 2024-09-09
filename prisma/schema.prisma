@@ -89,8 +89,8 @@ model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean
-  isRecurring    Boolean
+  isCompetitive  Boolean    @default(false)
+  isRecurring    Boolean    @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
