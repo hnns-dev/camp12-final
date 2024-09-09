@@ -76,6 +76,7 @@ model Venue {
   name          String         @unique
   location      String
   image         String?
+  address       String?        // New field for address
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -98,8 +99,9 @@ model Meet {
   guests         Int
   notes          String?
   tags           Tag[]        @relation("Meet tags")
-  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String
+  venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venueId        String?
+  address        String?      // New field for storing address if no venue is selected
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
 }
