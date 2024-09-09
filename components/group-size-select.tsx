@@ -7,18 +7,20 @@ import {
 } from "@/components/ui/select";
 
 type GroupSizeSelectProps = {
-  groupSizes: number[];
-  onChange?: (value: string) => void;
+  groupSizes: string[];
+  onChange: (value: string) => void;
+  value: string;
   placeholder?: string;
 };
 
 export default function GroupSizeSelect({
+  value,
   groupSizes,
   onChange,
   placeholder = "Select group size",
 }: GroupSizeSelectProps) {
   return (
-    <Select onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="min-w-full">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
