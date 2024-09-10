@@ -5,8 +5,12 @@ import { Input } from "@/components/ui/input";
 
 export default function Search() {
   const [isOpen, setIsOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch async () => {
+    //search logic
+  }
 
   const toggleSearch = () => {
     setIsOpen((prev) => !prev);
@@ -43,12 +47,15 @@ export default function Search() {
     >
       {isOpen ? (
         <div className="flex items-center w-full p-2">
-          <Input
-            ref={inputRef}
-            type="search"
-            placeholder="Search..."
-            className="flex-grow border-none bg-white focus:outline-none"
-          />
+          <Input 
+        ref={inputRef}
+        type="search" 
+        placeholder="Search..." 
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+        className="flex-grow border-none bg-transparent focus:outline-none"
+      />
           <LuSearch
             className="size-6 ml-2 cursor-pointer flex-shrink-0"
             onClick={toggleSearch}
@@ -56,7 +63,7 @@ export default function Search() {
         </div>
       ) : (
         <div
-          className="flex w-11 h-11 rounded-xl p-3 bg-white/80 justify-center items-center cursor-pointer"
+          className="flex w-11 h-11 rounded-xl p-3 bg-white justify-center items-center cursor-pointer"
           onClick={toggleSearch}
         >
           <LuSearch className="size-8" />
