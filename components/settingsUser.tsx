@@ -60,8 +60,8 @@ export default function SettingsUser({ userId, settings }: Props) {
               type="radio"
               name="friendsList"
               value="Only friends"
-              checked={friendsListSetting === "Friends_Only"}
-              onChange={() => setFriendsListSetting("Friends_Only")}
+              checked={friendsListSetting === "FriendsOnly"}
+              onChange={() => setFriendsListSetting("FriendsOnly")}
               className="mr-2"
             />
             Only friends
@@ -100,8 +100,8 @@ export default function SettingsUser({ userId, settings }: Props) {
               type="radio"
               name="profile"
               value="Only friends"
-              checked={profileSetting === "Friends_Only"}
-              onChange={() => setProfileSetting("Friends_Only")}
+              checked={profileSetting === "FriendsOnly"}
+              onChange={() => setProfileSetting("FriendsOnly")}
               className="mr-2"
             />
             Only friends
