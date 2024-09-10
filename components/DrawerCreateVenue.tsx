@@ -32,7 +32,9 @@ export function DrawerCreateVenue() {
 					<Link href='/create'>
 						<Button className='h-11 w-32 items-center py-6'>Create Meet</Button>
 					</Link>
-					<Button className='h-11 w-32 items-center py-6'>Add Venue</Button>
+					<Link href='/activity-type'>
+						<Button className='h-11 w-32 items-center py-6'>Add Venue</Button>
+					</Link>
 				</div>
 			</DrawerContent>
 		</Drawer>
