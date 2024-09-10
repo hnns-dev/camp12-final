@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { FriendCard } from "@/components/friend-card";
-import { fiendFriends } from "@/actions/friends";
+import { findFriends } from "@/actions/friends";
 import { validateRequest } from "@/lib/auth";
 
 export default async function FriendsListPage({
@@ -10,7 +10,7 @@ export default async function FriendsListPage({
   params: { userId: string };
 }) {
   const { user } = await validateRequest();
-  const friends = await fiendFriends(params.userId);
+  const friends = await findFriends(params.userId);
 
   if (!friends?.length) return <p>No friends</p>;
 

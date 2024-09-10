@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "./lib/db";
+import { generateIdFromEntropySize } from "lucia";
 
 async function main() {
   // Fetch venue IDs dynamically
@@ -8,6 +7,7 @@ async function main() {
   console.log("Cleaning Database...");
 
   await prisma.user.deleteMany();
+  await prisma.venue.deleteMany();
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
@@ -105,7 +105,7 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user1@example.com",
       name: "Hans Meiser",
       settings: {
@@ -119,7 +119,7 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu323",
+      id: generateIdFromEntropySize(10),
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
@@ -133,7 +133,7 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
-      id: "as222fkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user3@example.com",
       name: "Conchita Wurst",
       settings: {
@@ -326,7 +326,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,

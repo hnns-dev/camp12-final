@@ -200,16 +200,9 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
     // map.current.on("click", handleClick);
   });
 
-  // After loading, recalculate size of map
-  useEffect(() => {
-    if (map.current) {
-      map.current.invalidateSize();
-    }
-  }, [loading]);
-
   return (
-    <div className="h-screen w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute " />
+    <div className="h-screen-without-bar w-screen relative">
+      <div ref={mapContainer} className="h-full w-full absolute" />
       {loading && <div>Loading...</div>}
     </div>
   );

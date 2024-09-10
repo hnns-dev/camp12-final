@@ -1,4 +1,6 @@
 import Navbar from "../components/Navbar";
+import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Search from "@/components/Search";
 import MapAndDrawer from "@/components/MapAndDrawer";
 import { getVenues } from "./api/data-acces/get-venues";
@@ -28,11 +30,12 @@ export default async function Home({
     activity: (searchParams.activity as string) ?? "",
     status: (searchParams.status as string) ?? "",
     competitive: searchParams.competitive as "yes" | "no" | "both",
-  }
-  
+  };
+
   const user = {
     id: "aserifkt547eu323",
   };
+
   const myMeets = await getUserCreatedMeets(user?.id);
   const participatingMeets = await getUserParticipatingMeets(user?.id);
 
