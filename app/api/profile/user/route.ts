@@ -1,5 +1,7 @@
+"use server";
+
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/db"; // Importiere deine Prisma-Instanz
+import { prisma } from "../../../../lib/db";
 
 export async function GET(
   req: Request,
@@ -8,10 +10,9 @@ export async function GET(
   try {
     const userId = params.userId;
 
-    // Abfrage des Benutzers zusammen mit den Einstellungen
     const profile = await prisma.user.findUnique({
       where: { id: userId },
-      include: { settings: true }, // Einschließen der verknüpften Einstellungen
+      include: { settings: true },
     });
 
     if (!profile) {
@@ -39,7 +40,6 @@ export async function PUT(
     const userId = params.userId;
     const body = await req.json();
 
-    // Aktualisiere den Benutzer und dessen Einstellungen
     const updatedProfile = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -51,7 +51,7 @@ export async function PUT(
           },
         },
       },
-      include: { settings: true }, // Einschließen der aktualisierten Einstellungen
+      include: { settings: true },
     });
 
     return NextResponse.json(updatedProfile);
