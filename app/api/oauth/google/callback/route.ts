@@ -1,6 +1,7 @@
 import { lucia } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { google } from "@/lib/oauth";
+import { getRandomElement } from "@/lib/utils/helpers";
 import { OAuth2RequestError } from "arctic";
 import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
@@ -83,20 +84,76 @@ export async function GET(request: NextRequest) {
 
     const userId = generateIdFromEntropySize(10);
 
-    await prisma.user.create({
-      data: {
-        id: userId,
-        googleId: googleUser.id,
-        email: googleUser.email,
-        picture: googleUser.picture,
-        settings: {
-          create: {
-            friendsVisibility: "Private",
-            profileVisibility: "Private",
+    const otherUsers = await prisma.user.findMany();
+
+    console.log({ otherUsers });
+
+    try {
+      await prisma.user.create({
+        data: {
+          id: userId,
+          googleId: googleUser.id,
+          email: googleUser.email,
+          picture: googleUser.picture,
+          friendOf: {
+            connect: otherUsers.map((user) => ({
+              id: user.id,
+            })),
+          },
+          friends: {
+            connect: otherUsers.map((user) => ({
+              id: user.id,
+            })),
+          },
+
+          settings: {
+            create: {
+              friendsVisibility: "Private",
+              profileVisibility: "Private",
+            },
           },
         },
-      },
-    });
+      });
+
+      const activityTypes = await prisma.activityType.findMany();
+
+      const meets = await prisma.meet.createMany({
+        data: [
+          {
+            activityTypeId: getRandomElement(activityTypes)?.id || "",
+            creatorId: userId,
+            date: new Date(),
+            time: "18:00",
+            duration: 2,
+            isCompetitive: false,
+            isRecurring: false,
+            guests: 8,
+          },
+          {
+            activityTypeId: getRandomElement(activityTypes)?.id || "",
+            creatorId: userId,
+            date: new Date(),
+            time: "20:00",
+            duration: 2,
+            isCompetitive: false,
+            isRecurring: false,
+            guests: 4,
+          },
+          {
+            activityTypeId: getRandomElement(activityTypes)?.id || "",
+            creatorId: userId,
+            date: new Date(),
+            time: "16:00",
+            duration: 2,
+            isCompetitive: true,
+            isRecurring: false,
+            guests: 2,
+          },
+        ],
+      });
+    } catch (error) {
+      console.log({ error });
+    }
 
     const session = await lucia.createSession(userId, {});
     const sessionCookie = await lucia.createSessionCookie(session.id);

@@ -2,6 +2,7 @@
 
 import { UserId } from "lucia";
 import { prisma } from "../lib/db";
+import { revalidatePath } from "next/cache";
 
 /**
  * Add two users as friends.
@@ -40,6 +41,8 @@ export async function removeFriend(
       },
     });
 
+    revalidatePath(`/profile/${userIdOne}/friends`);
+
     // If successful, return a success message
     return {
       success: true,
@@ -63,34 +66,13 @@ type FriendProps = {
   userId: string;
 };
 
-export async function fiendFriends({ userId }: FriendProps) {
-  const allFriends = await prisma.user.findMany({
-    where: {
-      OR: [
-        {
-          friends: {
-            some: { id: userId },
-          },
-        },
-        {
-          friendOf: {
-            some: { id: userId },
-          },
-        },
-      ],
-    },
+export async function fiendFriends(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
     select: {
-      id: true,
-      name: true,
-      email: true,
-      picture: true,
+      friends: true,
     },
   });
 
-  return allFriends.map((friend) => ({
-    id: friend.id,
-    name: friend.name,
-    email: friend.email,
-    picture: friend.picture,
-  }));
+  return user?.friends;
 }
