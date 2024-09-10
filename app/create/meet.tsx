@@ -116,6 +116,9 @@ export default function UpdateMeet({ meet }: Props) {
     }
   };
 
+  // participant number from 1-15
+  const groupSizes = Array.from({ length: 15 }, (_, i) => i + 1);
+
   return (
     <>
       <Form {...form}>
@@ -323,7 +326,7 @@ export default function UpdateMeet({ meet }: Props) {
                     <GroupSizeSelect
                       onChange={field.onChange}
                       value={field.value}
-                      groupSizes={["0", "2", "4", "6"]}
+                      groupSizes={groupSizes.map(String)}
                     />
                   </FormItem>
                 )}
