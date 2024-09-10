@@ -3,6 +3,7 @@ import MeetCard from "@/components/MeetCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { validateRequest } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { CalendarDaysIcon } from "lucide-react";
 import Link from "next/link";
@@ -31,13 +32,22 @@ export default async function ProfilePage({
     },
   });
 
+  const { user: loggedInUser } = await validateRequest();
+
+  function isOwnProfile() {
+    return loggedInUser?.id === user?.id;
+  }
+
   if (!user) return <p>User not found</p>;
 
   const FRIENDS_SHOWN = 8;
 
   return (
     <div>
-      <HeaderNav />
+      <div className={isOwnProfile() ? "" : "hidden"}>
+        <HeaderNav />
+      </div>
+
       <div className="flex flex-col items-center pt-5">
         <Avatar className="h-40 w-40">
           <AvatarImage
