@@ -99,7 +99,7 @@ export const createMeet = async (values: z.infer<typeof meetSchema>) => {
           id: creatorId,
         },
       },
-      Venue: {
+      venue: {
         connect: {
           id: venueId,
         },

@@ -3,13 +3,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  // const HandleSearch;
+  const onSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    
+    console.log("Search submitted with query:", searchQuery);
+
+    const encodedSearchQuery = encodeURI(searchQuery);
+    router.push(`/search?q=${encodedSearchQuery}`);
+  };
 
   const toggleSearch = () => {
     setIsOpen((prev) => !prev);
@@ -45,24 +55,25 @@ export default function Search() {
       }`}
     >
       {isOpen ? (
-        <div className="flex items-center w-full p-2">
+        <form onSubmit={onSearch} className="flex items-center w-full p-2">
           <Input
             ref={inputRef}
             type="search"
             placeholder="Search..."
             className="flex-grow border-none bg-transparent focus:outline-none"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
           />
-          <LuSearch
-            className="size-6 ml-2 cursor-pointer flex-shrink-0"
-            onClick={toggleSearch}
-          />
-        </div>
+          <button type="submit">
+            <LuSearch className="size-6 ml-2 cursor-pointer flex-shrink-0" />
+          </button>
+        </form>
       ) : (
         <div
           className="flex w-11 h-11 rounded-xl p-3 bg-white justify-center items-center cursor-pointer"
           onClick={toggleSearch}
         >
-          <LuSearch className="size-8" />
+          <LuSearch className="size-6" />
         </div>
       )}
     </div>
