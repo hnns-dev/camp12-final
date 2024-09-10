@@ -211,6 +211,85 @@ async function main() {
     },
   });
 
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-20"),
+      time: "10:00",
+      duration: 1,
+      isPublic: true,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
+      guests: 3,
+      notes: "spontaneous tennis",
+      tags: { connect: [{ name: "Outdoor" }] },
+      activityTypeId: tennis.id,
+      location: [51.328261109658, 12.361901700496],
+    },
+  });
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-08-20"),
+      time: "20:00",
+      duration: 1,
+      isPublic: true,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user1.id }] },
+      guests: 1,
+      notes: "yogimogi2",
+      tags: { connect: [{ name: "Outdoor" }] },
+      activityTypeId: yoga.id,
+      location: [51.312818371408, 12.379196584224],
+    },
+  });
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-20"),
+      time: "20:00",
+      duration: 1,
+      isPublic: true,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user1.id }] },
+      guests: 1,
+      notes: "free&competitiveboule",
+      tags: { connect: [{ name: "Outdoor" }] },
+      activityTypeId: boule.id,
+      location: [51.333365079861, 12.402499616146],
+      competitive: true,
+    },
+  });
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-21"),
+      time: "11:00",
+      duration: 4,
+      isPublic: true,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
+      guests: 5,
+      notes: "ballintomorrow",
+      tags: { connect: [{ name: "Outdoor" }] },
+      activityTypeId: basketball.id,
+      location: [51.298389433094, 12.3746411875],
+      competitive: false,
+    },
+  });
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-20"),
+      time: "11:00",
+      duration: 4,
+      isPublic: true,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
+      guests: 5,
+      notes: "ballineasily",
+      tags: { connect: [{ name: "Outdoor" }] },
+      activityTypeId: basketball.id,
+      location: [51.333132141369, 12.335911095141],
+      competitive: false,
+    },
+  });
+
   await prisma.tournament.create({
     data: {
       date: new Date("2024-10-01"),

@@ -4,6 +4,8 @@ import MapAndDrawer from "@/components/MapAndDrawer";
 import { getVenues } from "./api/data-acces/get-venues";
 import { FilterDrawer } from "@/components/FilterDrawer";
 import { filterVenues } from "@/lib/utils/filter-venues";
+import { getOpenMeets } from "./api/data-acces/get-open-meets";
+import { filterOpenMeets } from "@/lib/utils/filter-open-meets";
 
 export default async function Home({
   searchParams,
@@ -11,6 +13,8 @@ export default async function Home({
   searchParams: { [key: string]: string | string[] };
 }) {
   const venues = await getVenues();
+
+  const openMeets = await getOpenMeets();
 
   const parseBoolean = (val: string) => (val === "true" ? true : false);
 
@@ -23,12 +27,11 @@ export default async function Home({
   console.log(filters);
 
   const filteredVenues = filterVenues(venues, filters);
-  console.log("test in homepage 1");
+  const filteredOpenMeets = filterOpenMeets(openMeets, filters);
   return (
     <div className="h-screen relative overflow-hidden">
-      <MapAndDrawer venues={filteredVenues} />
+      <MapAndDrawer venues={filteredVenues} openMeets={filteredOpenMeets} />
       <Navbar />
-
       <Search />
       <FilterDrawer />
     </div>

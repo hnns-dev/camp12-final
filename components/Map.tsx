@@ -6,13 +6,15 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import { Venue } from "@/lib/utils/types";
-import { GetVenuesResult } from "@/app/api/data-acces/venues";
+import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
+import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
 
 type MapProps = {
   openDrawer: () => void;
   venues: GetVenuesResult;
+  openMeets: GetOpenMeetsResult;
 };
-export default function Map2({ openDrawer, venues }: MapProps) {
+export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
   console.log(venues, "Map");
 
   const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -46,28 +48,43 @@ export default function Map2({ openDrawer, venues }: MapProps) {
       }).addTo(map.current);
 
       // Markers beeing clustered
-      const markers = L.markerClusterGroup();
+      const VenueMarkers = L.markerClusterGroup();
+      const OpenMeetMarkers = L.markerClusterGroup();
+
       venues.forEach((venue) => {
         // Check if data is in correct format
         if (venue.location && venue.location.length === 2) {
           const marker = L.marker(venue.location as L.LatLngTuple).bindPopup(
             venue.name || "Unnamed Venue"
           );
-          markers.addLayer(marker);
+          VenueMarkers.addLayer(marker);
           console.log("Marker added for:", venue.name);
         } else {
           console.log("Invalid location for:", venue.name);
           console.log("test in venueforeach");
         }
       });
-      map.current.addLayer(markers);
+      map.current.addLayer(VenueMarkers);
 
+      openMeets.forEach((meet) => {
+        if (meet.location && meet.location.length === 2) {
+          const marker = L.marker(meet.location as L.LatLngTuple).bindPopup(
+            "currently: " + meet.activityType.name
+          );
+          VenueMarkers.addLayer(marker);
+          console.log("Marker added for:", meet.activityType.name);
+        } else {
+          console.log("Invalid location for:", meet.activityType.name);
+          console.log("test in venueforeach");
+        }
+      });
+      map.current.addLayer(OpenMeetMarkers);
       setLoading(false);
     } catch (error) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, [venues]);
+  }, [venues, openMeets]);
 
   // Ask Permission if we can locate the user
   useEffect(() => {

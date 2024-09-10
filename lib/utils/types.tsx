@@ -1,4 +1,4 @@
-import { Meet, Venue as PrismaVenue } from "@prisma/client";
+import { Meet as PrismaMeet, Venue as PrismaVenue } from "@prisma/client";
 
 export type Filters = {
   activity?: string;
@@ -8,5 +8,8 @@ export type Filters = {
 
 export type Venue = PrismaVenue & {
   activityTypes: { name: string }[];
-  meets: Meet[];
+  meets: PrismaMeet[];
+};
+export type Meet = PrismaMeet & {
+  activityType: { name: string };
 };

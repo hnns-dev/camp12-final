@@ -48,6 +48,7 @@ export function FilterDrawer() {
   const [status, setStatus] = useState<string | undefined>();
   const [excludeCompetitive, setExcludeCompetitive] = useState(true);
   const [isCompetitive, setIsCompetitive] = useState(false);
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   function addFilters() {
     const filters: Filters = {};
@@ -111,11 +112,11 @@ export function FilterDrawer() {
           </DrawerHeader>
           <div className="m-3 flex flex-col gap-4 mb-10">
             <h2>Activity</h2>
-            <Select onValueChange={setActivity}>
+            <Select onValueChange={setActivity} onOpenChange={setIsSelectOpen}>
               <SelectTrigger className="text-base">
                 <SelectValue placeholder="all activities" />
               </SelectTrigger>
-              <SelectContent className="bg-white p-3 z-[9999]">
+              <SelectContent className="bg-white p-3 z-[9999] pointer-events-auto">
                 <SelectGroup>
                   {activities.map((activity) => (
                     <SelectItem
@@ -132,29 +133,31 @@ export function FilterDrawer() {
             <h2>Status</h2>
             <RadioGroup
               defaultValue="option-one"
-              className="flex justify-between"
+              className={` flex justify-between ${
+                isSelectOpen ? "hidden" : ""
+              } `}
               onValueChange={setStatus}
             >
-              <div className="flex flex-col w-1/2 pr-10 gap-1">
+              <div className="flex flex-col w-1/2 pr-5 gap-1">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="free" className="text-base">
                     Free
                   </Label>
                   <RadioGroupItem value="free" id="free" />
                 </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="join" className="text-base">
-                    Open to join
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="joinNow" className="text-base">
+                    Join now
                   </Label>
-                  <RadioGroupItem value="join" id="join" />
+                  <RadioGroupItem value="joinNow" id="joinNow" />
                 </div>
               </div>
-              <div className="flex flex-col gap-1 w-1/2 pr-10">
+              <div className="flex flex-col gap-1 w-1/2 pr-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="planned" className="text-base">
-                    Planned
+                  <Label htmlFor="joinTooday" className="text-base">
+                    Join today
                   </Label>
-                  <RadioGroupItem value="planned" id="planned" />
+                  <RadioGroupItem value="joinToday" id="joinToday" />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="occupied" className="text-base">

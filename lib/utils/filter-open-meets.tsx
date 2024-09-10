@@ -1,19 +1,20 @@
-import { Meet } from "@prisma/client";
-import { Filters, Venue } from "./types";
+import { Filters, Meet } from "./types";
 import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
+import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
 
-export function filterVenues(
-  venues: GetVenuesResult,
+export function filterOpenMeets(
+  openMeets: GetOpenMeetsResult,
   filters: Filters
-): GetVenuesResult {
+): GetOpenMeetsResult {
   const now = new Date(2024, 8, 20, 10);
 
   // Somhow the time is always to hours earlier in the backend but i don't know if thats relevant, it still works
 
-  return venues.filter((venue: Venue) => {
+  return openMeets.filter((openMeet: Meet) => {
     if (filters.activity) {
-      return venue.activityTypes.some(
-        (at) => at.name.toLowerCase() === filters.activity?.toLowerCase()
+      return (
+        openMeet.activityType.name.toLowerCase() ===
+        filters.activity?.toLowerCase()
       );
     }
     function isMeetNow(meet: Meet) {
@@ -52,40 +53,36 @@ export function filterVenues(
       return now < meetStart;
     }
 
+    // only show meet that are now or at least today
+    if (!isMeetNow(openMeet) && !isMeetPlanned(openMeet)) {
+      return false;
+    }
+    //Possible add-ons for later show meets for a specific day
+
+    // since openMeets are not venues, they shouldn't be free or occupied
     if (filters.status?.toLowerCase() === "free") {
-      if (venue.meets.length === 0) return true;
-      return !venue.meets.some(isMeetNow);
+      return false;
     }
-
-    // do we need an occupied filter actually?
     if (filters.status?.toLowerCase() === "occupied") {
-      if (
-        venue.meets.some((meet) => isMeetNow(meet) && meet.isPublic === false)
-      )
-        return true;
-      else return false;
+      return false;
     }
-
     if (filters.status === "joinNow") {
-      if (venue.meets.some((meet) => isMeetNow(meet) && meet.isPublic === true))
-        return true;
+      if (isMeetNow(openMeet) && openMeet.isPublic) return true;
       else return false;
     }
 
     if (filters.status === "joinToday") {
-      if (
-        venue.meets.some(isMeetPlanned) &&
-        venue.meets.some((meet) => meet.isPublic === true)
-      )
-        return true;
+      if (isMeetPlanned(openMeet) && openMeet.isPublic) return true;
       else return false;
     }
     if (filters.competitive === "both") return true;
     if (filters.competitive === "yes") {
-      return venue.meets.some((meet) => meet.competitive === true);
+      if (openMeet.competitive === true) return true;
+      else return false;
     }
     if (filters.competitive === "no") {
-      return venue.meets.some((meet) => meet.competitive === false);
+      if (openMeet.competitive === false) return true;
+      else return false;
     }
     return true;
   });
