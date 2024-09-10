@@ -46,26 +46,22 @@ export default function Map2({ openDrawer }: MapProps) {
     if (map.current || !mapContainer.current) return;
 
     try {
-      // Inside your useEffect where the map is initialized
+      // Initialize the map
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
         zoom: 13,
         minZoom: 3,
         maxZoom: 18,
-        zoomControl: false, // Disable the default zoom control position
+        zoomControl: false,
       });
 
-      // Vector layer
-      const mtLayer = new MaptilerLayer({
+      // Add Maptiler layer
+      new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
-      // Custom zoom control position, adjusted upwards
-      L.control
-        .zoom({
-          position: "bottomright", // Keep the control in the bottom-right corner
-        })
-        .addTo(map.current);
+      // Custom zoom control
+      L.control.zoom({ position: "bottomright" }).addTo(map.current);
 
       // Move zoom control slightly upwards
       const zoomControlElement = document.querySelector(
@@ -75,24 +71,28 @@ export default function Map2({ openDrawer }: MapProps) {
         zoomControlElement.style.marginBottom = "80px"; // Adjust this value to move the zoom control upwards
       }
 
-      // Markers being clustered
+      // Marker Cluster Group
       const markers = L.markerClusterGroup();
-      jsonData.forEach((entry: VenueEntry) => {
+      // Add venue markers
+      filteredData.forEach((entry: VenueEntry) => {
         if (entry.geolocation && entry.geolocation.length === 2) {
           const marker = L.marker(entry.geolocation as L.LatLngTuple)
-            .bindPopup(entry.name || "Unnamed Venue") // Use the name, or a fallback
+            .bindPopup(entry.name || "Unnamed Venue")
             .on("click", () => {
               const venueData: VenueData = {
-                name: entry.name || "Unnamed Venue", // Use the venue's name
-                address: entry.address || "Unknown address", // Use the venue's address
-                distance: "300m", // Example distance; replace with actual logic if needed
+                name: entry.name || "Unnamed Venue",
+                address: entry.address || "Unknown address",
+                distance: "300m",
                 geolocation: entry.geolocation as LatLngExpression,
               };
-              openDrawer(venueData); // Call openDrawer with venue data
+              openDrawer(venueData);
             });
-          markers.addLayer(marker); // Add the marker to the marker cluster group
+          markers.addLayer(marker);
         }
       });
+
+      // Add markers to the map
+      map.current.addLayer(markers);
 
       setLoading(false);
     } catch (error) {
