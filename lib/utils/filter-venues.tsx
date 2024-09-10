@@ -59,15 +59,13 @@ export function filterVenues(
 
     // do we need an occupied filter actually?
     if (filters.status?.toLowerCase() === "occupied") {
-      if (
-        venue.meets.some((meet) => isMeetNow(meet) && meet.isPublic === false)
-      )
+      if (venue.meets.some((meet) => isMeetNow(meet) && !meet.isPublic))
         return true;
       else return false;
     }
 
     if (filters.status === "joinNow") {
-      if (venue.meets.some((meet) => isMeetNow(meet) && meet.isPublic === true))
+      if (venue.meets.some((meet) => isMeetNow(meet) && meet.isPublic))
         return true;
       else return false;
     }
@@ -75,17 +73,17 @@ export function filterVenues(
     if (filters.status === "joinToday") {
       if (
         venue.meets.some(isMeetPlanned) &&
-        venue.meets.some((meet) => meet.isPublic === true)
+        venue.meets.some((meet) => meet.isPublic)
       )
         return true;
       else return false;
     }
     if (filters.competitive === "both") return true;
     if (filters.competitive === "yes") {
-      return venue.meets.some((meet) => meet.competitive === true);
+      return venue.meets.some((meet) => meet.competitive);
     }
     if (filters.competitive === "no") {
-      return venue.meets.some((meet) => meet.competitive === false);
+      return venue.meets.some((meet) => !meet.competitive);
     }
     return true;
   });
