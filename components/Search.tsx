@@ -1,16 +1,15 @@
 "use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
 
 export default function Search() {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSearch async () => {
-    //search logic
-  }
+  // const HandleSearch;
 
   const toggleSearch = () => {
     setIsOpen((prev) => !prev);
@@ -41,21 +40,18 @@ export default function Search() {
   return (
     <div
       ref={searchRef}
-      className={`absolute z-[9999] top-4 left-4 right-4 transition-all duration-300 ease-in-out ${
+      className={`absolute z-[9999] top-4 left-4 right-4 ${
         isOpen ? "bg-white rounded-xl" : ""
       }`}
     >
       {isOpen ? (
         <div className="flex items-center w-full p-2">
-          <Input 
-        ref={inputRef}
-        type="search" 
-        placeholder="Search..." 
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-        className="flex-grow border-none bg-transparent focus:outline-none"
-      />
+          <Input
+            ref={inputRef}
+            type="search"
+            placeholder="Search..."
+            className="flex-grow border-none bg-transparent focus:outline-none"
+          />
           <LuSearch
             className="size-6 ml-2 cursor-pointer flex-shrink-0"
             onClick={toggleSearch}
