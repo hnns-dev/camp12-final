@@ -1,5 +1,3 @@
-"use client";
-
 import Navbar from "../components/Navbar";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";

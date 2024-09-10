@@ -2,40 +2,32 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Trash2, CalendarDays } from "lucide-react";
+import { User } from "@prisma/client";
 
 interface FriendCardProps {
-  username: string;
-  picture: string;
-  location: string;
-  friendsSince: string;
+  user: User;
+  myUserId: string | null;
 }
 
-export function FriendCard({
-  username,
-  picture,
-  location,
-  friendsSince,
-}: FriendCardProps) {
+export function FriendCard({ myUserId, user }: FriendCardProps) {
   return (
     <div className="relative shadow-md border border-gray-200 rounded-md bg-background text-foreground">
       <div className="p-4">
         <div className="flex justify-between">
           <div className="flex row">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={picture} alt={username} />
+              <AvatarImage src={user.picture ?? ""} alt={user.name ?? ""} />
               <AvatarFallback>
-                {username.slice(1, 3).toUpperCase()}
+                {user?.name?.slice(1, 3).toUpperCase() ?? "NP"}
               </AvatarFallback>
             </Avatar>
             <div className="pl-4">
-              <p className="font-semibold">{username}</p>
-              <p className="text-sm text-muted-foreground pt-1 pb-1">
-                {location}
-              </p>
+              <p className="font-semibold">{user.name}</p>
+              <p className="text-sm text-muted-foreground pt-1 pb-1">Leipzig</p>
               <div className="flex row">
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <p className="pl-1 text-xs text-muted-foreground">
-                  Friends since {friendsSince}
+                  Friends since Septemper 2024
                 </p>
               </div>
             </div>

@@ -1,9 +1,10 @@
+import { protectPage } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 const MePage = async () => {
-  // const user = await protectPage()
-  const ownUserId = "jhvrihll2lalvsug";
-  redirect(`/profile/${ownUserId}`);
+  const user = await protectPage();
+
+  redirect(`/profile/${user.id}`);
 
   return null;
 };
