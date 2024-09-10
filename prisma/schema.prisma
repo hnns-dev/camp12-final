@@ -69,12 +69,14 @@ model Tag {
   meets         Meet[]         @relation("Meet tags")
   tournaments   Tournament[]
   activityTypes ActivityType[]
+
+  Meet Meet[]
 }
 
 model Venue {
   id            String         @id @default(uuid())
   name          String         @unique
-  location      String
+  location      Float[]
   image         String?
   address       String?        // New field for address
   tags          Tag[]
@@ -98,12 +100,16 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-  tags           Tag[]        @relation("Meet tags")
+  tags           Tag[]
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
-  address        String?      // New field for storing address if no venue is selected
+  address        String?
+  location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+  competitive    Boolean?
+
+  Tag Tag[] @relation("Meet tags")
 }
 
 model CheckIn {
