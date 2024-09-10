@@ -25,6 +25,8 @@ model User {
   friends                  User[]       @relation("Friends")
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
+
+  CheckIn CheckIn[]
 }
 
 model Badge {
@@ -65,7 +67,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]
+  meets         Meet[] @relation(name: "TagtoMeet")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -73,7 +75,7 @@ model Tag {
 model Venue {
   id            String         @id @default(uuid())
   name          String         @unique
-  location      String
+  location      Float[]
   image         String?
   tags          Tag[]
   tournaments   Tournament[]
@@ -86,6 +88,8 @@ model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
+  isCompetitive  Boolean    @default(false)
+  isRecurring    Boolean    @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
@@ -93,11 +97,26 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-  tags           Tag[]
-  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String
+  venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venueId        String?
+  address        String?
+  location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+  competitive    Boolean?
+
+  tags Tag[] @relation(name: "TagtoMeet")
+}
+
+model CheckIn {
+  id             String       @id @default(uuid())
+  activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
+  activityTypeId String
+  time           DateTime     @default(now())
+  duration       Float
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venueId        String
 }
 
 model ActivityType {
@@ -109,6 +128,8 @@ model ActivityType {
   meets                        Meet[]
   tags                         Tag[]
   venues                       Venue[]
+
+  CheckIn CheckIn[]
 }
 
 enum VisibilityStatus {

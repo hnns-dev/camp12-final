@@ -2,16 +2,33 @@ import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
-import data from "@/lib/filtered_output_data.json";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
+import { Venue } from "@/lib/utils/types";
+import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
+import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
+import jsonData from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 
+export interface VenueData {
+  name: string;
+  address: string;
+  distance: string;
+  geolocation: LatLngExpression;
+}
+
 type MapProps = {
-  openDrawer: () => void;
+  openDrawer: (venueData: VenueData) => void;
+  venues: GetVenuesResult;
+  openMeets: GetOpenMeetsResult;
 };
 
-export default function Map2({ openDrawer }: MapProps) {
+export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
+  console.log(venues, "Map");
+
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,44 +40,74 @@ export default function Map2({ openDrawer }: MapProps) {
   useEffect(() => {
     userPositionRef.current = userPosition;
   }, [userPosition]);
-
+  console.log("test in map2");
   // build map
   useEffect(() => {
     // if the map exists, or if the mapContainer is missing, abort the useEffect
     if (map.current || !mapContainer.current) return;
 
     try {
+      // Initialize the map
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
-        zoom: 13,
+        zoom: 12,
         minZoom: 3,
         maxZoom: 18,
+        zoomControl: false,
       });
 
-      // Vector layer
-      const mtLayer = new MaptilerLayer({
+      // Add Maptiler layer
+      new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
       // Markers beeing clustered
-      const markers = L.markerClusterGroup();
-      data.forEach((entry) => {
+      const VenueMarkers = L.markerClusterGroup();
+      const OpenMeetMarkers = L.markerClusterGroup();
+
+      venues.forEach((venue) => {
         // Check if data is in correct format
-        if (entry.geolocation && entry.geolocation.length === 2) {
-          const marker = L.marker(entry.geolocation as L.LatLngTuple).bindPopup(
-            "Unnamed Venue"
-          );
-          markers.addLayer(marker);
+        if (venue.location && venue.location.length === 2) {
+          const marker = L.marker(venue.location as L.LatLngTuple)
+            .bindPopup(venue.name || "Unnamed Venue")
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: venue.name || "Unnamed Venue",
+                address: venue.address || "Unknown address",
+                distance: "300m",
+                geolocation: venue.location as LatLngExpression,
+              };
+              openDrawer(venueData);
+            });
+
+          VenueMarkers.addLayer(marker);
+          console.log("Marker added for:", venue.name);
+        } else {
+          console.log("Invalid location for:", venue.name);
+          console.log("test in venueforeach");
         }
       });
-      map.current.addLayer(markers);
+      map.current.addLayer(VenueMarkers);
 
+      openMeets.forEach((meet) => {
+        if (meet.location && meet.location.length === 2) {
+          const marker = L.marker(meet.location as L.LatLngTuple).bindPopup(
+            "currently: " + meet.activityType.name
+          );
+          VenueMarkers.addLayer(marker);
+          console.log("Marker added for:", meet.activityType.name);
+        } else {
+          console.log("Invalid location for:", meet.activityType.name);
+          console.log("test in venueforeach");
+        }
+      });
+      map.current.addLayer(OpenMeetMarkers);
       setLoading(false);
     } catch (error) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, []);
+  }, [venues, openMeets, openDrawer]);
 
   // Ask Permission if we can locate the user
   useEffect(() => {
@@ -90,7 +137,7 @@ export default function Map2({ openDrawer }: MapProps) {
       console.error("Geolocation is not supported by this browser");
       setLoading(false);
     }
-  }, []);
+  }, [venues]);
 
   // Event handling
   useEffect(() => {
@@ -99,11 +146,17 @@ export default function Map2({ openDrawer }: MapProps) {
 
     function handleClick() {
       if (userPositionRef.current) {
-        const nearestVenue = getNearestVenue(userPositionRef.current);
+        const nearestVenue = getNearestVenue(userPositionRef.current, venues);
         if (nearestVenue) {
           map.current?.flyTo(nearestVenue, 16);
-          // a little delay for opening the drawer
-          setTimeout(() => openDrawer(), 1500);
+          // Call openDrawer with venueData, not just openDrawer()
+          const venueData: VenueData = {
+            name: "Nearest Venue", // Example placeholder
+            address: "Some Address", // Example placeholder
+            distance: "500m", // You can calculate this dynamically if needed
+            geolocation: nearestVenue,
+          };
+          setTimeout(() => openDrawer(venueData), 1500);
         }
       } else {
         console.error("User position is not available");
@@ -123,28 +176,35 @@ export default function Map2({ openDrawer }: MapProps) {
 
 // helper function
 function getNearestVenue(
-  userLocation: LatLngExpression
+  userLocation: LatLngExpression,
+  venues: Venue[]
 ): LatLngExpression | null {
   const userLoc = userLocation as [number, number];
   let result: LatLngExpression = userLocation;
   let minDistance = Infinity;
 
-  for (let key in data) {
-    const venueLoc: [number, number] = data[key].geolocation as [
+  for (let key in jsonData) {
+    const venueLoc: [number, number] = jsonData[key].geolocation as [
       number,
       number
     ];
     if (!venueLoc) continue;
 
-    const distance = Math.sqrt(
-      Math.pow(userLoc[0] - venueLoc[0], 2) +
-        Math.pow(userLoc[1] - venueLoc[1], 2)
-    );
+    venues.forEach((venue) => {
+      if (venue.location && venue.location.length === 2) {
+        const venueLoc: [number, number] = venue.location as [number, number];
 
-    if (distance < minDistance) {
-      minDistance = distance;
-      result = venueLoc;
-    }
+        const distance = Math.sqrt(
+          Math.pow(userLoc[0] - venueLoc[0], 2) +
+            Math.pow(userLoc[1] - venueLoc[1], 2)
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          result = venueLoc;
+        }
+      }
+    });
   }
   return result;
 }
