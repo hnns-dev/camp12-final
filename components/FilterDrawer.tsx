@@ -83,6 +83,7 @@ export function FilterDrawer() {
     setIsCompetitive(false);
 
     router.push("/");
+    window.location.href = "/";
   }
 
   // function handleApplyFilters() {

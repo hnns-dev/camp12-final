@@ -77,11 +77,11 @@ export function filterOpenMeets(
     }
     if (filters.competitive === "both") return true;
     if (filters.competitive === "yes") {
-      if (openMeet.competitive === true) return true;
+      if (openMeet.competitive) return true;
       else return false;
     }
     if (filters.competitive === "no") {
-      if (openMeet.competitive === false) return true;
+      if (!openMeet.competitive) return true;
       else return false;
     }
     return true;
