@@ -67,7 +67,6 @@ export default function UpdateMeet({ meet }: Props) {
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
-      activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
     },
   });
 
@@ -220,7 +219,7 @@ export default function UpdateMeet({ meet }: Props) {
                       toYear={new Date().getFullYear() + 1}
                       disabled={(date) =>
                         Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 365
                       }
                     />
                   </PopoverContent>
