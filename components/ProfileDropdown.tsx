@@ -37,6 +37,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
+function handleEditClick() {}
+
 export default function ProfileDropdown() {
   return (
     <DropdownMenu>
@@ -51,7 +53,9 @@ export default function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Pencil className="mr-2 h-4 w-4" />
-            <span>Edit</span>
+            <Link href="/profile/update" onClick={handleEditClick}>
+              Edit
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
