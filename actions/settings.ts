@@ -89,7 +89,7 @@ export const createMeet = async ({
           id: creatorId,
         },
       },
-      Venue: {
+      venue: {
         connect: {
           id: venueId,
         },

@@ -7,8 +7,16 @@ import { FaTableTennis } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { DrawerUpComingSessions } from "./DrawerUpComingSessions";
+import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 
-export default function Navbar() {
+type Props = {
+  userCreatedMeets: UserCreatedMeet[];
+  userPariticpatingMeets: UserParticipatingMeet[];
+};
+export default function Navbar({
+  userCreatedMeets,
+  userPariticpatingMeets,
+}: Props) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // const toggleDrawer = () => {

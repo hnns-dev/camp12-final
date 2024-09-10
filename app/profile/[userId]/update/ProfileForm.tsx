@@ -1,15 +1,22 @@
 "use client";
-import { User } from "@prisma/client";
+import { User } from "lucia";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-
-function handleSubmit() {}
+import { updateProfile } from "@/actions/profile";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export function ProfileForm({ user }: { user: User }) {
   const [name, setName] = useState(user.name ?? "");
   const [email, setEmail] = useState(user.email ?? "");
   const [friendsVisibility, setFriendsVisibility] = useState("");
   const [profileVisibility, setProfileVisibility] = useState("");
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    await updateProfile(user.id, name, email);
+    toast("Profil Updated!");
+  }
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-sm p-4">
       <div className="mb-4">
@@ -44,7 +51,7 @@ export function ProfileForm({ user }: { user: User }) {
       </div>
 
       <Button type="submit" variant="default">
-        Speichern
+        Update Profile
       </Button>
     </form>
   );

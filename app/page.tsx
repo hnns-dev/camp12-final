@@ -36,6 +36,9 @@ export default async function Home({
     id: "aserifkt547eu323",
   };
 
+  const myMeets = await getUserCreatedMeets(user?.id);
+  const participatingMeets = await getUserParticipatingMeets(user?.id);
+
   console.log(filters);
 
   const filteredVenues = filterVenues(venues, filters);
