@@ -13,10 +13,7 @@ export default function ShowMeets({
   userPariticpatingMeets,
 }: Props) {
   return (
-    <Tabs
-      defaultValue="own-meets"
-      className="h-full flex flex-col flex-1 mt-4 max-h-full"
-    >
+    <Tabs defaultValue="own-meets" className="flex flex-col flex-1 m-5 h-4/5">
       <TabsList className="flex justify-center">
         <TabsTrigger className="flex-1" value="own-meets">
           Own meets

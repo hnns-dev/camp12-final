@@ -93,7 +93,7 @@ export default function Create({ suggestions }: Props) {
         </TabsList>
       </Tabs>
       <Input placeholder="Participants:" />
-      <TagInput suggestions={suggestions} value={value} onChange={setValue} />
+      <TagInput suggestions={suggestions} value={value} setValue={setValue} />
       <div className="flex flex-col w-full gap-2 grow">
         <span className="">Description:</span>
         <Textarea placeholder="Add some Details" className="grow" />

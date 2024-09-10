@@ -1,54 +1,38 @@
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
 } from "./ui/card";
 import { format } from "date-fns";
+import { CalendarDaysIcon } from "lucide-react";
 
 // Define props type
 type MeetCardProps = {
-	meet: UserCreatedMeet | UserParticipatingMeet;
+  meet: UserCreatedMeet | UserParticipatingMeet;
 };
 
 export default function MeetCard({ meet }: MeetCardProps) {
-	return (
-		<Card className='max-w-md'>
-			<CardHeader className='flex flex-row gap-6'>
-				<img
-					src={meet.Venue.image ?? "/public/signin-hero.jpg"}
-					alt={meet.activityType.name}
-					className='size-16 rounded-full'
-				/>
-				<div className='flex flex-col gap-2'>
-					<CardTitle>{meet.activityType.name}</CardTitle>
-					<CardDescription className='text-base font-medium'>
-						{meet.Venue.location}
-					</CardDescription>
-				</div>
-			</CardHeader>
-			<CardContent className='grid w-full grid-cols-3 grid-rows-3 gap-y-2  justify-center align-middle items-center'>
-				{/* First Row: Creator spanning across all three columns */}
-				<span className='col-span-3 pl-5'>
-					Creator name: <strong>{meet.creator.name}</strong>
-				</span>
-				{/* Second Row: Labels */}
-				<span className='text-center'>Participants:</span>
-				<span className='text-center'>Date:</span>
-				<span className='text-center'>Time:</span>
-				{/* Third Row: Values */}
-				<span className='text-center'>
-					<strong>{meet.participants.length + meet.guests}</strong>
-				</span>
-				<span className='text-center'>
-					<strong>{format(meet.date, "dd MMM yyyy")}</strong>
-				</span>
-				<span className='text-center'>
-					<strong>{meet.time}</strong>
-				</span>
-			</CardContent>
-		</Card>
-	);
+  return (
+    <Card className="grid grid-cols-5 self-stretch gap-4">
+      <img
+        className="max-h-full object-cover col-span-2 rounded-md rounded-r-none"
+        src="/signin-hero.jpg"
+        alt="Person sitting on a ping pong table"
+      />
+      <div className="flex flex-col justify-center col-span-3 gap-1">
+        <p className="font-semibold text-sm">{meet.activityType.name}</p>
+        <p className="text-sm">Erich-Zeigner-Allee 64b</p>
+        <div className="flex flex-row gap-2 items-center">
+          <CalendarDaysIcon className="text-muted-foreground size-4" />
+
+          <p className="text-xs text-muted-foreground">
+            {`${format(meet.date, "dd MMM yyyy")} - ${meet.time}h`}
+          </p>
+        </div>
+      </div>
+    </Card>
+  );
 }
