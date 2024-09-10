@@ -64,43 +64,6 @@ interface MeetProps {
   guests: number;
   notes?: string;
   venueId: string;
-  activityTypeName: string;
+  activityType: string;
+  tags: Tag[];
 }
-
-export const createMeet = async ({
-  date,
-  time,
-  duration,
-  isPublic,
-  creatorId,
-  guests,
-  notes,
-  venueId,
-  activityTypeName,
-}: MeetProps) => {
-  await prisma.meet.create({
-    data: {
-      date: date,
-      time: time,
-      duration: duration,
-      isPublic: isPublic,
-      creator: {
-        connect: {
-          id: creatorId,
-        },
-      },
-      Venue: {
-        connect: {
-          id: venueId,
-        },
-      },
-      activityType: {
-        connect: {
-          name: activityTypeName,
-        },
-      },
-      guests: guests,
-      notes: notes,
-    },
-  });
-};

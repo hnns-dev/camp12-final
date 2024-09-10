@@ -8,12 +8,24 @@ import "leaflet.markercluster";
 import { Venue } from "@/lib/utils/types";
 import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
 import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
+import jsonData from "../lib/filtered_output_data.json";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
+
+export interface VenueData {
+  name: string;
+  address: string;
+  distance: string;
+  geolocation: LatLngExpression;
+}
 
 type MapProps = {
-  openDrawer: () => void;
+  openDrawer: (venueData: VenueData) => void;
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
-};
+}
+
 export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
   console.log(venues, "Map");
 
@@ -35,15 +47,17 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
     if (map.current || !mapContainer.current) return;
 
     try {
+      // Initialize the map
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
         zoom: 12,
         minZoom: 3,
         maxZoom: 18,
+        zoomControl: false,
       });
 
-      // Vector layer
-      const mtLayer = new MaptilerLayer({
+      // Add Maptiler layer
+      new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
@@ -56,7 +70,15 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
         if (venue.location && venue.location.length === 2) {
           const marker = L.marker(venue.location as L.LatLngTuple).bindPopup(
             venue.name || "Unnamed Venue"
-          );
+          ).on("click", () => {
+            const venueData: VenueData = {
+              name: venue.name || "Unnamed Venue",
+              address: venue.address || "Unknown address",
+              distance: "300m",
+              geolocation: venue.location as LatLngExpression,
+            };
+            openDrawer(venueData);})
+
           VenueMarkers.addLayer(marker);
           console.log("Marker added for:", venue.name);
         } else {
@@ -84,7 +106,7 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, [venues, openMeets]);
+  }, [venues, openMeets, openDrawer]);
 
   // Ask Permission if we can locate the user
   useEffect(() => {
@@ -126,8 +148,14 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
         const nearestVenue = getNearestVenue(userPositionRef.current, venues);
         if (nearestVenue) {
           map.current?.flyTo(nearestVenue, 16);
-          // a little delay for opening the drawer
-          setTimeout(() => openDrawer(), 1500);
+          // Call openDrawer with venueData, not just openDrawer()
+          const venueData: VenueData = {
+            name: "Nearest Venue", // Example placeholder
+            address: "Some Address", // Example placeholder
+            distance: "500m", // You can calculate this dynamically if needed
+            geolocation: nearestVenue,
+          };
+          setTimeout(() => openDrawer(venueData), 1500);
         }
       } else {
         console.error("User position is not available");
@@ -161,16 +189,12 @@ function getNearestVenue(
   let result: LatLngExpression = userLocation;
   let minDistance = Infinity;
 
-  // for (let key in data) {
-  //   const venueLoc: [number, number] = data[key].geolocation as [
-  //     number,
-  //     number
-  //   ];
-  //   if (!venueLoc) continue;
-  console.log(
-    "Venue Locations:",
-    venues.map((v) => ({ name: v.name, location: v.location }))
-  );
+  for (let key in jsonData) {
+    const venueLoc: [number, number] = jsonData[key].geolocation as [
+      number,
+      number
+    ];
+    if (!venueLoc) continue;
 
   venues.forEach((venue) => {
     if (venue.location && venue.location.length === 2) {
@@ -187,5 +211,6 @@ function getNearestVenue(
       }
     }
   });
-  return result;
+}
+return result;
 }

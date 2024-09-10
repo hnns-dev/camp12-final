@@ -7,7 +7,7 @@ export async function getOpenMeets() {
     },
     where: {
       venueId: null,
-      Venue: null,
+      venue: null,
     },
   });
   return openMeets;
