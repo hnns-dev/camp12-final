@@ -219,7 +219,7 @@ export default function UpdateMeet({ meet }: Props) {
                       toYear={new Date().getFullYear() + 1}
                       disabled={(date) =>
                         Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 180
+                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 365
                       }
                     />
                   </PopoverContent>
