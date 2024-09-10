@@ -49,7 +49,8 @@ async function main() {
   // Venues
   const weisseElster = await prisma.venue.create({
     data: {
-      name: "Weisse Elster",
+      name: "Weisser Rabe",
+      address: "Weisser Rabe 12 in 161 Leipzig",
       location: [51.330184277926, 12.371808439493],
       image: "/elster.jpg",
       activityTypes: {
@@ -64,6 +65,7 @@ async function main() {
     data: {
       name: "Mussel Gym",
       location: [51.34037781763, 12.32281923294],
+      address: "Mussel Gym 12 in 161 Leipzig",
       image: "/mussel.jpg",
       activityTypes: {
         connect: {
@@ -76,6 +78,7 @@ async function main() {
   const beachClubCossi = await prisma.venue.create({
     data: {
       name: "Beach Club Cossi",
+      address: "Beach Club Cossi 12 in 161 Leipzig",
       location: [51.317229196977, 12.334948182106],
       image: "/cossi.jpg",
       activityTypes: {
@@ -88,6 +91,7 @@ async function main() {
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
+      address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
       activityTypes: {
@@ -120,8 +124,8 @@ async function main() {
       name: "Tine Wittler",
       settings: {
         create: {
-          friendsVisibility: "Friends_Only",
-          profileVisibility: "Friends_Only",
+          friendsVisibility: "FriendsOnly",
+          profileVisibility: "FriendsOnly",
         },
       },
     },
@@ -224,6 +228,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: tennis.id,
       location: [51.328261109658, 12.361901700496],
+      address: "FCKAFD-Weg 2 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -239,6 +244,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: yoga.id,
       location: [51.312818371408, 12.379196584224],
+      address: "Bernd-Höcke-ist-ein-Nazi-Weg 8 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -255,6 +261,7 @@ async function main() {
       activityTypeId: boule.id,
       location: [51.333365079861, 12.402499616146],
       competitive: true,
+      address: "Notarealname Straße 12 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -271,6 +278,7 @@ async function main() {
       activityTypeId: basketball.id,
       location: [51.298389433094, 12.3746411875],
       competitive: false,
+      address: "Karl-Pups-Straße 12 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -287,6 +295,7 @@ async function main() {
       activityTypeId: basketball.id,
       location: [51.333132141369, 12.335911095141],
       competitive: false,
+      address: "Ballalala 12 in 161 Leipzig",
     },
   });
 
@@ -304,6 +313,8 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
+      isCompetitive: false,
+      isRecurring: false,
     },
   });
 
@@ -320,6 +331,61 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
+      isCompetitive: false,
+      isRecurring: false,
+    },
+  });
+
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-18"),
+      time: "11:00",
+      duration: 3,
+      isPublic: false,
+      creatorId: user3.id,
+      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
+      guests: 2,
+      notes: "Tennistraining",
+      tags: { connect: [{ name: "Outdoor" }] },
+      venueId: beachClubCossi.id,
+      activityTypeId: tennis.id,
+      isCompetitive: false,
+      isRecurring: false,
+    },
+  });
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-10"),
+      time: "16:00",
+      duration: 2,
+      isPublic: true,
+      creatorId: user1.id,
+      participants: { connect: [{ id: user2.id }, { id: user3.id }] },
+      guests: 2,
+      notes: "Freundliches Basketballspiel",
+      tags: { connect: [{ name: "Outdoor" }] },
+      venueId: weisseElster.id,
+      activityTypeId: basketball.id,
+      isCompetitive: false,
+      isRecurring: false,
+    },
+  });
+
+  await prisma.meet.create({
+    data: {
+      date: new Date("2024-09-12"),
+      time: "14:00",
+      duration: 2,
+      isPublic: false,
+      creatorId: user2.id,
+      participants: { connect: [{ id: user3.id }] },
+      guests: 2,
+      notes: "Freundliches Basketballspiel",
+      tags: { connect: [{ name: "Outdoor" }] },
+      venueId: musselGym.id,
+      activityTypeId: tennis.id,
+      isCompetitive: false,
+      isRecurring: false,
     },
   });
 
@@ -332,8 +398,8 @@ async function main() {
       type: "Knockout",
       mode: "Singles",
       public: true,
-      creatorId: user3.id,
-      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
+      creatorId: user1.id,
+      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
       guests: ["Barbara Schöneberger", "Günther Jauch"],
       note: "Jährliches Tennisturnier",
       tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
@@ -342,7 +408,7 @@ async function main() {
     },
   });
 
-  //Badges;
+  // Badges
   await prisma.badge.create({
     data: {
       name: "Anzeigenhauptmeister",
@@ -403,7 +469,7 @@ async function main() {
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
-main()
+await main()
   .catch((e) => {
     console.error(e);
   })

@@ -256,7 +256,7 @@ export default function UpdateMeet({
                       toYear={new Date().getFullYear() + 1}
                       disabled={(date) =>
                         Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                        Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 365
                       }
                     />
                   </PopoverContent>

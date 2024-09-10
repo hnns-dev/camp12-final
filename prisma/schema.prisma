@@ -77,6 +77,7 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
+  address String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -134,7 +135,7 @@ model ActivityType {
 
 enum VisibilityStatus {
   Public
-  Friends_Only
+  FriendsOnly
   Private
 }
 
