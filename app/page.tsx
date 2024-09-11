@@ -20,6 +20,8 @@ export default async function Home({
 }: {
   searchParams: { [key: string]: string | string[] };
 }) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const venues = await getVenues();
 
   const openMeets = await getOpenMeets();
@@ -49,6 +51,7 @@ export default async function Home({
       <Navbar
         userCreatedMeets={myMeets}
         userPariticpatingMeets={participatingMeets}
+        isDrawerOpen={isDrawerOpen}
       />
       <Search />
       <FilterDrawer />
