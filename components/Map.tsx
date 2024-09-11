@@ -16,7 +16,7 @@ import "leaflet.markercluster";
 export interface VenueData {
   name: string;
   address: string;
-  distance: string;
+  distance?: string;
   geolocation: LatLngExpression;
 }
 
@@ -24,7 +24,29 @@ type MapProps = {
   openDrawer: (venueData: VenueData) => void;
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
-}
+};
+
+const venueIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+const meetIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 
 export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
   console.log(venues, "Map");
@@ -68,16 +90,19 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
       venues.forEach((venue) => {
         // Check if data is in correct format
         if (venue.location && venue.location.length === 2) {
-          const marker = L.marker(venue.location as L.LatLngTuple).bindPopup(
-            venue.name || "Unnamed Venue"
-          ).on("click", () => {
-            const venueData: VenueData = {
-              name: venue.name || "Unnamed Venue",
-              address: venue.address || "Unknown address",
-              distance: "300m",
-              geolocation: venue.location as LatLngExpression,
-            };
-            openDrawer(venueData);})
+          const marker = L.marker(venue.location as L.LatLngTuple, {
+            icon: venueIcon,
+          })
+            .bindPopup(venue.name || "Unnamed Venue")
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: venue.name || "Unnamed Venue",
+                address: venue.address || "Unknown address",
+                // distance: "300m",
+                geolocation: venue.location as LatLngExpression,
+              };
+              openDrawer(venueData);
+            });
 
           VenueMarkers.addLayer(marker);
           console.log("Marker added for:", venue.name);
@@ -90,9 +115,19 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
 
       openMeets.forEach((meet) => {
         if (meet.location && meet.location.length === 2) {
-          const marker = L.marker(meet.location as L.LatLngTuple).bindPopup(
-            "currently: " + meet.activityType.name
-          );
+          const marker = L.marker(meet.location as L.LatLngTuple, {
+            icon: meetIcon,
+          })
+            .bindPopup("Meet: " + meet.activityType.name)
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: meet.activityType.name || "Unnamed Meet",
+                address: meet.address || "Unknown address",
+                // distance: "300m",
+                geolocation: meet.location as LatLngExpression,
+              };
+              openDrawer(venueData);
+            });
           VenueMarkers.addLayer(marker);
           console.log("Marker added for:", meet.activityType.name);
         } else {
@@ -162,19 +197,12 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
       }
     }
 
-    map.current.on("click", handleClick);
+    // map.current.on("click", handleClick);
   });
 
-  // After loading, recalculate size of map
-  useEffect(() => {
-    if (map.current) {
-      map.current.invalidateSize();
-    }
-  }, [loading]);
-
   return (
-    <div className="h-screen w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute " />
+    <div className="h-screen-without-bar w-screen relative">
+      <div ref={mapContainer} className="h-full w-full absolute" />
       {loading && <div>Loading...</div>}
     </div>
   );
@@ -196,21 +224,21 @@ function getNearestVenue(
     ];
     if (!venueLoc) continue;
 
-  venues.forEach((venue) => {
-    if (venue.location && venue.location.length === 2) {
-      const venueLoc: [number, number] = venue.location as [number, number];
+    venues.forEach((venue) => {
+      if (venue.location && venue.location.length === 2) {
+        const venueLoc: [number, number] = venue.location as [number, number];
 
-      const distance = Math.sqrt(
-        Math.pow(userLoc[0] - venueLoc[0], 2) +
-          Math.pow(userLoc[1] - venueLoc[1], 2)
-      );
+        const distance = Math.sqrt(
+          Math.pow(userLoc[0] - venueLoc[0], 2) +
+            Math.pow(userLoc[1] - venueLoc[1], 2)
+        );
 
-      if (distance < minDistance) {
-        minDistance = distance;
-        result = venueLoc;
+        if (distance < minDistance) {
+          minDistance = distance;
+          result = venueLoc;
+        }
       }
-    }
-  });
-}
-return result;
+    });
+  }
+  return result;
 }

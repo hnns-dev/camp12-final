@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type Props = {};
+
 // Updated schema
 const formSchema = z.object({
   username: z.string().min(2, {

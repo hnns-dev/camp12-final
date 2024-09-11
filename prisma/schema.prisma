@@ -25,7 +25,8 @@ model User {
   friends                  User[]       @relation("Friends")
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
-  checkIns                 CheckIn[]
+
+  CheckIn CheckIn[]
 }
 
 model Badge {
@@ -66,11 +67,9 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]         @relation("Meet tags")
+  meets         Meet[] @relation(name: "TagtoMeet")
   tournaments   Tournament[]
   activityTypes ActivityType[]
-
-  Meet Meet[]
 }
 
 model Venue {
@@ -78,13 +77,12 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
-  address       String?        // New field for address
+  address String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
   activityTypes ActivityType[]
   reports       Report[]
-  checkIns      CheckIn[]
 }
 
 model Meet {
@@ -100,7 +98,6 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-  tags           Tag[]
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
   address        String?
@@ -109,7 +106,7 @@ model Meet {
   activityTypeId String
   competitive    Boolean?
 
-  Tag Tag[] @relation("Meet tags")
+  tags Tag[] @relation(name: "TagtoMeet")
 }
 
 model CheckIn {
@@ -121,7 +118,6 @@ model CheckIn {
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   venueId        String
-  venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
 }
 
 model ActivityType {
@@ -133,7 +129,8 @@ model ActivityType {
   meets                        Meet[]
   tags                         Tag[]
   venues                       Venue[]
-  checkIns                     CheckIn[]
+
+  CheckIn CheckIn[]
 }
 
 enum VisibilityStatus {
@@ -155,6 +152,6 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  venue   Venue    @relation(fields: [venueId], references: [id])
+  venue   Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId String
 }
