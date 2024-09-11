@@ -171,11 +171,16 @@ export default function Map2({
       if (userPositionRef.current) {
         const nearestVenue = getNearestVenue(userPositionRef.current, venues);
         if (nearestVenue) {
+          const distance = calculateDistance(
+            userPositionRef.current,
+            nearestVenue
+          );
+          const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.current?.flyTo(nearestVenue, 16);
           const venueData: VenueData = {
             name: "Nearest Venue",
             address: "Some Address",
-            distance: "500m",
+            distance: distanceFormatted,
             geolocation: nearestVenue,
           };
           setTimeout(() => openDrawer(venueData), 1500);
@@ -184,7 +189,7 @@ export default function Map2({
         console.error("User position is not available");
       }
     }
-  });
+  }, [venues, openDrawer]);
 
   return (
     <div className="h-screen-without-bar w-screen relative">
@@ -194,6 +199,36 @@ export default function Map2({
   );
 }
 
+/**
+ * Calculates the distance between two geographical points using the Haversine formula.
+ * @param point1 - The first geographical point (latitude, longitude).
+ * @param point2 - The second geographical point (latitude, longitude).
+ * @returns The distance in meters between the two points.
+ */
+function calculateDistance(
+  point1: LatLngExpression,
+  point2: LatLngExpression
+): number {
+  // Type assertion to treat point1 and point2 as [number, number]
+  const [lat1, lon1] = point1 as [number, number];
+  const [lat2, lon2] = point2 as [number, number];
+
+  const R = 6371e3; // Earth's radius in meters
+  const lat1Rad = (lat1 * Math.PI) / 180;
+  const lat2Rad = (lat2 * Math.PI) / 180;
+  const deltaLatRad = ((lat2 - lat1) * Math.PI) / 180;
+  const deltaLonRad = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(deltaLatRad / 2) * Math.sin(deltaLatRad / 2) +
+    Math.cos(lat1Rad) *
+      Math.cos(lat2Rad) *
+      Math.sin(deltaLonRad / 2) *
+      Math.sin(deltaLonRad / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 function getNearestVenue(
   userLocation: LatLngExpression,
   venues: Venue[]
