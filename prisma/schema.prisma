@@ -26,6 +26,8 @@ model User {
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
   checkIns                 CheckIn[]
+  city                     City?        @relation(fields: [cityName], references: [name])
+  cityName                 String?
 }
 
 model Badge {
@@ -66,7 +68,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]         @relation("Meet tags")
+  meets         Meet[] @relation(name: "TagtoMeet")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -74,22 +76,22 @@ model Tag {
 model Venue {
   id            String         @id @default(uuid())
   name          String         @unique
-  location      String
+  location      Float[]
   image         String?
+  address String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
   activityTypes ActivityType[]
   reports       Report[]
-  checkIns      CheckIn[]
 }
 
 model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean
-  isRecurring    Boolean
+  isCompetitive  Boolean      @default(false)
+  isRecurring    Boolean      @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
@@ -97,11 +99,15 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-  tags           Tag[]        @relation("Meet tags")
-  Venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String
+  venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  venueId        String?
+  address        String?
+  location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
+  competitive    Boolean?
+
+  tags Tag[] @relation(name: "TagtoMeet")
 }
 
 model CheckIn {
@@ -113,7 +119,6 @@ model CheckIn {
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   venueId        String
-  venue          Venue        @relation(fields: [venueId], references: [id], onDelete: Cascade)
 }
 
 model ActivityType {
@@ -125,7 +130,8 @@ model ActivityType {
   meets                        Meet[]
   tags                         Tag[]
   venues                       Venue[]
-  checkIns                     CheckIn[]
+
+  CheckIn CheckIn[]
 }
 
 enum VisibilityStatus {
@@ -147,6 +153,11 @@ model Report {
   date    DateTime
   time    String
   detail  String?
-  venue   Venue    @relation(fields: [venueId], references: [id])
+  venue   Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId String
+}
+
+model City {
+  name String @unique
+  User User[]
 }
