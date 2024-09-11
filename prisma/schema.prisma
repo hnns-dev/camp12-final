@@ -26,6 +26,8 @@ model User {
   friendOf                 User[]       @relation("Friends")
   settings                 Settings?
   checkIns                 CheckIn[]
+  city                     City?        @relation(fields: [cityName], references: [name])
+  cityName                 String?
 }
 
 model Badge {
@@ -78,7 +80,7 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
-  address       String?        // New field for address
+  address       String? // New field for address
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -91,8 +93,8 @@ model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean    @default(false)
-  isRecurring    Boolean    @default(false)
+  isCompetitive  Boolean      @default(false)
+  isRecurring    Boolean      @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String
@@ -157,4 +159,9 @@ model Report {
   detail  String?
   venue   Venue    @relation(fields: [venueId], references: [id])
   venueId String
+}
+
+model City {
+  name String @unique
+  User User[]
 }
