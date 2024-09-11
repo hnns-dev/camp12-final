@@ -52,17 +52,17 @@ export default async function BadgesComponent({
         <h2 className="text-lg font-semibold mb-2">Your Badges</h2>
         <div className="grid grid-cols-4 gap-2">
           {badges.map((badge) => (
-            <div
-              key={badge.id}
-              className="w-16 h-16 bg-white rounded-full overflow-hidden"
-            >
-              <Image
-                src={badge.src}
-                alt={badge.alt}
-                width={64}
-                height={64}
-                objectFit="cover"
-              />
+            <div key={badge.name} className="flex flex-col items-center">
+              <div className="w-16 h-16 bg-white rounded-full overflow-hidden">
+                <Image
+                  src={badge.icon || "/placeholder.svg"}
+                  alt={badge.name}
+                  width={64}
+                  height={64}
+                  objectFit="cover"
+                />
+              </div>
+              <span>{badge.name}</span>
             </div>
           ))}
         </div>

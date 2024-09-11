@@ -67,7 +67,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[] @relation(name: "TagtoMeet")
+  meets         Meet[]         @relation(name: "TagtoMeet")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -77,7 +77,7 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
-  address String?
+  address       String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -89,8 +89,8 @@ model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean    @default(false)
-  isRecurring    Boolean    @default(false)
+  isCompetitive  Boolean      @default(false)
+  isRecurring    Boolean      @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
   creatorId      String

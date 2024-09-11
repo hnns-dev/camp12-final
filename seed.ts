@@ -425,6 +425,11 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
+      users: {
+        connect: {
+          id: user1.id,
+        },
+      },
     },
   });
 
@@ -432,6 +437,11 @@ async function main() {
     data: {
       name: "Yoga-Meister",
       icon: "/yoga.svg",
+      users: {
+        connect: {
+          id: user3.id,
+        },
+      },
     },
   });
 
