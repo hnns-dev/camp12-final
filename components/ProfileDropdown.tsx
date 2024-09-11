@@ -66,11 +66,11 @@ export default function ProfileDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Shield className="mr-2 h-4 w-4" />
-          <span>Badges</span>
+          <Link href={`/badges/${loggedInUserId}`}>Badges</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Users className="mr-2 h-4 w-4" />
-          <span>Friends</span>
+          <Link href={`/profile/${loggedInUserId}/friends`}>Friends</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
