@@ -61,7 +61,7 @@ const SearchPage = async ({
                   {venue.tags.map((tag) => (
                     <span
                       key={tag.name}
-                      className="text-xs text-zinc-500 border rounded-full px-2 py-1"
+                      className="text-xs text-zinc-500 bg-zinc-100 border rounded-full px-2 py-1"
                     >
                       {tag.name}
                     </span>
@@ -87,7 +87,7 @@ const SearchPage = async ({
                   {meet.tags.map((tag) => (
                     <span
                       key={tag.name}
-                      className="text-xs text-zinc-500 border rounded-full px-2 py-1"
+                      className="text-xs text-zinc-500 bg-zinc-100 border rounded-full px-2 py-1"
                     >
                       {tag.name}
                     </span>
