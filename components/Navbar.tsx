@@ -8,7 +8,7 @@ import { FaUser } from "react-icons/fa6";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { DrawerUpComingSessions } from "./DrawerUpComingSessions";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
-import { DrawerCreatActivity } from "./DrawerCreatActivity";
+import { DrawerCreateVenue } from "./DrawerCreateVenue";
 
 type Props = {
   userCreatedMeets: UserCreatedMeet[];
@@ -24,7 +24,7 @@ export default function Navbar({
 		<nav className='flex rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center'>
 			<DrawerUpComingSessions />
 			<FaLocationCrosshairs className='size-8 fill-white' />
-			<DrawerCreatActivity />
+			<DrawerCreateVenue />
 			<Link
 				href='/profile'
 				className='nav-link'

@@ -352,7 +352,7 @@ export default function UpdateMeet({
               />
               {/* Participants */}
               <FormItem>
-                <GroupSizeSelect groupSizes={[2, 4, 6]} />
+                <GroupSizeSelect groupSizes={["2", "4", "6"]} value={"2"} />
               </FormItem>
               {/* Tags */}
               <TagInput
