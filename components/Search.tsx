@@ -14,7 +14,7 @@ export default function Search() {
 
   const onSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     console.log("Search submitted with query:", searchQuery);
 
     const encodedSearchQuery = encodeURI(searchQuery);
