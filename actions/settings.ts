@@ -52,7 +52,7 @@ export const updateTags = async ({ names, tag }: Props) => {
       create: tag,
     });
   }
-  console.log("Tag ${tag.name} updatetd or created successfully");
+  console.log("Tag ${tag.name} updated or created successfully");
 };
 
 interface MeetProps {

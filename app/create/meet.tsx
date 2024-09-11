@@ -44,6 +44,7 @@ import { TagInput } from "@/components/tagInput";
 // Venue hardcoded
 
 const venue = "Clara-Zetkin-Park";
+const creatorId = "kdmnbiygv4lngtze";
 
 type Props = {
   isPublic: boolean;
@@ -147,17 +148,17 @@ export default function UpdateMeet({
       time,
       duration,
       isPublic,
-      creatorId,
+      creatorId: "kdmnbiygv4lngtze",
       guests,
       notes,
-      venueId,
-      activityTypeName: activityType,
+      venueId: "1c5d63c2-6204-4ee1-a7fb-7018b983a6ad",
+      activityTypeName: activityType
     });
 
     console.log("finished submitting");
   };
 
-  const [value, setValue] = useState<string[]>([]);
+  const [meetTags, setMeetTags] = useState<string[]>([]);
 
   return (
     <>
@@ -351,14 +352,15 @@ export default function UpdateMeet({
                 )}
               />
               {/* Participants */}
-              <FormItem>
-                <GroupSizeSelect groupSizes={["2", "4", "6"]} value={"2"} />
-              </FormItem>
+                <FormItem>
+                  <GroupSizeSelect groupSizes={[2, 4, 6]} />
+                </FormItem>
+              
               {/* Tags */}
               <TagInput
                 suggestions={tagSuggestions}
-                value={value}
-                setValue={setValue}
+                value={meetTags}
+                setValue={setMeetTags}
               />
               {/* Competetive */}
               <FormField
