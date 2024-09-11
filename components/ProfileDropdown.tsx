@@ -36,12 +36,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import type { User as PrismaUser } from "@prisma/client";
+import { ActionResult } from "@/lib/utils/types";
 
 export default function ProfileDropdown({
   loggedInUserId,
+  logout,
 }: {
   loggedInUserId: string | undefined;
+  logout: () => Promise<ActionResult>;
 }) {
   return (
     <DropdownMenu>
@@ -75,7 +77,9 @@ export default function ProfileDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <form action={logout}>
+            <button>Sign out</button>
+          </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

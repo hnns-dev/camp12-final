@@ -19,7 +19,7 @@ export default async function FriendsListPage({
         <p className="font-bold text-xl text-center">
           No friends yet, add some friends by sharing your QR-Code:
         </p>
-        <Link href={`/qr-add-friend`} className="m-5 p-10">
+        <Link href={`/`} className="m-5 p-10">
           <Button>Generate QR-Code</Button>
         </Link>
         <img
