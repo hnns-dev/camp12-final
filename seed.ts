@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { connect } from "http2";
-
-const prisma = new PrismaClient();
+import { prisma } from "./lib/db";
+import { generateIdFromEntropySize } from "lucia";
 
 async function main() {
   // Fetch venue IDs dynamically
@@ -52,7 +50,8 @@ async function main() {
   // Venues
   const weisseElster = await prisma.venue.create({
     data: {
-      name: "Weisse Elster",
+      name: "Weisser Rabe",
+      address: "Weisser Rabe 12 in 161 Leipzig",
       location: [51.330184277926, 12.371808439493],
       image: "/elster.jpg",
       activityTypes: {
@@ -67,6 +66,7 @@ async function main() {
     data: {
       name: "Mussel Gym",
       location: [51.34037781763, 12.32281923294],
+      address: "Mussel Gym 12 in 161 Leipzig",
       image: "/mussel.jpg",
       activityTypes: {
         connect: {
@@ -79,6 +79,7 @@ async function main() {
   const beachClubCossi = await prisma.venue.create({
     data: {
       name: "Beach Club Cossi",
+      address: "Beach Club Cossi 12 in 161 Leipzig",
       location: [51.317229196977, 12.334948182106],
       image: "/cossi.jpg",
       activityTypes: {
@@ -91,6 +92,7 @@ async function main() {
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
+      address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
       activityTypes: {
@@ -104,7 +106,7 @@ async function main() {
   // Users
   const user1 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user1@example.com",
       name: "Hans Meiser",
       city: {
@@ -123,7 +125,7 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      id: "aserifkt547eu323",
+      id: generateIdFromEntropySize(10),
       email: "user2@example.com",
       name: "Tine Wittler",
       settings: {
@@ -137,7 +139,7 @@ async function main() {
 
   const user3 = await prisma.user.create({
     data: {
-      id: "as222fkt547eu392",
+      id: generateIdFromEntropySize(10),
       email: "user3@example.com",
       name: "Conchita Wurst",
       city: {
@@ -237,6 +239,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: tennis.id,
       location: [51.328261109658, 12.361901700496],
+      address: "FCKAFD-Weg 2 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -252,6 +255,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: yoga.id,
       location: [51.312818371408, 12.379196584224],
+      address: "Bernd-Höcke-ist-ein-Nazi-Weg 8 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -268,6 +272,7 @@ async function main() {
       activityTypeId: boule.id,
       location: [51.333365079861, 12.402499616146],
       competitive: true,
+      address: "Notarealname Straße 12 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -284,6 +289,7 @@ async function main() {
       activityTypeId: basketball.id,
       location: [51.298389433094, 12.3746411875],
       competitive: false,
+      address: "Karl-Pups-Straße 12 in 161 Leipzig",
     },
   });
   await prisma.meet.create({
@@ -300,6 +306,7 @@ async function main() {
       activityTypeId: basketball.id,
       location: [51.333132141369, 12.335911095141],
       competitive: false,
+      address: "Ballalala 12 in 161 Leipzig",
     },
   });
 
@@ -330,7 +337,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      guests: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,

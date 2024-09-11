@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { NextPage } from "next";
 import { useState } from "react";
-import { createActivityType } from "../../actions/activity-type"; // Import the server action
+import { createActivityType } from "./actions"; // Import the server action
 
 interface FormValues {
   activityType: string;

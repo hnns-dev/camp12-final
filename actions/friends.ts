@@ -1,8 +1,6 @@
 "use server";
 
-import { UserId } from "lucia";
 import { prisma } from "../lib/db";
-import { revalidatePath } from "next/cache";
 
 /**
  * Add two users as friends.
@@ -20,6 +18,13 @@ type RemoveFriendResponse = {
   };
 };
 
+export async function findFriends(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { friends: true },
+  });
+  return user?.friends;
+}
 // Function to remove friendship between two users
 export async function removeFriend(
   userIdOne: string,
@@ -41,8 +46,6 @@ export async function removeFriend(
       },
     });
 
-    revalidatePath(`/profile/${userIdOne}/friends`);
-
     // If successful, return a success message
     return {
       success: true,
@@ -58,21 +61,4 @@ export async function removeFriend(
       message: "Failed to remove friendship",
     };
   }
-}
-
-// FIND ALL FRIENDS
-
-type FriendProps = {
-  userId: string;
-};
-
-export async function fiendFriends(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      friends: true,
-    },
-  });
-
-  return user?.friends;
 }
