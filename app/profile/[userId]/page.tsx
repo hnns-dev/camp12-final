@@ -34,6 +34,7 @@ export default async function ProfilePage({
 
   const { user: loggedInUser } = await validateRequest();
 
+  const loggedInUserId = loggedInUser?.id;
   function isOwnProfile() {
     return loggedInUser?.id === user?.id;
   }
@@ -45,7 +46,7 @@ export default async function ProfilePage({
   return (
     <div>
       <div className={isOwnProfile() ? "" : "hidden"}>
-        <HeaderNav />
+        <HeaderNav loggedInUserId={loggedInUserId} />
       </div>
 
       <div className="flex flex-col items-center pt-5">

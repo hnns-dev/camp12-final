@@ -36,10 +36,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import type { User as PrismaUser } from "@prisma/client";
 
-function handleEditClick() {}
-
-export default function ProfileDropdown() {
+export default function ProfileDropdown({
+  loggedInUserId,
+}: {
+  loggedInUserId: string | undefined;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -53,9 +56,7 @@ export default function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Pencil className="mr-2 h-4 w-4" />
-            <Link href="/profile/update" onClick={handleEditClick}>
-              Edit
-            </Link>
+            <Link href={`/profile/${loggedInUserId}/update`}>Edit</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
