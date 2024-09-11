@@ -11,6 +11,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LuArrowRight } from "react-icons/lu";
 import { ActionResult } from "@/lib/utils/types";
+import { DrawerUpComingSessions } from "@/components/DrawerUpComingSessions";
 
 export default async function ProfilePage({
   params,
@@ -151,9 +152,9 @@ export default async function ProfilePage({
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5 mb-4">
           <p className="font-semibold">Sessions</p>
-          <Button className="text-xs underline" variant="link">
-            view all
-          </Button>
+          <DrawerUpComingSessions defaultTable="own-meets">
+            <div className=" font-semibold underline">view all</div>
+          </DrawerUpComingSessions>
         </div>
         <div className="space-y-3 px-5">
           {user.meetsCreated.map((meet) => (

@@ -22,7 +22,9 @@ export default function Navbar({
 
   return (
     <nav className="flex rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center">
-      <DrawerUpComingSessions />
+      <DrawerUpComingSessions defaultTable="near-me">
+        <FaTableTennis className="size-8 fill-white" />
+      </DrawerUpComingSessions>
       <FaLocationCrosshairs className="size-8 fill-white" />
       <DrawerCreatActivity />
       <Link href="/profile/me" className="nav-link">
