@@ -61,9 +61,9 @@ export default function UpdateMeet({ meet }: Props) {
       activityType: meet?.activityType ? meet.activityType.name : undefined,
       duration: meet?.duration ? meet.duration : 0.5,
       public: meet?.isPublic ? meet.isPublic : false,
-      competitive: meet?.isCompetitive ? meet.isCompetitive : false,
+      mode: meet?.isCompetitive ? meet.isCompetitive : "",
       recurring: meet?.isRecurring ? meet.isRecurring : false,
-      participants: meet?.guests ? meet.guests.toString() : "0",
+      participants: meet?.guests ? meet.guests : 0,
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
@@ -77,6 +77,13 @@ export default function UpdateMeet({ meet }: Props) {
     name: "duration",
     defaultValue: 0.5,
   });
+
+  const level = useWatch({
+    control: form.control,
+    name: "mode",
+    defaultValue: false,
+  });
+  console.log(level);
 
   const privacy = useWatch({
     control: form.control,
@@ -161,7 +168,7 @@ export default function UpdateMeet({ meet }: Props) {
                 />
               ) : null}
               {/* Level */}
-              {/* <FormField
+              <FormField
                 control={form.control}
                 name="mode"
                 render={({ field }) => (
@@ -187,7 +194,7 @@ export default function UpdateMeet({ meet }: Props) {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               {/* Date and Time */}
               <div className="flex gap-2">
                 {/* Date */}
@@ -325,12 +332,12 @@ export default function UpdateMeet({ meet }: Props) {
                   <FormItem>
                     <GroupSizeSelect
                       onChange={field.onChange}
-                      value={field.value}
-                      groupSizes={groupSizes.map(String)}
+                      value={parseInt(field.value)}
+                      groupSizes={groupSizes}
                     />
                   </FormItem>
                 )}
-              ></FormField>
+              />
               {/* Tags */}
               {/* <TagInput
                 suggestions={tagSuggestions}

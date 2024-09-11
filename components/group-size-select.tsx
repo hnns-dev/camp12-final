@@ -5,11 +5,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+// changed string[] to number[]
 type GroupSizeSelectProps = {
-  groupSizes: string[];
+  groupSizes: number[];
   onChange: (value: string) => void;
-  value: string;
+  value: number;
   placeholder?: string;
 };
 
@@ -20,7 +20,7 @@ export default function GroupSizeSelect({
   placeholder = "Select group size",
 }: GroupSizeSelectProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value.toString()} onValueChange={onChange}>
       <SelectTrigger className="min-w-full">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
