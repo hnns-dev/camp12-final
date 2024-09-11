@@ -13,6 +13,7 @@ async function main() {
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
   await prisma.city.deleteMany();
+  await prisma.venue.deleteMany();
 
   console.log("Cleaning Database finished");
 
@@ -139,7 +140,11 @@ async function main() {
       id: "as222fkt547eu392",
       email: "user3@example.com",
       name: "Conchita Wurst",
-      cityName: "Berlin",
+      city: {
+        create: {
+          name: "Berlin",
+        },
+      },
       settings: {
         create: {
           friendsVisibility: "Public",
