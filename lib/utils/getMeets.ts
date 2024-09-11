@@ -9,7 +9,6 @@ export async function getUserCreatedMeets(userId?: string) {
       activityType: true,
       participants: true,
       venue: true,
-      creatorId: true,
       creator: true,
     },
   });
@@ -29,7 +28,6 @@ export async function getUserParticipatingMeets(userId?: string) {
       activityType: true,
       participants: true,
       venue: true,
-      creatorId: true,
       creator: true,
     },
   });
