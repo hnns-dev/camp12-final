@@ -152,7 +152,7 @@ export default async function ProfilePage({
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5 mb-4">
           <p className="font-semibold">Sessions</p>
-          <DrawerUpComingSessions defaultTable="own-meets">
+          <DrawerUpComingSessions defaultTab="own-meets">
             <div className=" font-semibold underline">view all</div>
           </DrawerUpComingSessions>
         </div>

@@ -87,10 +87,10 @@ type DrawerUpComingSessionsProps = {
 
 export function DrawerUpComingSessions({
   children,
-  defaultTable,
+  defaultTab,
 }: {
   children: React.ReactNode;
-  defaultTable: string;
+  defaultTab: string;
 }) {
   const filteredData = [...meets, ...tournaments];
 
@@ -137,7 +137,7 @@ export function DrawerUpComingSessions({
           </DrawerDescription>
         </DrawerHeader>
         <Tabs
-          defaultValue={defaultTable}
+          defaultValue={defaultTab}
           className="w-[350px] flex flex-col flex-1 mt-4 max-h-full"
         >
           <TabsList className="flex justify-center">
