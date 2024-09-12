@@ -4,12 +4,16 @@ import { protectPage } from "@/lib/auth";
 
 export default async function CreateMeet() {
   const user = await protectPage();
-  const tags = await prisma.tag.findMany();
+  const venue = await prisma.venue.findUnique({
+    where: {
+      name: "Mussel Gym"
+    }
+  })
 
   return (
     <div>
       {/* <TournamentPage /> */}
-      <MeetForm userId={user.id}/>
+      <MeetForm userId={user.id} venueId={venue?.id} />
     </div>
   );
 }

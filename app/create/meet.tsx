@@ -43,11 +43,12 @@ const venue = "Mussel Gym";
 
 type Props = {
   userId: string;
+  venueId: string;
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ userId }: Props) {
+export default function MeetForm({ userId, venueId }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -106,9 +107,7 @@ export default function MeetForm({ userId }: Props) {
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
     console.log(values);
-    const creatorId = userId;
-    const venueId = "1e8323f1-7be0-481f-bae7-88ecd259c739";
-    submitMeet(values, creatorId, venueId);
+    submitMeet(values, userId, venueId);
   };
 
   // guest number from 1-15
