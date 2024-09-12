@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { prisma } from "@/lib/db";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AwardIcon } from "lucide-react";
+import { log } from "console";
 
 export default async function VenueDetailsPage() {
   const venueId = "a9f7dd25-b7b9-47aa-8818-bdd170d520d9";
@@ -21,6 +20,7 @@ export default async function VenueDetailsPage() {
       reports: {
         select: {
           issue: true,
+          detail: true,
         },
       },
     },
@@ -107,7 +107,7 @@ export default async function VenueDetailsPage() {
         <p>{venue?.description}</p>
       </div>
 
-      {/* Tournaments on this Place */}
+      {/* Tournaments at this Place */}
       <div className="w-full">
         <h3 className="text-sm text-gray-500 font-bold py-2">Tournaments</h3>
         <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
@@ -131,7 +131,7 @@ export default async function VenueDetailsPage() {
         </div>
       </div>
 
-      {/* Planned Event */}
+      {/* Planned Meets */}
       <div className="w-full">
         <h3 className="text-sm text-gray-500 font-bold py-2">Meets</h3>
         <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
@@ -149,6 +149,23 @@ export default async function VenueDetailsPage() {
                   <Label>Time</Label>
                   <p className="text-left">{meet.time}</p>
                 </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Reports for this Venue*/}
+      <div className="w-full">
+        <h3 className="text-sm text-gray-500 font-bold py-2">Reports</h3>
+        <div className="flex gap-2 w-full h-auto min-h-36 max-h-40 rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
+          {venue?.reports.map((report, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle>{report.issue}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{report.detail}</p>
               </CardContent>
             </Card>
           ))}
