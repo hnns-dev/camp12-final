@@ -76,7 +76,7 @@ export default function Map2({
         zoom: 12,
         minZoom: 3,
         maxZoom: 18,
-        zoomControl: !isDrawerOpen, // Toggle zoom control based on isDrawerOpen
+        zoomControl: false, // Toggle zoom control based on isDrawerOpen
       });
 
       new MaptilerLayer({
