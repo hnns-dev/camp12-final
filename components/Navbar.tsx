@@ -23,8 +23,8 @@ export default function Navbar({
     <nav
       // Use the cn function to merge classes conditionally
       className={cn(
-        "flex rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center",
-        isDrawerOpen && "hidden" // This class is conditionally applied when isDrawerOpen is true
+        "rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center",
+        isDrawerOpen ? "hidden" : "flex" // This class is conditionally applied when isDrawerOpen is true
       )}
     >
       <DrawerUpComingSessions />
