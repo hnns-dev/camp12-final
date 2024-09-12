@@ -1,6 +1,5 @@
 "use server";
 
-import { UserId } from "lucia";
 import { prisma } from "../lib/db";
 
 /**
@@ -19,6 +18,13 @@ type RemoveFriendResponse = {
   };
 };
 
+export async function findFriends(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { friends: true },
+  });
+  return user?.friends;
+}
 // Function to remove friendship between two users
 export async function removeFriend(
   userIdOne: string,
@@ -55,42 +61,4 @@ export async function removeFriend(
       message: "Failed to remove friendship",
     };
   }
-}
-
-// FIND ALL FRIENDS
-
-type FriendProps = {
-  userId: string;
-};
-
-export async function fiendFriends({ userId }: FriendProps) {
-  const allFriends = await prisma.user.findMany({
-    where: {
-      OR: [
-        {
-          friends: {
-            some: { id: userId },
-          },
-        },
-        {
-          friendOf: {
-            some: { id: userId },
-          },
-        },
-      ],
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      picture: true,
-    },
-  });
-
-  return allFriends.map((friend) => ({
-    id: friend.id,
-    name: friend.name,
-    email: friend.email,
-    picture: friend.picture,
-  }));
 }
