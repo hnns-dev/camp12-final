@@ -69,7 +69,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]         @relation(name: "TagtoMeet")
+  meets         Meet[]
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -108,7 +108,7 @@ model Meet {
   activityTypeId String
   competitive    Boolean?
 
-  tags Tag[] @relation(name: "TagtoMeet")
+  tags Tag[]
 }
 
 model CheckIn {

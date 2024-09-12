@@ -64,3 +64,50 @@ export async function deleteMeet(meetId: string, userId: string) {
     };
   }
 }
+
+export async function updateMeet(
+  meetId: string,
+  values: z.infer<typeof meetSchema>
+) {
+  await prisma.meet.update({
+    where: {
+      id: meetId,
+    },
+    data: {
+      date: values.date,
+      time: values.time,
+      duration: values.duration,
+      isPublic: values.public,
+      guests: values.guests,
+      notes: values.notes,
+    },
+  });
+}
+
+export const createMeet = async (values: z.infer<typeof meetSchema>) => {
+  await prisma.meet.create({
+    data: {
+      date: values.date,
+      time: values.time,
+      duration: values.duration,
+      isPublic: values.public,
+      creator: {
+        connect: {
+          id: creatorId,
+        },
+      },
+      venue: {
+        connect: {
+          id: venueId,
+        },
+      },
+      activityType: {
+        connect: {
+          name: activityTypeName,
+        },
+      },
+      guests: guests,
+      notes: notes,
+    },
+  });
+};
