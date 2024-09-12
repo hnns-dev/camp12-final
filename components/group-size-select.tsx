@@ -8,8 +8,8 @@ import {
 
 type GroupSizeSelectProps = {
   groupSizes: number[];
-  onChange: (value: string) => void; // Changed to number
-  value: number;
+  onChange: (value: string) => {}; // Changed to number
+  value: string;
   placeholder?: string;
 };
 
@@ -20,7 +20,7 @@ export default function GroupSizeSelect({
   placeholder = "Select group size",
 }: GroupSizeSelectProps) {
   return (
-    <Select value={value.toString()} onValueChange={onChange}>
+    <Select onValueChange={onChange}>
       <SelectTrigger className="min-w-full">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

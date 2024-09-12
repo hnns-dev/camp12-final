@@ -5,12 +5,12 @@ export const meetSchema = z.object({
   public: z.boolean(),
   date: z.date({ required_error: "Date is required" }),
   time: z.string({ required_error: "Time is required" }),
-  mode: z.enum(["softie", "casual", "competetive"], {
+  mode: z.enum(["softie", "casual", "competitive"], {
     required_error: "Choose a Mode",
   }),
   duration: z.number(),
   // change participants to guests
-  guests: z.number(),
+  guests: z.string(),
   recurring: z.boolean(),
   equipment: z.string().trim().optional(),
   description: z.string().trim().optional(),

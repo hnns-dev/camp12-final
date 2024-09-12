@@ -9,13 +9,7 @@ export default async function CreateMeet() {
   return (
     <div>
       {/* <TournamentPage /> */}
-      <MeetForm
-      // isPublic={meetData.isPublic}
-      // creatorId={user.id}
-      // guests={meetData.guests}
-      // venueId={meetData.venueId}
-      // tagSuggestions={tags}
-      />
+      <MeetForm userId={user.id}/>
     </div>
   );
 }

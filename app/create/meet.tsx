@@ -1,7 +1,6 @@
 "use client";
 
-import { submitMeet, updateMeet } from "@/actions/meet";
-import GroupSizeSelect from "@/components/group-size-select";
+import { submitMeet } from "@/actions/meet";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -28,6 +27,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,20 +39,17 @@ import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 // Venue hardcoded
-
 const venue = "Mussel Gym";
 
 type Props = {
-  meet?: Meet & { activityType: ActivityType };
+  userId: string;
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ meet }: Props) {
+export default function MeetForm({ userId }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
-  // filling the value array with all selected tags
-  const [frontendTags, setFrontendTags] = useState<string[]>([]);
 
   // Setting up React Hook Form with Zod resolver for validation
   const form = useForm<z.infer<typeof meetSchema>>({
@@ -68,6 +65,7 @@ export default function MeetForm({ meet }: Props) {
       equipment: "",
     },
   });
+
   // Custom hook to subscribe to field change and isolate re-rendering at the component level.
   const duration = useWatch({
     control: form.control,
@@ -80,14 +78,12 @@ export default function MeetForm({ meet }: Props) {
     name: "mode",
     defaultValue: "casual",
   });
-  console.log(level);
 
   const privacy = useWatch({
     control: form.control,
     name: "public",
     defaultValue: false,
   });
-  console.log(privacy);
 
   const date = useWatch({
     control: form.control,
@@ -109,30 +105,10 @@ export default function MeetForm({ meet }: Props) {
 
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
-
-    try {
-      if (meet && meet.id) {
-        // If meet exists and has an id, update the existing meet
-        await updateMeet(meet.id, values);
-        console.log("finished updating");
-      } else {
-        // If meet doesn't exist or doesn't have an id, create a new meet
-        await submitMeet(
-          values,
-          meet?.creatorId,
-          meet?.venueId,
-          meet?.activityType
-        );
-        console.log("finished creating");
-      }
-
-      // Handle successful creation/update (e.g., show a success message, redirect, etc.)
-      console.log("Meet successfully created/updated");
-      // You can add a success message or redirect here
-    } catch (error) {
-      console.error("Error creating/updating meet:", error);
-      // Handle error (e.g., show error message to user)
-    }
+    console.log(values);
+    const creatorId = userId;
+    const venueId = "1e8323f1-7be0-481f-bae7-88ecd259c739";
+    submitMeet(values, creatorId, venueId);
   };
 
   // guest number from 1-15
@@ -150,7 +126,7 @@ export default function MeetForm({ meet }: Props) {
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
               <span className="pb-6"> @ {venue}</span>
               {/* Activity Type */}
-              {!meet ? (
+              {(
                 <FormField
                   control={form.control}
                   name="activityType"
@@ -166,7 +142,7 @@ export default function MeetForm({ meet }: Props) {
                             <SelectValue placeholder="Activity Type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="tennis">Tennis</SelectItem>
+                            <SelectItem value="Tennis">Tennis</SelectItem>
                             <SelectItem value="Basketball">
                               Basketball
                             </SelectItem>
@@ -178,7 +154,7 @@ export default function MeetForm({ meet }: Props) {
                     </FormItem>
                   )}
                 />
-              ) : null}
+              )}
               {/* Level */}
               <FormField
                 control={form.control}
@@ -342,11 +318,19 @@ export default function MeetForm({ meet }: Props) {
                 name="guests"
                 render={({ field }) => (
                   <FormItem>
-                    <GroupSizeSelect
-                      onChange={field.onChange}
-                      value={field.value}
-                      groupSizes={groupSizes}
-                    />
+                    <Select onValueChange={field.onChange}>
+                    <SelectTrigger className="min-w-full">
+                      <SelectValue placeholder={"select group size"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {groupSizes.map((size) => (
+                        <SelectItem key={size} value={size.toString()}>
+                          {size}
+                        </SelectItem>
+                        
+                      ))}
+                    </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />
