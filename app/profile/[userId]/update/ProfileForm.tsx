@@ -3,7 +3,6 @@ import { User } from "lucia";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { updateProfile } from "@/actions/profile";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 export function ProfileForm({ user }: { user: User }) {
