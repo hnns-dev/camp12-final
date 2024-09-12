@@ -424,6 +424,7 @@ async function main() {
     data: {
       name: "Anzeigenhauptmeister",
       icon: "/parkverbot.png",
+      description: "Filed 10 reports",
       users: {
         connect: {
           id: user2.id,
@@ -436,6 +437,12 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
+      description: "won 10 tournaments",
+      users: {
+        connect: {
+          id: user1.id,
+        },
+      },
     },
   });
 
@@ -443,6 +450,12 @@ async function main() {
     data: {
       name: "Yoga-Meister",
       icon: "/yoga.svg",
+      description: "attended 100 yoga meets",
+      users: {
+        connect: {
+          id: user3.id,
+        },
+      },
     },
   });
 

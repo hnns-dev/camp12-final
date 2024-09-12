@@ -76,8 +76,7 @@ export default function Map2({
         zoom: 12,
         minZoom: 3,
         maxZoom: 18,
-        attributionControl: false,
-        zoomControl: !isDrawerOpen, // Toggle zoom control based on isDrawerOpen
+        zoomControl: false, // Toggle zoom control based on isDrawerOpen
       });
 
       new MaptilerLayer({
@@ -108,6 +107,8 @@ export default function Map2({
         }
       });
       map.current.addLayer(VenueMarkers);
+
+      console.log(openMeets);
 
       openMeets.forEach((meet) => {
         if (meet.location && meet.location.length === 2) {

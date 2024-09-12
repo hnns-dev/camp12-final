@@ -28,7 +28,6 @@ export default function MapAndDrawer({
     []
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isUpcomingDrawerOpen, setIsUpcomingDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
 
   const openDrawer = (venueData: VenueData) => {
@@ -52,7 +51,7 @@ export default function MapAndDrawer({
       <Navbar
         userCreatedMeets={userCreatedMeets}
         userPariticpatingMeets={userPariticpatingMeets}
-        isDrawerOpen={isUpcomingDrawerOpen}
+        isDrawerOpen={isDrawerOpen}
       />
     </div>
   );
