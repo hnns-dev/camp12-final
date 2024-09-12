@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
-import L, { LatLngExpression } from "leaflet";
+import L, { icon, LatLngExpression, LatLngLiteral } from "leaflet";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -12,6 +12,9 @@ import jsonData from "../lib/filtered_output_data.json";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
+import { CrosshairIcon, XIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { GiCrosshair } from "react-icons/gi";
 
 export interface VenueData {
   name: string;
@@ -25,6 +28,9 @@ type MapProps = {
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
   isDrawerOpen: boolean; // Add this prop
+  crossVisible: boolean;
+  close: () => void;
+  updateCrossPos: (pos: LatLngExpression) => void;
 };
 
 const venueIcon = new L.Icon({
@@ -54,6 +60,9 @@ export default function Map2({
   venues,
   openMeets,
   isDrawerOpen,
+  crossVisible,
+  updateCrossPos,
+  close,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
@@ -77,6 +86,13 @@ export default function Map2({
         minZoom: 3,
         maxZoom: 18,
         zoomControl: false, // Toggle zoom control based on isDrawerOpen
+      });
+
+      map.current.on("moveend", () => {
+        if (map.current) {
+          const center = map.current.getCenter();
+          updateCrossPos([center.lat, center.lng]);
+        }
       });
 
       new MaptilerLayer({
@@ -193,7 +209,29 @@ export default function Map2({
     }
   }, [venues, openDrawer]);
 
-  return <div ref={mapContainer} className="h-screen w-screen absolute" />;
+  return (
+    <div className="h-screen w-screen relative">
+      {crossVisible ? (
+        <div className="absolute  top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2">
+          <GiCrosshair className="size-20" />
+        </div>
+      ) : null}
+      {crossVisible ? (
+        <div className="bg-white rounded-t-3xl p-4 pb-8 border-border z-[1000] absolute bottom-0 inset-x-0">
+          <div className="flex justify-end mb-4">
+            <Button onClick={close} size="icon" variant="ghost">
+              <XIcon className="size-5" />
+            </Button>
+          </div>
+          <div className="flex gap-4">
+            <Button className="flex-1">Create Meet</Button>
+            <Button className="flex-1">Create Venue</Button>
+          </div>
+        </div>
+      ) : null}
+      <div ref={mapContainer} className="h-screen w-screen absolute" />
+    </div>
+  );
 }
 
 /**
