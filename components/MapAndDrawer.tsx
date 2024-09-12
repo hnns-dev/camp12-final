@@ -3,19 +3,22 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { DrawerHompage } from "./DrawerHomepage";
 import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
-import { Meet } from "@prisma/client";
 import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
 import { VenueData } from "./Map"; // Import VenueData type
+import Navbar from "./Navbar";
+import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 
 export default function MapAndDrawer({
   venues,
   openMeets,
+  userCreatedMeets,
+  userPariticpatingMeets,
 }: {
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
+  userCreatedMeets: UserCreatedMeet[];
+  userPariticpatingMeets: UserParticipatingMeet[];
 }) {
-  console.log(venues);
-
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {
@@ -25,7 +28,8 @@ export default function MapAndDrawer({
     []
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null); // Store the selected venue data
+  const [isUpcomingDrawerOpen, setIsUpcomingDrawerOpen] = useState(false);
+  const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
 
   const openDrawer = (venueData: VenueData) => {
     setSelectedVenue(venueData);
@@ -34,11 +38,21 @@ export default function MapAndDrawer({
 
   return (
     <div>
-      <Map openDrawer={openDrawer} venues={venues} openMeets={openMeets} />
+      <Map
+        openDrawer={openDrawer}
+        venues={venues}
+        openMeets={openMeets}
+        isDrawerOpen={isDrawerOpen}
+      />
       <DrawerHompage
         isOpen={isDrawerOpen}
         setIsOpen={setIsDrawerOpen}
         venueData={selectedVenue}
+      />
+      <Navbar
+        userCreatedMeets={userCreatedMeets}
+        userPariticpatingMeets={userPariticpatingMeets}
+        isDrawerOpen={isUpcomingDrawerOpen}
       />
     </div>
   );
