@@ -2,12 +2,13 @@ import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { log } from "console";
-
-export default async function VenueDetailsPage() {
-  const venueId = "a9f7dd25-b7b9-47aa-8818-bdd170d520d9";
+export default async function VenueDetailsPage({
+  params,
+}: {
+  params: { venueId: string };
+}) {
   const venue = await prisma.venue.findUnique({
-    where: { id: venueId },
+    where: { id: params.venueId },
     select: {
       name: true,
       location: true,
