@@ -89,7 +89,7 @@ export async function updateMeet(
   });
 }
 
-export const createMeet = async (
+export const submitMeet = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
   venueId: string,
@@ -103,7 +103,8 @@ export const createMeet = async (
       isPublic: values.public,
       isRecurring: values.recurring,
       guests: values.guests,
-      participants: values.creatorId,
+      // TO DO
+      participants: { connect: { id: creatorId } },
       notes: values.description,
       equipment: values.equipment,
       creator: {

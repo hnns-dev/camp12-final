@@ -1,6 +1,6 @@
 "use client";
 
-import { createMeet, updateMeet } from "@/actions/meet";
+import { submitMeet, updateMeet } from "@/actions/meet";
 import GroupSizeSelect from "@/components/group-size-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -58,19 +58,16 @@ export default function MeetForm({ meet }: Props) {
   const form = useForm<z.infer<typeof meetSchema>>({
     resolver: zodResolver(meetSchema),
     defaultValues: {
-      activityType: meet?.activityType ? meet.activityType.name : undefined,
-      duration: meet?.duration ? meet.duration : 0.5,
-      public: meet?.isPublic ? meet.isPublic : false,
-      // mode: meet?.mode ? meet.mode : "casual", ???
-      recurring: meet?.isRecurring ? meet.isRecurring : false,
-      guests: meet?.guests ? meet.guests : 0,
-      date: meet?.date ? meet.date : new Date(),
-      time: meet?.time ? meet.time : "12:00",
-      description: meet?.notes ? meet.notes : "",
-      // activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
+      duration: 0.5,
+      public: false,
+      // competetive: false,
+      recurring: false,
+      date: new Date(),
+      time: "12:00",
+      description: "",
+      equipment: "",
     },
   });
-
   // Custom hook to subscribe to field change and isolate re-rendering at the component level.
   const duration = useWatch({
     control: form.control,
@@ -120,7 +117,12 @@ export default function MeetForm({ meet }: Props) {
         console.log("finished updating");
       } else {
         // If meet doesn't exist or doesn't have an id, create a new meet
-        await createMeet(values, user.id);
+        await submitMeet(
+          values,
+          meet?.creatorId,
+          meet?.venueId,
+          meet?.activityType
+        );
         console.log("finished creating");
       }
 
@@ -133,7 +135,7 @@ export default function MeetForm({ meet }: Props) {
     }
   };
 
-  // participant number from 1-15
+  // guest number from 1-15
   const groupSizes = Array.from({ length: 15 }, (_, i) => i + 1);
 
   return (
