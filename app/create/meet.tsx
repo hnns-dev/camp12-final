@@ -29,7 +29,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { meetSchema } from "@/lib/validation/meet";
+import { meetSchema } from "@/lib/validation/zod-meet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
@@ -48,7 +48,7 @@ type Props = {
 
 // Defining a schema for Tournament Creation
 
-export default function UpdateMeet({ meet }: Props) {
+export default function MeetForm({ meet }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
   // filling the value array with all selected tags
@@ -61,9 +61,9 @@ export default function UpdateMeet({ meet }: Props) {
       activityType: meet?.activityType ? meet.activityType.name : undefined,
       duration: meet?.duration ? meet.duration : 0.5,
       public: meet?.isPublic ? meet.isPublic : false,
-      mode: meet?.isCompetitive ? meet.isCompetitive : "",
+      mode: meet?.mode ? meet.mode : "casual",
       recurring: meet?.isRecurring ? meet.isRecurring : false,
-      participants: meet?.guests ? meet.guests : 0,
+      guests: meet?.guests ? meet.guests : 0,
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",

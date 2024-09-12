@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
-import { meetSchema } from "@/lib/validation/meet";
+import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
 
 // Helper function to check if a given time is in the future
@@ -15,6 +15,8 @@ function isTimeInFuture(time: string) {
   // Compare meet time with current time
   return meetTimeNumber > timeNowNumber;
 }
+
+// get creatorId from params
 
 // Main function to delete a meet
 export async function deleteMeet(meetId: string, userId: string) {
@@ -82,7 +84,7 @@ export async function updateMeet(
       duration: values.duration,
       isPublic: values.public,
       guests: values.guests,
-      notes: values.notes,
+      notes: values.description,
     },
   });
 }
@@ -99,7 +101,7 @@ export const createMeet = async (values: z.infer<typeof meetSchema>) => {
           id: creatorId,
         },
       },
-      Venue: {
+      venue: {
         connect: {
           id: venueId,
         },
