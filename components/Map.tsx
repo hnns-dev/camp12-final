@@ -24,6 +24,7 @@ type MapProps = {
   openDrawer: (venueData: VenueData) => void;
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
+  isDrawerOpen: boolean; // Add this prop
 };
 
 const venueIcon = new L.Icon({
@@ -48,47 +49,44 @@ const meetIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
-  console.log(venues, "Map");
-
+export default function Map2({
+  openDrawer,
+  venues,
+  openMeets,
+  isDrawerOpen,
+}: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [userPosition, setUserPosition] = useState<LatLngExpression | null>(
     null
   );
-  // reference is used to ensure that the coordinates are not null in important calculations
   const userPositionRef = useRef<LatLngExpression | null>(null);
+
   useEffect(() => {
     userPositionRef.current = userPosition;
   }, [userPosition]);
-  console.log("test in map2");
-  // build map
+
   useEffect(() => {
-    // if the map exists, or if the mapContainer is missing, abort the useEffect
     if (map.current || !mapContainer.current) return;
 
     try {
-      // Initialize the map
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
         zoom: 12,
         minZoom: 3,
         maxZoom: 18,
-        zoomControl: false,
+        zoomControl: !isDrawerOpen, // Toggle zoom control based on isDrawerOpen
       });
 
-      // Add Maptiler layer
       new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
-      // Markers beeing clustered
       const VenueMarkers = L.markerClusterGroup();
       const OpenMeetMarkers = L.markerClusterGroup();
 
       venues.forEach((venue) => {
-        // Check if data is in correct format
         if (venue.location && venue.location.length === 2) {
           const marker = L.marker(venue.location as L.LatLngTuple, {
             icon: venueIcon,
@@ -98,17 +96,14 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
               const venueData: VenueData = {
                 name: venue.name || "Unnamed Venue",
                 address: venue.address || "Unknown address",
-                // distance: "300m",
                 geolocation: venue.location as LatLngExpression,
               };
               openDrawer(venueData);
             });
 
           VenueMarkers.addLayer(marker);
-          console.log("Marker added for:", venue.name);
         } else {
           console.log("Invalid location for:", venue.name);
-          console.log("test in venueforeach");
         }
       });
       map.current.addLayer(VenueMarkers);
@@ -123,16 +118,13 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
               const venueData: VenueData = {
                 name: meet.activityType.name || "Unnamed Meet",
                 address: meet.address || "Unknown address",
-                // distance: "300m",
                 geolocation: meet.location as LatLngExpression,
               };
               openDrawer(venueData);
             });
           VenueMarkers.addLayer(marker);
-          console.log("Marker added for:", meet.activityType.name);
         } else {
           console.log("Invalid location for:", meet.activityType.name);
-          console.log("test in venueforeach");
         }
       });
       map.current.addLayer(OpenMeetMarkers);
@@ -141,9 +133,8 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, [venues, openMeets, openDrawer]);
+  }, [venues, openMeets, openDrawer, isDrawerOpen]); // Add isDrawerOpen to dependencies
 
-  // Ask Permission if we can locate the user
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -173,21 +164,23 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
     }
   }, [venues]);
 
-  // Event handling
   useEffect(() => {
-    // if there is no map, return
     if (!map.current) return;
 
     function handleClick() {
       if (userPositionRef.current) {
         const nearestVenue = getNearestVenue(userPositionRef.current, venues);
         if (nearestVenue) {
+          const distance = calculateDistance(
+            userPositionRef.current,
+            nearestVenue
+          );
+          const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.current?.flyTo(nearestVenue, 16);
-          // Call openDrawer with venueData, not just openDrawer()
           const venueData: VenueData = {
-            name: "Nearest Venue", // Example placeholder
-            address: "Some Address", // Example placeholder
-            distance: "500m", // You can calculate this dynamically if needed
+            name: "Nearest Venue",
+            address: "Some Address",
+            distance: distanceFormatted,
             geolocation: nearestVenue,
           };
           setTimeout(() => openDrawer(venueData), 1500);
@@ -196,9 +189,7 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
         console.error("User position is not available");
       }
     }
-
-    // map.current.on("click", handleClick);
-  });
+  }, [venues, openDrawer]);
 
   return (
     <div className="h-screen-without-bar w-screen relative">
@@ -208,7 +199,36 @@ export default function Map2({ openDrawer, venues, openMeets }: MapProps) {
   );
 }
 
-// helper function
+/**
+ * Calculates the distance between two geographical points using the Haversine formula.
+ * @param point1 - The first geographical point (latitude, longitude).
+ * @param point2 - The second geographical point (latitude, longitude).
+ * @returns The distance in meters between the two points.
+ */
+function calculateDistance(
+  point1: LatLngExpression,
+  point2: LatLngExpression
+): number {
+  // Type assertion to treat point1 and point2 as [number, number]
+  const [lat1, lon1] = point1 as [number, number];
+  const [lat2, lon2] = point2 as [number, number];
+
+  const R = 6371e3; // Earth's radius in meters
+  const lat1Rad = (lat1 * Math.PI) / 180;
+  const lat2Rad = (lat2 * Math.PI) / 180;
+  const deltaLatRad = ((lat2 - lat1) * Math.PI) / 180;
+  const deltaLonRad = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(deltaLatRad / 2) * Math.sin(deltaLatRad / 2) +
+    Math.cos(lat1Rad) *
+      Math.cos(lat2Rad) *
+      Math.sin(deltaLonRad / 2) *
+      Math.sin(deltaLonRad / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 function getNearestVenue(
   userLocation: LatLngExpression,
   venues: Venue[]
