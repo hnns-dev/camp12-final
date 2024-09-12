@@ -31,10 +31,11 @@ model User {
 }
 
 model Badge {
-  name      String   @id @unique
-  icon      String?
-  users     User[]
-  createdAt DateTime @default(now())
+  name        String   @id @unique
+  icon        String?
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
 }
 
 model Session {
@@ -78,7 +79,7 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
-  address String?
+  address       String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]

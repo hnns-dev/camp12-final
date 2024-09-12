@@ -3,9 +3,15 @@ import MeetCard from "@/components/MeetCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { lucia, validateRequest } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { CalendarDaysIcon } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { LuArrowRight } from "react-icons/lu";
+import { ActionResult } from "@/lib/utils/types";
+import { DrawerUpComingSessions } from "@/components/DrawerUpComingSessions";
 
 export default async function ProfilePage({
   params,
@@ -32,13 +38,43 @@ export default async function ProfilePage({
     },
   });
 
+  const { user: loggedInUser } = await validateRequest();
+
+  const loggedInUserId = loggedInUser?.id;
+  function isOwnProfile() {
+    return loggedInUser?.id === user?.id;
+  }
+
   if (!user) return <p>User not found</p>;
 
   const FRIENDS_SHOWN = 8;
 
+  // async function logout(): Promise<ActionResult> {
+  //   "use server";
+  //   const { session } = await validateRequest();
+  //   if (!session) {
+  //     return {
+  //       error: "Unauthorized",
+  //     };
+  //   }
+
+  //   await lucia.invalidateSession(session.id);
+
+  //   const sessionCookie = lucia.createBlankSessionCookie();
+  //   cookies().set(
+  //     sessionCookie.name,
+  //     sessionCookie.value,
+  //     sessionCookie.attributes
+  //   );
+  //   return redirect("/login");
+  // }
+
   return (
     <div>
-      <HeaderNav />
+      <div className={isOwnProfile() ? "" : "hidden"}>
+        <HeaderNav loggedInUserId={loggedInUserId} />
+      </div>
+
       <div className="flex flex-col items-center pt-5">
         <Avatar className="h-40 w-40">
           <AvatarImage
@@ -160,9 +196,9 @@ export default async function ProfilePage({
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5 mb-4">
           <p className="font-semibold">Sessions</p>
-          <Button className="text-xs underline" variant="link">
-            view all
-          </Button>
+          <DrawerUpComingSessions defaultTab="own-meets">
+            <div className=" font-semibold underline">view all</div>
+          </DrawerUpComingSessions>
         </div>
         <div
           className={

@@ -1,7 +1,9 @@
 import Image from "next/image";
 import exampleImage from "../../public/example.png";
 
-const VenueDetailsPage = () => {
+import DisplayWeather from "@/components/display-weather";
+
+const VenueDetailsPage = async () => {
   return (
     <div className="flex flex-col items-center p-4 space-y-4">
       {/* Date Navigation */}
@@ -13,6 +15,8 @@ const VenueDetailsPage = () => {
 
       {/* Venue Name */}
       <h1 className="text-xl font-bold">Erich Zeigner Allee 78</h1>
+
+      <DisplayWeather lat={51.323402553555816} lon={12.336260685620882} />
 
       {/* Venue Image */}
       <div className="relative w-full max-w-md">
