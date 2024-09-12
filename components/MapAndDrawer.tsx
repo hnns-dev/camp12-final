@@ -7,6 +7,7 @@ import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
 import { VenueData } from "./Map"; // Import VenueData type
 import Navbar from "./Navbar";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
+import { LatLngExpression } from "leaflet";
 
 export default function MapAndDrawer({
   venues,
@@ -29,6 +30,12 @@ export default function MapAndDrawer({
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
+  const [crossVisible, setCrossVisible] = useState(false);
+  const [crossPos, setCrossPos] = useState<LatLngExpression | null>(null);
+
+  const toggleCross = () => setCrossVisible((prev) => !prev);
+  const close = () => setCrossVisible(false);
+  const updateCrossPos = (pos: LatLngExpression) => setCrossPos(pos);
 
   const openDrawer = (venueData: VenueData) => {
     setSelectedVenue(venueData);
@@ -38,10 +45,13 @@ export default function MapAndDrawer({
   return (
     <div>
       <Map
+        crossVisible={crossVisible}
+        close={close}
         openDrawer={openDrawer}
         venues={venues}
         openMeets={openMeets}
         isDrawerOpen={isDrawerOpen}
+        updateCrossPos={updateCrossPos}
       />
       <DrawerHompage
         isOpen={isDrawerOpen}
@@ -52,6 +62,7 @@ export default function MapAndDrawer({
         userCreatedMeets={userCreatedMeets}
         userPariticpatingMeets={userPariticpatingMeets}
         isDrawerOpen={isDrawerOpen}
+        toggleCross={toggleCross}
       />
     </div>
   );

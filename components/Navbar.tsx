@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaUser } from "react-icons/fa6";
+import { FaCirclePlus, FaUser } from "react-icons/fa6";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { DrawerUpComingSessions } from "./DrawerUpComingSessions";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
@@ -13,12 +13,14 @@ type Props = {
   userCreatedMeets: UserCreatedMeet[];
   userPariticpatingMeets: UserParticipatingMeet[];
   isDrawerOpen: boolean;
+  toggleCross: () => void;
 };
 
 export default function Navbar({
   userCreatedMeets,
   userPariticpatingMeets,
   isDrawerOpen,
+  toggleCross,
 }: Props) {
   return (
     <nav
@@ -32,7 +34,10 @@ export default function Navbar({
         <FaTableTennis className="size-8 fill-white" />
       </DrawerUpComingSessions>
       <FaLocationCrosshairs className="size-8 fill-white" />
-      <DrawerCreateVenue />
+      <button onClick={toggleCross}>
+        <FaCirclePlus className="size-8 fill-white" />{" "}
+      </button>
+      {/* <DrawerCreateVenue /> */}
       <Link href="/profile/me" className="nav-link">
         <div className="nav-button">
           <div className="flex flex-col items-center justify-center">
