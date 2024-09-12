@@ -47,30 +47,30 @@ export default async function ProfilePage({
 
   const FRIENDS_SHOWN = 8;
 
-  async function logout(): Promise<ActionResult> {
-    "use server";
-    const { session } = await validateRequest();
-    if (!session) {
-      return {
-        error: "Unauthorized",
-      };
-    }
+  // async function logout(): Promise<ActionResult> {
+  //   "use server";
+  //   const { session } = await validateRequest();
+  //   if (!session) {
+  //     return {
+  //       error: "Unauthorized",
+  //     };
+  //   }
 
-    await lucia.invalidateSession(session.id);
+  //   await lucia.invalidateSession(session.id);
 
-    const sessionCookie = lucia.createBlankSessionCookie();
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    );
-    return redirect("/login");
-  }
+  //   const sessionCookie = lucia.createBlankSessionCookie();
+  //   cookies().set(
+  //     sessionCookie.name,
+  //     sessionCookie.value,
+  //     sessionCookie.attributes
+  //   );
+  //   return redirect("/login");
+  // }
 
   return (
     <div>
       <div className={isOwnProfile() ? "" : "hidden"}>
-        <HeaderNav loggedInUserId={loggedInUserId} logout={logout} />
+        <HeaderNav loggedInUserId={loggedInUserId} />
       </div>
 
       <div className="flex flex-col items-center pt-5">

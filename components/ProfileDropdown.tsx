@@ -37,13 +37,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { ActionResult } from "@/lib/utils/types";
+import { logout } from "@/actions/auth";
+
+logout();
 
 export default function ProfileDropdown({
   loggedInUserId,
-  logout,
 }: {
   loggedInUserId: string | undefined;
-  logout: () => Promise<ActionResult>;
 }) {
   return (
     <DropdownMenu>

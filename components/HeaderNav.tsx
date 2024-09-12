@@ -7,12 +7,11 @@ import type { User as PrismaUser } from "@prisma/client";
 import { ActionResult } from "@/lib/utils/types";
 import Link from "next/link";
 
-interface HeaderNavProps {
+export default function HeaderNav({
+  loggedInUserId,
+}: {
   loggedInUserId: string | undefined;
-  logout: () => Promise<ActionResult>;
-}
-
-export default function HeaderNav({ loggedInUserId, logout }: HeaderNavProps) {
+}) {
   return (
     <header className="flex w-full justify-between px-3 py-3 items-center">
       <Button variant="ghost" size="icon">
@@ -22,7 +21,7 @@ export default function HeaderNav({ loggedInUserId, logout }: HeaderNavProps) {
       </Button>
 
       <p className=" w-auto font-medium size-4">Profile</p>
-      <ProfileDropdown loggedInUserId={loggedInUserId} logout={logout} />
+      <ProfileDropdown loggedInUserId={loggedInUserId} />
     </header>
   );
 }
