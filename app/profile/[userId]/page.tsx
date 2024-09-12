@@ -25,9 +25,11 @@ export default async function ProfilePage({
     include: {
       badges: true,
       friends: true,
+      settings: true,
+      city: true,
       meetsCreated: {
         include: {
-          venue: true,
+          // venue: true,
           activityType: true,
           participants: true,
           creator: true,
@@ -76,7 +78,11 @@ export default async function ProfilePage({
       <div className="flex flex-col items-center pt-5">
         <Avatar className="h-40 w-40">
           <AvatarImage
-            src={user?.picture ?? undefined}
+            src={
+              user.settings?.profileVisibility === "Private"
+                ? undefined
+                : user?.picture ?? undefined
+            }
             alt="@shadcn"
             className="object-cover"
           />
@@ -85,60 +91,98 @@ export default async function ProfilePage({
         <div className="pt-4 text-lg font-semibold">
           {user?.name ?? "No name provided"}
         </div>
-        <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
+        <div
+          className={
+            user.settings?.profileVisibility === "Private"
+              ? "hidden"
+              : "mt-2 text-sm text-muted-foreground px-11 text-center pt-3"
+          }
+        >
+          This is a little Bio which is only shown to friends of the Person
         </div>
         <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
-          Leipzig
+          {user.cityName}
         </div>
         <Separator className="my-5" />
-        <div className="w-full px-4">
-          <div className="flex overflow-x-auto py-2 space-x-4 scrollbar-hide">
-            {user?.badges.map((badge, index) => (
-              <div key={index} className="flex-shrink-0">
-                <img
-                  src={badge.icon || undefined}
-                  alt={badge.name}
-                  className="w-12 h-12 object-contain"
-                  title={badge.name}
-                />
-              </div>
-            ))}
-          </div>
+        <div className="flex items-center w-full px-4">
+          {user.settings?.profileVisibility === "Private" ? (
+            <p className="m-auto text-muted-foreground">
+              Only visible for friends sorry!
+            </p>
+          ) : (
+            <div className="flex overflow-x-auto py-2 space-x-4 scrollbar-hide">
+              {user?.badges.map((badge, index) => (
+                <div key={index} className="flex-shrink-0">
+                  <img
+                    src={badge.icon || undefined}
+                    alt={badge.name}
+                    className="w-12 h-12 object-contain"
+                    title={badge.name}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <Separator className="my-5" />
 
         <div className="flex justify-between w-full items-center px-5 mb-5">
-          <div className="flex">
-            {user?.friends ? (
-              <>
-                {user.friends.slice(0, FRIENDS_SHOWN).map((friend, index) => (
-                  <Avatar
-                    key={friend.id}
-                    className={`w-10 h-10 overflow-hidden relative ring-2 ring-white ${
-                      index !== 0 ? "-ml-2" : ""
-                    } z-${10 - index}`}
-                  >
-                    <AvatarImage
-                      src={friend.picture ?? ""}
-                      alt="@shadcn"
-                      className="object-cover"
-                    />
-                    <AvatarFallback>{"F" + index}</AvatarFallback>
-                  </Avatar>
-                ))}
-                {user.friends.length > FRIENDS_SHOWN ? (
-                  <div className="h-10 w-10 -ml-2 ring-2 flex items-center justify-center bg-muted rounded-full z-50 ring-white">
-                    {`+${user?.friends.length - FRIENDS_SHOWN}`}
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              <p>No friends</p>
-            )}
-          </div>
+          {user.settings?.profileVisibility === "Private" ? (
+            <>
+              <p className="h-10 w-10 -ml-2 ring-2 flex items-center justify-center bg-muted rounded-full z-50 ring-white text-muted-foreground text-sm">
+                {user.friends.length}
+              </p>{" "}
+              <small className="text-muted-foreground text-sm">
+                Get in touch to see full list of friends!
+              </small>
+            </>
+          ) : (
+            <div className="flex">
+              {user?.friends ? (
+                <>
+                  {user.friends.slice(0, FRIENDS_SHOWN).map((friend, index) => (
+                    <Avatar
+                      key={friend.id}
+                      className={`w-10 h-10 overflow-hidden relative ring-2 ring-white ${
+                        index !== 0 ? "-ml-2" : ""
+                      } z-${10 - index}`}
+                    >
+                      {user.settings?.profileVisibility === "Private" ? (
+                        <AvatarImage
+                          src={"/user-icon.png"}
+                          alt="@shadcn"
+                          className="object-cover bg-slate-50 w-12"
+                        />
+                      ) : (
+                        <AvatarImage
+                          src={friend.picture ?? ""}
+                          alt="@shadcn"
+                          className="object-cover"
+                        />
+                      )}
+                      <AvatarFallback>{"F" + index}</AvatarFallback>
+                    </Avatar>
+                  ))}
+                  {user.friends.length > FRIENDS_SHOWN ? (
+                    <div className="h-10 w-10 -ml-2 ring-2 flex items-center justify-center bg-muted rounded-full z-50 ring-white">
+                      {`+${user?.friends.length - FRIENDS_SHOWN}`}
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <p>No friends</p>
+              )}
+            </div>
+          )}
+
           <Link href={`/profile/${user.id}/friends`}>
-            <LuArrowRight className="size-5" />
+            <LuArrowRight
+              className={
+                user.settings?.profileVisibility === "Private"
+                  ? "hidden"
+                  : "size-5"
+              }
+            />
           </Link>
         </div>
         <Button
@@ -156,7 +200,13 @@ export default async function ProfilePage({
             <div className=" font-semibold underline">view all</div>
           </DrawerUpComingSessions>
         </div>
-        <div className="space-y-3 px-5">
+        <div
+          className={
+            user.settings?.profileVisibility === "Private"
+              ? "hidden"
+              : "space-y-3 px-5"
+          }
+        >
           {user.meetsCreated.map((meet) => (
             <MeetCard key={meet.id} meet={meet} />
           ))}

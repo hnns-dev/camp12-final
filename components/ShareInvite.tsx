@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { FaShareAlt } from "react-icons/fa";
 import { RWebShare } from "react-web-share";
+import { LuShare2 } from "react-icons/lu";
 
 type ShareInviteProps = {
   responseId: string;
@@ -35,7 +36,9 @@ export function ShareInvite({
         title: "Invite",
       }}
     >
-      <FaShareAlt className="w-6 h-6" />
+      <div className="flex w-11 h-11 rounded-xl absolute z-[999] top-4 right-4 p-3 bg-white/80 justify-between items-center">
+        <LuShare2 className="size-8" />
+      </div>
     </RWebShare>
   );
 }

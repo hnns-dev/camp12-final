@@ -7,10 +7,11 @@ async function main() {
   console.log("Cleaning Database...");
 
   await prisma.user.deleteMany();
-  await prisma.venue.deleteMany();
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
+  await prisma.city.deleteMany();
+  await prisma.venue.deleteMany();
 
   console.log("Cleaning Database finished");
 
@@ -108,6 +109,11 @@ async function main() {
       id: generateIdFromEntropySize(10),
       email: "user1@example.com",
       name: "Hans Meiser",
+      city: {
+        create: {
+          name: "Leipzig",
+        },
+      },
       settings: {
         create: {
           friendsVisibility: "Private",
@@ -136,6 +142,11 @@ async function main() {
       id: generateIdFromEntropySize(10),
       email: "user3@example.com",
       name: "Conchita Wurst",
+      city: {
+        create: {
+          name: "Berlin",
+        },
+      },
       settings: {
         create: {
           friendsVisibility: "Public",
