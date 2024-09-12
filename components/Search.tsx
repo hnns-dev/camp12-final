@@ -4,11 +4,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { XIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -21,9 +24,8 @@ export default function Search() {
     router.push(`/search?q=${encodedSearchQuery}`);
   };
 
-  const toggleSearch = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const toggleSearch = () => setIsOpen((prev) => !prev);
+  const closeSearch = () => setIsOpen(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,35 +49,34 @@ export default function Search() {
     }
   }, [isOpen]);
 
+  if (!isOpen) {
+    return (
+      <button
+        className=" absolute z-[9999] top-4 left-4 flex w-11 h-11 rounded-xl p-3 bg-white justify-center items-center cursor-pointer"
+        onClick={toggleSearch}
+      >
+        <LuSearch className="size-6" />
+      </button>
+    );
+  }
+
   return (
-    <div
+    <form
       ref={searchRef}
-      className={`absolute z-[9999] top-4 left-4 right-4 ${
-        isOpen ? "bg-white rounded-xl" : ""
-      }`}
+      onSubmit={onSearch}
+      className="absolute z-[9999] top-4 inset-x-3 flex gap-2 items-center "
     >
-      {isOpen ? (
-        <form onSubmit={onSearch} className="flex items-center w-full p-2">
-          <Input
-            ref={inputRef}
-            type="search"
-            placeholder="Search..."
-            className="flex-grow border-none bg-transparent focus:outline-none"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
-          <button type="submit">
-            <LuSearch className="size-6 ml-2 cursor-pointer flex-shrink-0" />
-          </button>
-        </form>
-      ) : (
-        <div
-          className="flex w-11 h-11 rounded-xl p-3 bg-white justify-center items-center cursor-pointer"
-          onClick={toggleSearch}
-        >
-          <LuSearch className="size-6" />
-        </div>
-      )}
-    </div>
+      <Input
+        ref={inputRef}
+        type="search"
+        placeholder="Search..."
+        className="flex-grow border-none focus:outline-none"
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value)}
+      />
+      <Button type="submit" className="flex w-11 h-11 rounded-xl p-3">
+        <LuSearch className="size-6 cursor-pointer flex-shrink-0" />
+      </Button>
+    </form>
   );
 }
