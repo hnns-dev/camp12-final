@@ -193,12 +193,7 @@ export default function Map2({
     }
   }, [venues, openDrawer]);
 
-  return (
-    <div className="h-screen w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute" />
-      {loading && <div>Loading...</div>}
-    </div>
-  );
+  return <div ref={mapContainer} className="h-screen w-screen absolute" />;
 }
 
 /**
