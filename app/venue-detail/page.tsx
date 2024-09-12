@@ -17,29 +17,26 @@ export default async function VenueDetailsPage() {
       tags: {
         select: { name: true },
       },
+      tournaments: {
+        select: {
+          name: true,
+          time: true,
+          date: true,
+        },
+      },
+      meets: {
+        select: {
+          date: true,
+          time: true,
+          isPublic: true,
+        },
+      },
       reports: {
         select: {
           issue: true,
           detail: true,
         },
       },
-    },
-  });
-  const tournaments = await prisma.tournament.findMany({
-    where: { venueId: venueId },
-    select: {
-      name: true,
-      time: true,
-      date: true,
-    },
-  });
-
-  const meets = await prisma.meet.findMany({
-    where: { venueId: venueId },
-    select: {
-      date: true,
-      time: true,
-      isPublic: true,
     },
   });
 
@@ -111,7 +108,7 @@ export default async function VenueDetailsPage() {
       <div className="w-full">
         <h3 className="text-sm text-gray-500 font-bold py-2">Tournaments</h3>
         <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
-          {tournaments.map((tournament, index) => (
+          {venue?.tournaments.map((tournament, index) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{tournament.name}</CardTitle>
@@ -135,7 +132,7 @@ export default async function VenueDetailsPage() {
       <div className="w-full">
         <h3 className="text-sm text-gray-500 font-bold py-2">Meets</h3>
         <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
-          {meets.map((meet, index) => (
+          {venue?.meets.map((meet, index) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{meet.isPublic ? "Public" : "Private"}</CardTitle>
