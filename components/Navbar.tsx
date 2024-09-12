@@ -21,10 +21,10 @@ export default function Navbar({
 }: Props) {
   return (
     <nav
-      // Use the cn function to conditionally apply classes
+      // Use the cn function to merge classes conditionally
       className={cn(
         "rounded-3xl absolute z-[999] bottom-4 right-4 left-4 p-5 bg-zinc-800/80 justify-between items-center",
-        isDrawerOpen ? "hidden" : "flex" // If isDrawerOpen is true, add the "hidden" class
+        isDrawerOpen ? "hidden" : "flex" // This class is conditionally applied when isDrawerOpen is true
       )}
     >
       <DrawerUpComingSessions />
