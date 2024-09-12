@@ -1,83 +1,159 @@
 import Image from "next/image";
-import exampleImage from "../../public/example.png";
+import { prisma } from "@/lib/db";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AwardIcon } from "lucide-react";
 
-const VenueDetailsPage = () => {
+export default async function VenueDetailsPage() {
+  const venueId = "a9f7dd25-b7b9-47aa-8818-bdd170d520d9";
+  const venue = await prisma.venue.findUnique({
+    where: { id: venueId },
+    select: {
+      name: true,
+      location: true,
+      image: true,
+      address: true,
+      description: true,
+      tags: {
+        select: { name: true },
+      },
+      reports: {
+        select: {
+          issue: true,
+        },
+      },
+    },
+  });
+  const tournaments = await prisma.tournament.findMany({
+    where: { venueId: venueId },
+    select: {
+      name: true,
+      time: true,
+      date: true,
+    },
+  });
+
+  const meets = await prisma.meet.findMany({
+    where: { venueId: venueId },
+    select: {
+      date: true,
+      time: true,
+      isPublic: true,
+    },
+  });
+
+  // handle an undefined case
+  const coordinates: number[] | undefined = venue?.location;
+  let address: string;
+  if (Array.isArray(coordinates) && coordinates.length >= 2) {
+    // desctructure the array which is lat and lng
+    const [lat, lng] = coordinates;
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch address");
+    }
+    const data = await response.json();
+    address = data.display_name;
+  } else {
+    <small>Cant show the location</small>;
+    throw new Error("The coordinates are undefined or in wrong format");
+  }
+
   return (
     <div className="flex flex-col items-center p-4 space-y-4">
-      {/* Date Navigation */}
-      <div className="flex items-center justify-center space-x-4">
-        <button className="text-lg">←</button>
-        <h2 className="text-lg font-bold">16.03.2067</h2>
-        <button className="text-lg">→</button>
+      <div className="flex items-center justify-between space-x-4 w-full">
+        <button className="flex text-lg">←</button>
+        <h2 className=" flex text-lg font-bold">Venue</h2>
+        <button className="flex text-lg">→</button>
       </div>
 
       {/* Venue Name */}
-      <h1 className="text-xl font-bold">Erich Zeigner Allee 78</h1>
+      <div className="relative flex justify-center items-center w-5/6">
+        <h1 className="truncate cursor-pointer text-muted-foreground group">
+          {address}
+          <div className="absolute left-0 top-full mt-1 bg-white border border-gray-300 p-2 shadow-lg rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-normal z-10">
+            {address}
+          </div>
+        </h1>
+      </div>
 
       {/* Venue Image */}
       <div className="relative w-full max-w-md">
         <Image
-          src={exampleImage}
-          alt="Venue"
+          src={venue?.image!}
+          alt="Venue Image"
           className="rounded-lg"
           layout="responsive"
           width={640}
           height={320}
         />
-        <div className="absolute bottom-3 left-7 flex space-x-3">
-          <span className="bg-white bg-opacity-50 text-white border border-white rounded-full px-2 py-1 text-sm">
-            Condition
-          </span>
-          <span className="bg-white bg-opacity-50 text-white border border-white rounded-full px-2 py-1 text-sm">
-            Public
-          </span>
-        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {venue?.tags.map((tag, index) => (
+          <small
+            key={index}
+            className="flex justify-center items-center w-auto py-0.5 px-2 h-auto rounded-full border-2 text-xs bg-gray-300 text-gray-600 shadow-sm border-gray-400"
+          >
+            {tag.name}
+          </small>
+        ))}
       </div>
 
-      {/* Ongoing Event */}
-      <h2 className="text-lg font-bold">Ongoing</h2>
-      <div className="bg-gray-200 rounded-lg p-4 w-full max-w-md">
-        <div className="flex justify-between">
-          <div>
-            <p>Type: Tournament</p>
-            <p>Date: 16.03.2067</p>
-            <p>Time: 06:00</p>
-          </div>
-          <div>
-            <p>Duration: 2h</p>
-            <p>Size: 16/16</p>
-            <p>Private</p>
-          </div>
+      {/* Description */}
+      <div className="flex h-auto max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70">
+        <p>{venue?.description}</p>
+      </div>
+
+      {/* Tournaments on this Place */}
+      <div className="w-full">
+        <h3 className="text-sm text-gray-500 font-bold py-2">Tournaments</h3>
+        <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
+          {tournaments.map((tournament, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle>{tournament.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col mb-1">
+                  <Label>Date</Label>
+                  <p>{tournament.date.toLocaleDateString()}</p>
+                </div>
+                <div className="flex flex-col">
+                  <Label>Time</Label>
+                  <p className="text-left">{tournament.time}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
 
       {/* Planned Event */}
-      <h2 className="text-lg font-bold">Planned</h2>
-      <div className="bg-gray-200 rounded-lg p-4 w-full max-w-md">
-        <div className="flex justify-between">
-          <div>
-            <p>Type: Session</p>
-            <p>Date: 18.03.2067</p>
-            <p>Time: 12:00</p>
-          </div>
-          <div>
-            <p>Duration: Open End</p>
-            <p>Size: -</p>
-            <p>Open</p>
-          </div>
+      <div className="w-full">
+        <h3 className="text-sm text-gray-500 font-bold py-2">Meets</h3>
+        <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
+          {meets.map((meet, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle>{meet.isPublic ? "Public" : "Private"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col mb-1">
+                  <Label>Date</Label>
+                  <p>{meet.date.toLocaleDateString()}</p>
+                </div>
+                <div className="flex flex-col">
+                  <Label>Time</Label>
+                  <p className="text-left">{meet.time}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </div>
-
-      {/* Description */}
-      <h2 className="text-lg font-bold">Description</h2>
-      <div className="bg-gray-200 rounded-lg p-4 w-full max-w-md">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed diam
-          nonummy...
-        </p>
       </div>
     </div>
   );
-};
-
-export default VenueDetailsPage;
+}
