@@ -120,7 +120,6 @@ export default function UpdateMeet({
     name: "public",
     defaultValue: false,
   });
-  console.log(privacy);
 
   const date = useWatch({
     control: form.control,
@@ -134,6 +133,7 @@ export default function UpdateMeet({
     control: form.control,
     name: "activityType",
   });
+  
 
   useEffect(() => {
     console.log(form.formState.errors);
@@ -148,10 +148,10 @@ export default function UpdateMeet({
       time,
       duration,
       isPublic,
-      creatorId: "kdmnbiygv4lngtze",
+      creatorId: "3tffnkarhdxgomgy",
       guests,
       notes,
-      venueId: "1c5d63c2-6204-4ee1-a7fb-7018b983a6ad",
+      venueId: "70ba400c-49cf-4a12-a748-fd8264f41559",
       activityTypeName: activityType
     });
 
