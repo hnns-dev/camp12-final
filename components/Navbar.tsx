@@ -30,7 +30,7 @@ export default function Navbar({
       <DrawerUpComingSessions />
       <FaLocationCrosshairs className="size-8 fill-white" />
       <DrawerCreateVenue />
-      <Link href="/profile" className="nav-link">
+      <Link href="/profile/me" className="nav-link">
         <div className="nav-button">
           <div className="flex flex-col items-center justify-center">
             <FaUser className="size-8 fill-white" />
