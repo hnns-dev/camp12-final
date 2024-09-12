@@ -7,6 +7,7 @@ import { DrawerUpComingSessions } from "./DrawerUpComingSessions";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import { DrawerCreateVenue } from "./DrawerCreateVenue";
 import { cn } from "@/lib/utils";
+import { FaTableTennis } from "react-icons/fa";
 
 type Props = {
   userCreatedMeets: UserCreatedMeet[];
@@ -27,7 +28,9 @@ export default function Navbar({
         isDrawerOpen ? "hidden" : "flex" // This class is conditionally applied when isDrawerOpen is true
       )}
     >
-      <DrawerUpComingSessions />
+      <DrawerUpComingSessions defaultTab="near-me">
+        <FaTableTennis className="size-8 fill-white" />
+      </DrawerUpComingSessions>
       <FaLocationCrosshairs className="size-8 fill-white" />
       <DrawerCreateVenue />
       <Link href="/profile/me" className="nav-link">
