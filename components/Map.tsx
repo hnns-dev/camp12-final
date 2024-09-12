@@ -1,85 +1,142 @@
 import React, { useRef, useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
-import data from "../lib/filtered_output_data.json";
+import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
-import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
+import { Venue } from "@/lib/utils/types";
+import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
+import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
+import jsonData from "../lib/filtered_output_data.json";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
+
+export interface VenueData {
+  name: string;
+  address: string;
+  distance?: string;
+  geolocation: LatLngExpression;
+}
 
 type MapProps = {
-  openDrawer: () => void;
+  openDrawer: (venueData: VenueData) => void;
+  venues: GetVenuesResult;
+  openMeets: GetOpenMeetsResult;
+  isDrawerOpen: boolean; // Add this prop
 };
 
-export default function Map2({ openDrawer }: MapProps) {
+const venueIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+const meetIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+export default function Map2({
+  openDrawer,
+  venues,
+  openMeets,
+  isDrawerOpen,
+}: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [userPosition, setUserPosition] = useState<LatLngExpression | null>(
     null
   );
-  // reference is used to ensure that the coordinates are not null in important calculations
   const userPositionRef = useRef<LatLngExpression | null>(null);
+
   useEffect(() => {
     userPositionRef.current = userPosition;
   }, [userPosition]);
 
-  // build map
   useEffect(() => {
-    // if the map exists, or if the mapContainer is missing, abort the useEffect
     if (map.current || !mapContainer.current) return;
 
     try {
-      // Inside your useEffect where the map is initialized
       map.current = L.map(mapContainer.current, {
         center: [51.3397, 12.3731],
-        zoom: 13,
+        zoom: 12,
         minZoom: 3,
         maxZoom: 18,
-        zoomControl: false, // Disable the default zoom control position
+        zoomControl: false, // Toggle zoom control based on isDrawerOpen
       });
 
-      // Vector layer
-      const mtLayer = new MaptilerLayer({
+      new MaptilerLayer({
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
       }).addTo(map.current);
 
-      // Custom zoom control position, adjusted upwards
-      L.control
-        .zoom({
-          position: "bottomright", // Keep the control in the bottom-right corner
-        })
-        .addTo(map.current);
+      const VenueMarkers = L.markerClusterGroup();
+      const OpenMeetMarkers = L.markerClusterGroup();
 
-      // Move zoom control slightly upwards
-      const zoomControlElement = document.querySelector(
-        ".leaflet-control-zoom"
-      ) as HTMLElement; // Cast to HTMLElement
-      if (zoomControlElement) {
-        zoomControlElement.style.marginBottom = "80px"; // Adjust this value to move the zoom control upwards
-      }
+      venues.forEach((venue) => {
+        if (venue.location && venue.location.length === 2) {
+          const marker = L.marker(venue.location as L.LatLngTuple, {
+            icon: venueIcon,
+          })
+            .bindPopup(venue.name || "Unnamed Venue")
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: venue.name || "Unnamed Venue",
+                address: venue.address || "Unknown address",
+                geolocation: venue.location as LatLngExpression,
+              };
+              openDrawer(venueData);
+            });
 
-      // Markers being clustered
-      const markers = L.markerClusterGroup();
-      data.forEach((entry) => {
-        // Check if data is in correct format
-        if (entry.geolocation && entry.geolocation.length === 2) {
-          const marker = L.marker(entry.geolocation as L.LatLngTuple).bindPopup(
-            "Unnamed Venue"
-          );
-          markers.addLayer(marker);
+          VenueMarkers.addLayer(marker);
+        } else {
+          console.log("Invalid location for:", venue.name);
         }
       });
-      map.current.addLayer(markers);
+      map.current.addLayer(VenueMarkers);
 
+      console.log(openMeets);
+
+      openMeets.forEach((meet) => {
+        if (meet.location && meet.location.length === 2) {
+          const marker = L.marker(meet.location as L.LatLngTuple, {
+            icon: meetIcon,
+          })
+            .bindPopup("Meet: " + meet.activityType.name)
+            .on("click", () => {
+              const venueData: VenueData = {
+                name: meet.activityType.name || "Unnamed Meet",
+                address: meet.address || "Unknown address",
+                geolocation: meet.location as LatLngExpression,
+              };
+              openDrawer(venueData);
+            });
+          VenueMarkers.addLayer(marker);
+        } else {
+          console.log("Invalid location for:", meet.activityType.name);
+        }
+      });
+      map.current.addLayer(OpenMeetMarkers);
       setLoading(false);
     } catch (error) {
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, []);
+  }, [venues, openMeets, openDrawer, isDrawerOpen]); // Add isDrawerOpen to dependencies
 
-  // Ask Permission if we can locate the user
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -107,68 +164,103 @@ export default function Map2({ openDrawer }: MapProps) {
       console.error("Geolocation is not supported by this browser");
       setLoading(false);
     }
-  }, []);
+  }, [venues]);
 
-  // Event handling
   useEffect(() => {
-    // if there is no map, return
     if (!map.current) return;
 
     function handleClick() {
       if (userPositionRef.current) {
-        const nearestVenue = getNearestVenue(userPositionRef.current);
+        const nearestVenue = getNearestVenue(userPositionRef.current, venues);
         if (nearestVenue) {
+          const distance = calculateDistance(
+            userPositionRef.current,
+            nearestVenue
+          );
+          const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.current?.flyTo(nearestVenue, 16);
-          // a little delay for opening the drawer
-          setTimeout(() => openDrawer(), 1500);
+          const venueData: VenueData = {
+            name: "Nearest Venue",
+            address: "Some Address",
+            distance: distanceFormatted,
+            geolocation: nearestVenue,
+          };
+          setTimeout(() => openDrawer(venueData), 1500);
         }
       } else {
         console.error("User position is not available");
       }
     }
-
-    map.current.on("click", handleClick);
-  });
-
-  // After loading, recalculate size of map
-  useEffect(() => {
-    if (map.current) {
-      map.current.invalidateSize();
-    }
-  }, [loading]);
+  }, [venues, openDrawer]);
 
   return (
     <div className="h-screen w-screen relative">
-      <div ref={mapContainer} className="h-full w-full absolute " />
+      <div ref={mapContainer} className="h-full w-full absolute" />
       {loading && <div>Loading...</div>}
     </div>
   );
 }
 
-// helper function
+/**
+ * Calculates the distance between two geographical points using the Haversine formula.
+ * @param point1 - The first geographical point (latitude, longitude).
+ * @param point2 - The second geographical point (latitude, longitude).
+ * @returns The distance in meters between the two points.
+ */
+function calculateDistance(
+  point1: LatLngExpression,
+  point2: LatLngExpression
+): number {
+  // Type assertion to treat point1 and point2 as [number, number]
+  const [lat1, lon1] = point1 as [number, number];
+  const [lat2, lon2] = point2 as [number, number];
+
+  const R = 6371e3; // Earth's radius in meters
+  const lat1Rad = (lat1 * Math.PI) / 180;
+  const lat2Rad = (lat2 * Math.PI) / 180;
+  const deltaLatRad = ((lat2 - lat1) * Math.PI) / 180;
+  const deltaLonRad = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(deltaLatRad / 2) * Math.sin(deltaLatRad / 2) +
+    Math.cos(lat1Rad) *
+      Math.cos(lat2Rad) *
+      Math.sin(deltaLonRad / 2) *
+      Math.sin(deltaLonRad / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 function getNearestVenue(
-  userLocation: LatLngExpression
+  userLocation: LatLngExpression,
+  venues: Venue[]
 ): LatLngExpression | null {
   const userLoc = userLocation as [number, number];
   let result: LatLngExpression = userLocation;
   let minDistance = Infinity;
 
-  for (let key in data) {
-    const venueLoc: [number, number] = data[key].geolocation as [
+  for (let key in jsonData) {
+    const venueLoc: [number, number] = jsonData[key].geolocation as [
       number,
       number
     ];
     if (!venueLoc) continue;
 
-    const distance = Math.sqrt(
-      Math.pow(userLoc[0] - venueLoc[0], 2) +
-        Math.pow(userLoc[1] - venueLoc[1], 2)
-    );
+    venues.forEach((venue) => {
+      if (venue.location && venue.location.length === 2) {
+        const venueLoc: [number, number] = venue.location as [number, number];
 
-    if (distance < minDistance) {
-      minDistance = distance;
-      result = venueLoc;
-    }
+        const distance = Math.sqrt(
+          Math.pow(userLoc[0] - venueLoc[0], 2) +
+            Math.pow(userLoc[1] - venueLoc[1], 2)
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          result = venueLoc;
+        }
+      }
+    });
   }
   return result;
 }

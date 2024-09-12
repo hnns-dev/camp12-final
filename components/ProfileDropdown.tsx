@@ -1,25 +1,15 @@
 "use client";
 
 import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
   LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-  Shield,
-  Pencil,
   LucideMoreVertical,
+  Pencil,
+  Settings,
+  Shield,
+  Users,
 } from "lucide-react";
 
+import { logout } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,16 +17,16 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
-export default function ProfileDropdown() {
+export default function ProfileDropdown({
+  loggedInUserId,
+}: {
+  loggedInUserId: string | undefined;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -50,26 +40,28 @@ export default function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Pencil className="mr-2 h-4 w-4" />
-            <span>Edit</span>
+            <Link href={`/profile/${loggedInUserId}/update`}>Edit</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <Link href="/settings">Settings</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Shield className="mr-2 h-4 w-4" />
-          <span>Badges</span>
+          <Link href={`/badges/${loggedInUserId}`}>Badges</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Users className="mr-2 h-4 w-4" />
-          <span>Friends</span>
+          <Link href={`/profile/${loggedInUserId}/friends`}>Friends</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+        <DropdownMenuItem asChild>
+          <form action={logout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <button type="submit">Sign out</button>
+          </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

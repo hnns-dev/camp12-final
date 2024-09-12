@@ -52,7 +52,7 @@ export const updateTags = async ({ names, tag }: Props) => {
       create: tag,
     });
   }
-  console.log("Tag ${tag.name} updatetd or created successfully");
+  console.log("Tag ${tag.name} updated or created successfully");
 };
 
 interface MeetProps {
@@ -64,6 +64,43 @@ interface MeetProps {
   guests: number;
   notes?: string;
   venueId: string;
-  activityType: string;
-  tags: Tag[];
+  activityTypeName: string;
 }
+
+export const createMeet = async ({
+  date,
+  time,
+  duration,
+  isPublic,
+  creatorId,
+  guests,
+  notes,
+  venueId,
+  activityTypeName,
+}: MeetProps) => {
+  await prisma.meet.create({
+    data: {
+      date: date,
+      time: time,
+      duration: duration,
+      isPublic: isPublic,
+      creator: {
+        connect: {
+          id: creatorId,
+        },
+      },
+      venue: {
+        connect: {
+          id: venueId,
+        },
+      },
+      activityType: {
+        connect: {
+          name: activityTypeName,
+        },
+      },
+      guests: guests,
+      notes: notes,
+    },
+  });
+};
