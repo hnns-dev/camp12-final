@@ -76,6 +76,7 @@ export default function Map2({
         zoom: 12,
         minZoom: 3,
         maxZoom: 18,
+        attributionControl: false,
         zoomControl: !isDrawerOpen, // Toggle zoom control based on isDrawerOpen
       });
 
@@ -192,7 +193,7 @@ export default function Map2({
   }, [venues, openDrawer]);
 
   return (
-    <div className="h-screen-without-bar w-screen relative">
+    <div className="h-screen w-screen relative">
       <div ref={mapContainer} className="h-full w-full absolute" />
       {loading && <div>Loading...</div>}
     </div>

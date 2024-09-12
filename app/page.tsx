@@ -20,8 +20,6 @@ export default async function Home({
 }: {
   searchParams: { [key: string]: string | string[] };
 }) {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   const venues = await getVenues();
 
   const openMeets = await getOpenMeets();
@@ -47,12 +45,13 @@ export default async function Home({
   const filteredOpenMeets = filterOpenMeets(openMeets, filters);
   return (
     <div className="h-screen relative overflow-hidden">
-      <MapAndDrawer venues={filteredVenues} openMeets={filteredOpenMeets} />
-      <Navbar
+      <MapAndDrawer
+        venues={filteredVenues}
+        openMeets={filteredOpenMeets}
         userCreatedMeets={myMeets}
         userPariticpatingMeets={participatingMeets}
-        isDrawerOpen={isDrawerOpen}
       />
+
       <Search />
       <FilterDrawer />
     </div>
