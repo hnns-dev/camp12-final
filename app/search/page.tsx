@@ -15,7 +15,24 @@ const SearchPage = async ({
 
   const venues = await prisma.venue.findMany({
     where: {
-      OR: [{ name: { contains: searchQuery, mode: "insensitive" } }],
+      OR: [
+        { name: { contains: searchQuery, mode: "insensitive" } },
+        { address: { contains: searchQuery, mode: "insensitive" } },
+        {
+          activityTypes: {
+            some: {
+              name: { contains: searchQuery, mode: "insensitive" },
+            },
+          },
+        },
+        {
+          tags: {
+            some: {
+              name: { contains: searchQuery, mode: "insensitive" },
+            },
+          },
+        },
+      ],
     },
     include: { activityTypes: true, tags: true },
     take: 5,
@@ -28,6 +45,13 @@ const SearchPage = async ({
         {
           activityType: {
             name: { contains: searchQuery, mode: "insensitive" },
+          },
+        },
+        {
+          tags: {
+            some: {
+              name: { contains: searchQuery, mode: "insensitive" },
+            },
           },
         },
       ],

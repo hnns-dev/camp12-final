@@ -115,10 +115,10 @@ async function main() {
       name: "Ping Pong Table - Güntz Park",
       address: "Dr.-Güntz-Park in 04299 Leipzig",
       location: [51.32106056582742, 12.409769051059083],
-      image: "/example.png",
+      image: "/venue-img/IMG_5534.jpg",
       activityTypes: {
         connect: {
-          id: tennis.id,
+          id: tableTennis.id,
         },
       },
     },
