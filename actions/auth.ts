@@ -56,7 +56,8 @@ export const signInWithMagicLink = async (formData: FormData) => {
 };
 
 export async function logout(): Promise<ActionResult> {
-  "use server";
+  console.log("logout");
+
   const { session } = await validateRequest();
   if (!session) {
     return {

@@ -1,25 +1,15 @@
 "use client";
 
 import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
   LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-  Shield,
-  Pencil,
   LucideMoreVertical,
+  Pencil,
+  Settings,
+  Shield,
+  Users,
 } from "lucide-react";
 
+import { logout } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,19 +17,10 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { ActionResult } from "@/lib/utils/types";
-import { logout } from "@/actions/auth";
-
-logout();
 
 export default function ProfileDropdown({
   loggedInUserId,
@@ -76,10 +57,10 @@ export default function ProfileDropdown({
           <Link href={`/profile/${loggedInUserId}/friends`}>Friends</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
+        <DropdownMenuItem asChild>
           <form action={logout}>
-            <button>Sign out</button>
+            <LogOut className="mr-2 h-4 w-4" />
+            <button type="submit">Sign out</button>
           </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
