@@ -229,8 +229,7 @@ export default function Map2({
           </div>
         </div>
       ) : null}
-      <div ref={mapContainer} className="h-full w-full absolute" />
-      {loading && <div>Loading...</div>}
+      <div ref={mapContainer} className="h-screen w-screen absolute" />
     </div>
   );
 }
