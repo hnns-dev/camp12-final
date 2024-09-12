@@ -46,7 +46,7 @@ type Props = {
   meet?: Meet & { activityType: ActivityType };
 };
 
-// Defining a schema for Tournament Creation
+// Defining a schema for Meetsession Creation
 
 export default function MeetForm({ meet }: Props) {
   // Calender Popover open
@@ -67,7 +67,6 @@ export default function MeetForm({ meet }: Props) {
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
-      equipment: meet?.equipment ? meet.equipment : "",
       // activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
     },
   });
@@ -101,6 +100,7 @@ export default function MeetForm({ meet }: Props) {
     control: form.control,
     name: "time",
   });
+
   let activityType = useWatch({
     control: form.control,
     name: "activityType",
@@ -120,7 +120,7 @@ export default function MeetForm({ meet }: Props) {
         console.log("finished updating");
       } else {
         // If meet doesn't exist or doesn't have an id, create a new meet
-        await createMeet(values, user.id); // Assuming user.id is the creator's ID
+        await createMeet(values, user.id);
         console.log("finished creating");
       }
 

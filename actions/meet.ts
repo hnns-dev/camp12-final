@@ -91,7 +91,9 @@ export async function updateMeet(
 
 export const createMeet = async (
   values: z.infer<typeof meetSchema>,
-  creatorId: string
+  creatorId: string,
+  venueId: string,
+  activityTypeName: string
 ) => {
   await prisma.meet.create({
     data: {
@@ -100,6 +102,10 @@ export const createMeet = async (
       duration: values.duration,
       isPublic: values.public,
       isRecurring: values.recurring,
+      guests: values.guests,
+      participants: values.creatorId,
+      notes: values.description,
+      equipment: values.equipment,
       creator: {
         connect: {
           id: creatorId,
@@ -110,15 +116,11 @@ export const createMeet = async (
           id: venueId,
         },
       },
-      address: values.venueId,
       activityType: {
         connect: {
           name: activityTypeName,
         },
       },
-      guests: values.guests,
-      notes: values.description,
-      equipment: values.equipment || undefined,
     },
   });
 };
