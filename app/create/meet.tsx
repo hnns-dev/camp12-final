@@ -61,12 +61,13 @@ export default function MeetForm({ meet }: Props) {
       activityType: meet?.activityType ? meet.activityType.name : undefined,
       duration: meet?.duration ? meet.duration : 0.5,
       public: meet?.isPublic ? meet.isPublic : false,
-      mode: meet?.mode ? meet.mode : "casual",
+      // mode: meet?.mode ? meet.mode : "casual", ???
       recurring: meet?.isRecurring ? meet.isRecurring : false,
       guests: meet?.guests ? meet.guests : 0,
       date: meet?.date ? meet.date : new Date(),
       time: meet?.time ? meet.time : "12:00",
       description: meet?.notes ? meet.notes : "",
+      equipment: meet?.equipment ? meet.equipment : "",
       // activityType: meet?.activityTypeId ? meet.activityTypeId : "undefined",
     },
   });
@@ -81,7 +82,7 @@ export default function MeetForm({ meet }: Props) {
   const level = useWatch({
     control: form.control,
     name: "mode",
-    defaultValue: false,
+    defaultValue: "casual",
   });
   console.log(level);
 
@@ -112,14 +113,23 @@ export default function MeetForm({ meet }: Props) {
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
 
-    if (meet && meet.id) {
-      // If meet exists and has an id, update the existing meet
-      await updateMeet(meet.id, values);
-      console.log("finished updating");
-    } else {
-      // If meet doesn't exist or doesn't have an id, create a new meet
-      await createMeet(values);
-      console.log("finished creating");
+    try {
+      if (meet && meet.id) {
+        // If meet exists and has an id, update the existing meet
+        await updateMeet(meet.id, values);
+        console.log("finished updating");
+      } else {
+        // If meet doesn't exist or doesn't have an id, create a new meet
+        await createMeet(values, user.id); // Assuming user.id is the creator's ID
+        console.log("finished creating");
+      }
+
+      // Handle successful creation/update (e.g., show a success message, redirect, etc.)
+      console.log("Meet successfully created/updated");
+      // You can add a success message or redirect here
+    } catch (error) {
+      console.error("Error creating/updating meet:", error);
+      // Handle error (e.g., show error message to user)
     }
   };
 
@@ -327,12 +337,12 @@ export default function MeetForm({ meet }: Props) {
               {/* Participants */}
               <FormField
                 control={form.control}
-                name="participants"
+                name="guests"
                 render={({ field }) => (
                   <FormItem>
                     <GroupSizeSelect
                       onChange={field.onChange}
-                      value={parseInt(field.value)}
+                      value={field.value}
                       groupSizes={groupSizes}
                     />
                   </FormItem>
@@ -345,7 +355,8 @@ export default function MeetForm({ meet }: Props) {
                 setValue={setValue}
               /> */}
               {/* Competitive */}
-              <FormField
+              {/* took out competetive because we have mode */}
+              {/* <FormField
                 control={form.control}
                 name="competitive"
                 render={({ field }) => (
@@ -370,7 +381,7 @@ export default function MeetForm({ meet }: Props) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* Recurring */}
               <FormField
                 control={form.control}

@@ -89,13 +89,17 @@ export async function updateMeet(
   });
 }
 
-export const createMeet = async (values: z.infer<typeof meetSchema>) => {
+export const createMeet = async (
+  values: z.infer<typeof meetSchema>,
+  creatorId: string
+) => {
   await prisma.meet.create({
     data: {
       date: values.date,
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
+      isRecurring: values.recurring,
       creator: {
         connect: {
           id: creatorId,
@@ -106,13 +110,15 @@ export const createMeet = async (values: z.infer<typeof meetSchema>) => {
           id: venueId,
         },
       },
+      address: values.venueId,
       activityType: {
         connect: {
           name: activityTypeName,
         },
       },
-      guests: guests,
-      notes: notes,
+      guests: values.guests,
+      notes: values.description,
+      equipment: values.equipment || undefined,
     },
   });
 };

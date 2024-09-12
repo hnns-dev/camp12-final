@@ -5,14 +5,31 @@ import { protectPage } from "@/lib/auth";
 export default async function CreateMeet() {
   const user = await protectPage();
   const tags = await prisma.tag.findMany();
+
+  const initialMeetData = await prisma.meet.findFirst({
+    where: { creatorId: user.id },
+    include: {
+      activityType: true,
+      venue: true,
+    },
+  });
+
+  // If there's no existing meet, use default values?
+  const meetData = initialMeetData || {
+    isPublic: false,
+    guests: 0,
+    venueId: null,
+    activityType: null,
+  };
+
   return (
     <div>
       {/* <TournamentPage /> */}
       <MeetForm
-        isPublic={false}
+        isPublic={meetData.isPublic}
         creatorId={user.id}
-        guests={0}
-        venueId={"cac656e2-3565-4387-9e03-cb80ab885a16"}
+        guests={meetData.guests}
+        venueId={meetData.venueId}
         tagSuggestions={tags}
       />
     </div>

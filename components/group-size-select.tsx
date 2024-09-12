@@ -5,10 +5,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// changed string[] to number[]
+
 type GroupSizeSelectProps = {
   groupSizes: number[];
-  onChange: (value: string) => void;
+  onChange: (value: string) => void; // Changed to number
   value: number;
   placeholder?: string;
 };
