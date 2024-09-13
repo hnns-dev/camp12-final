@@ -100,6 +100,23 @@ export default function CreateVenueForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="detail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name of the venue</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter a name, if not sure, be creative! "
+                  className="h-10"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -148,7 +165,7 @@ export default function CreateVenueForm() {
         />
 
         <Button type="submit" className="m-5">
-          Report
+          Create Venue
         </Button>
 
         {error && <p className="text-red-500">{error}</p>}
