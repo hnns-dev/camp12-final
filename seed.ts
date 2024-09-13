@@ -46,6 +46,13 @@ async function main() {
       requiredNumberOfParticipants: 2,
     },
   });
+  const tableTennis = await prisma.activityType.create({
+    data: {
+      name: "Table Tennis",
+      description: "Fast-paced sport with paddles and lightweight ball",
+      requiredNumberOfParticipants: 2,
+    },
+  });
 
   // Venues
   const weisseElster = await prisma.venue.create({
@@ -105,6 +112,20 @@ async function main() {
       activityTypes: {
         connect: {
           id: boule.id,
+        },
+      },
+    },
+  });
+
+  const tableTennis001 = await prisma.venue.create({
+    data: {
+      name: "Ping Pong Table - Güntz Park",
+      address: "Dr.-Güntz-Park in 04299 Leipzig",
+      location: [51.32106056582742, 12.409769051059083],
+      image: "/venue-img/IMG_5534.jpg",
+      activityTypes: {
+        connect: {
+          id: tableTennis.id,
         },
       },
     },
@@ -453,6 +474,7 @@ async function main() {
     data: {
       name: "Anzeigenhauptmeister",
       icon: "/parkverbot.png",
+      description: "Filed 10 reports",
       users: {
         connect: {
           id: user2.id,
@@ -465,6 +487,12 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
+      description: "won 10 tournaments",
+      users: {
+        connect: {
+          id: user1.id,
+        },
+      },
     },
   });
 
@@ -472,6 +500,12 @@ async function main() {
     data: {
       name: "Yoga-Meister",
       icon: "/yoga.svg",
+      description: "attended 100 yoga meets",
+      users: {
+        connect: {
+          id: user3.id,
+        },
+      },
     },
   });
 

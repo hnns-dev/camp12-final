@@ -13,3 +13,7 @@ export type Venue = PrismaVenue & {
 export type Meet = PrismaMeet & {
   activityType: { name: string };
 };
+
+export type ActionResult = {
+  error: string | null;
+};

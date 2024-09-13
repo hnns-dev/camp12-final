@@ -31,10 +31,11 @@ model User {
 }
 
 model Badge {
-  name      String   @id @unique
-  icon      String?
-  users     User[]
-  createdAt DateTime @default(now())
+  name        String   @id @unique
+  icon        String?
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
 }
 
 model Session {
@@ -79,7 +80,7 @@ model Venue {
   location      Float[]
   image         String?
   address       String?
-  description   String
+  description   String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -107,8 +108,7 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-
-  tags Tag[] @relation(name: "TagtoMeet")
+  tags           Tag[]        @relation(name: "TagtoMeet")
 }
 
 model CheckIn {
