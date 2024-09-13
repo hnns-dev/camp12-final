@@ -1,12 +1,10 @@
+"use server";
 // Import necessary dependencies
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
-<<<<<<< HEAD
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
-=======
->>>>>>> eed4fed27b9e4aa4b4c7ff5ce500adb9fc0e54ba
 
 // Helper function to check if a given time is in the future
 function isTimeInFuture(time: string) {
@@ -71,7 +69,6 @@ export async function deleteMeet(meetId: string, userId: string) {
     };
   }
 }
-<<<<<<< HEAD
 
 export async function updateMeet(
   meetId: string,
@@ -97,7 +94,7 @@ export const submitMeet = async (
   creatorId: string,
   venueId: string,
 ) => {
-  await prisma.meet.create({
+  const meet = await prisma.meet.create({
     data: {
       date: values.date,
       time: values.time,
@@ -105,7 +102,6 @@ export const submitMeet = async (
       isPublic: values.public,
       isRecurring: values.recurring,
       guests: Number(values.guests),
-      // TO DO
       participants: {},
       notes: values.description,
       equipment: values.equipment,
@@ -126,6 +122,5 @@ export const submitMeet = async (
       },
     },
   });
+  return meet;
 };
-=======
->>>>>>> eed4fed27b9e4aa4b4c7ff5ce500adb9fc0e54ba
