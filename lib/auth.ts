@@ -1,7 +1,8 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import { User as DBUser, PrismaClient } from "@prisma/client";
+import { request } from "http";
 import { Lucia, Session, User } from "lucia";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
@@ -76,6 +77,20 @@ export const validateRequest = cache(
 export async function protectPage() {
   const { user } = await validateRequest();
   if (!user) {
+    // getting curr path
+    const headersList = headers();
+    const fullUrl = headersList.get("x-url") || "/";
+    const currentPath = new URL(fullUrl).pathname;
+
+    //storing the path in a cookie
+    const cookieStore = cookies();
+    cookieStore.set("intendedPath", currentPath, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // one week storage
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
     return redirect("/login");
   }
   return user;

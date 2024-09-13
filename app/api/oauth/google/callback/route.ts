@@ -73,10 +73,12 @@ export async function GET(request: NextRequest) {
         sessionCookie.value,
         sessionCookie.attributes
       );
+      const cookieStore = cookies();
+      const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
       return new Response(null, {
         status: 302,
         headers: {
-          Location: "/protected",
+          Location: intendedPath,
         },
       });
     }
@@ -105,10 +107,12 @@ export async function GET(request: NextRequest) {
       sessionCookie.value,
       sessionCookie.attributes
     );
+    const cookieStore = cookies();
+    const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/protected",
+        Location: intendedPath,
       },
     });
   } catch (err) {

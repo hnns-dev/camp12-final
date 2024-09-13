@@ -60,11 +60,15 @@ export async function GET(request: NextRequest) {
     sessionCookie.attributes
   );
 
+  //get the inetended path from the user cia the cookie storage
+  const cookieStore = cookies();
+  const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
+
   // Respond with a success message or redirect
   return new Response(null, {
     status: 302,
     headers: {
-      Location: "/protected",
+      Location: intendedPath,
     },
   });
 }
