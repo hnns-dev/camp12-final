@@ -440,7 +440,7 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
-      description: "won 10 tournaments",
+      description: "won 10 sessions",
       users: {
         connect: {
           id: user1.id,
