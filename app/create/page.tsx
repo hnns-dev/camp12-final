@@ -1,18 +1,19 @@
 import { prisma } from "@/lib/db";
-import CreateMeet from "./meet";
+import MeetForm from "./meet";
+import { protectPage } from "@/lib/auth";
 
-export default async function UpdateMeet() {
-  const tags = await prisma.tag.findMany();
+export default async function CreateMeet() {
+  const user = await protectPage();
+  const venue = await prisma.venue.findUnique({
+    where: {
+      name: "Mussel Gym"
+    }
+  })
+
   return (
     <div>
       {/* <TournamentPage /> */}
-      <CreateMeet
-        isPublic={false}
-        creatorId={"as222fkt547eu392"}
-        guests={0}
-        venueId={"cac656e2-3565-4387-9e03-cb80ab885a16"}
-        tagSuggestions={tags}
-      />
+      <MeetForm userId={user.id} venueId={venue?.id} />
     </div>
   );
 }

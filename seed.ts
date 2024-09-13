@@ -10,6 +10,7 @@ async function main() {
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
+  await prisma.meet.deleteMany();
   await prisma.city.deleteMany();
   await prisma.venue.deleteMany();
 

@@ -1,0 +1,7 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "[prisma]": {
+        "editor.formatOnSaveMode": "file",
+},
+}
