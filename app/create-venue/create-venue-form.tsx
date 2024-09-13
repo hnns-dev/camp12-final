@@ -6,14 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
@@ -25,8 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { reportVenue } from "@/actions/venues";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import { createVenue, reportVenue } from "@/actions/venues";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -36,22 +27,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ActivityType } from "@prisma/client";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().min(1, "Please enter a name"),
   activityTypes: z
     .array(z.string().min(1, "Select an activity"))
     .min(1, "Please enter at least one activity"),
-  image: z.string().min(1, "Please upload an image"),
+  image: z.string().optional(),
   description: z.string().optional(),
+  location: z
+    .array(z.number())
+    .min(2, "location will be inserted automatically"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreateVenueForm({
   activityTypes,
+  location,
 }: {
   activityTypes: ActivityType[];
+  location: number[];
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -62,17 +59,23 @@ export default function CreateVenueForm({
       name: "",
       activityTypes: [],
       image: "/signin-hero.jpg",
+      location: [],
     },
   });
+
+  useEffect(() => {
+    form.setValue("location", location);
+  }, [form, location]);
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
     try {
       const result = await createVenue(
-        data.issue,
-        data.datetime,
-        data.venueId,
-        data.detail
+        data.name,
+        data.activityTypes,
+        data.location,
+        data.image || "",
+        data.description || ""
       );
       console.log("Report submitted successfully:", result);
       router.push("/");
@@ -90,7 +93,7 @@ export default function CreateVenueForm({
       >
         <FormField
           control={form.control}
-          name="detail"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name of the venue</FormLabel>
@@ -107,53 +110,57 @@ export default function CreateVenueForm({
         />
         <FormField
           control={form.control}
-          name="detail"
+          name="activityTypes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name of the venue</FormLabel>
+              <FormLabel>Activity Types</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter a name, if not sure, be creative! "
-                  className="h-10"
-                  {...field}
-                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      {" "}
+                      {field.value.length > 0
+                        ? `${field.value.length} selected`
+                        : "Select Activities"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Activity Types</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    {activityTypes.map((activity) => (
+                      <DropdownMenuCheckboxItem
+                        key={activity.id}
+                        checked={field.value.includes(activity.id)}
+                        onCheckedChange={(checked) => {
+                          const updatedValue = checked
+                            ? [...field.value, activity.id]
+                            : field.value.filter((id) => id !== activity.id);
+                          field.onChange(updatedValue);
+                        }}
+                      >
+                        {activity.name}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                    <DropdownMenuCheckboxItem>
+                      <Link
+                        href="/activity-type"
+                        className="text-blue-600 underline"
+                      >
+                        Create a new Activity
+                      </Link>
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">Open</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={showStatusBar}
-              onCheckedChange={setShowStatusBar}
-            >
-              Status Bar
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={showActivityBar}
-              onCheckedChange={setShowActivityBar}
-              disabled
-            >
-              Activity Bar
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={showPanel}
-              onCheckedChange={setShowPanel}
-            >
-              Panel
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
         <FormField
           control={form.control}
-          name="detail"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>

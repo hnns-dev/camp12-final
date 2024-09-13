@@ -22,10 +22,12 @@ export async function reportVenue(
     },
   });
 }
+
 export async function createVenue(
   name: string,
   activities: string[],
-  img: string,
+  location: number[],
+  image: string,
   description?: string
 ) {
   return prisma.venue.create({
@@ -34,9 +36,9 @@ export async function createVenue(
       activityTypes: {
         connect: activities.map((activity) => ({ id: activity })),
       },
+      location,
       image,
       description,
-      },
     },
   });
 }

@@ -2,19 +2,31 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import CreateVenueForm from "./create-venue-form";
 
-export default async function CreateVenuePage() {
+export default async function CreateVenuePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] };
+}) {
   const activityTypes = await prisma.activityType.findMany({});
+
+  const locationString = searchParams.location as string;
+
+  const location: number[] = locationString
+    .replace(/[\[\]]/g, "") // Remove square brackets
+    .split(",") // Split into array
+    .map(Number); // Convert each item to a number
+  console.log(location);
+
   return (
     <main className="m-4">
       <Link href="/" className="text-2xl ml-2">
         ←
       </Link>
       <section className="flex flex-col items-center gap-3">
-        <h1 className="text-2xl font-bold">Report about a venue</h1>
-        <h2 className="text-base">is there something wrong?</h2>
+        <h1 className="text-2xl font-bold">Add a venue</h1>
       </section>
       <section className="flex flex-col ">
-        <CreateVenueForm activityTypes={activityTypes} />
+        <CreateVenueForm activityTypes={activityTypes} location={location} />
       </section>
     </main>
   );
