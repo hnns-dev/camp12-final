@@ -39,19 +39,19 @@ import { ActivityType } from "@prisma/client";
 
 const formSchema = z.object({
   name: z.string().min(1, "Please enter a name"),
-  activities: z
+  activityTypes: z
     .array(z.string().min(1, "Select an activity"))
     .min(1, "Please enter at least one activity"),
-  img: z.string().min(1, "Please upload an image"),
+  image: z.string().min(1, "Please upload an image"),
   description: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreateVenueForm({
-  activities,
+  activityTypes,
 }: {
-  activities: ActivityType[];
+  activityTypes: ActivityType[];
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -60,15 +60,15 @@ export default function CreateVenueForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      activities: [],
-      img: "/signin-hero.jpg",
+      activityTypes: [],
+      image: "/signin-hero.jpg",
     },
   });
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
     try {
-      const result = await reportVenue(
+      const result = await createVenue(
         data.issue,
         data.datetime,
         data.venueId,

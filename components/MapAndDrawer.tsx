@@ -43,13 +43,15 @@ export default function MapAndDrawer({
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
   };
-  const queryString = new URLSearchParams(JSON.stringify(crossPos));
+  const queryString = JSON.stringify(crossPos);
   function handleCreateVenue() {
-    const url = `/create-venue?${queryString.toString()}`;
+    const url = `/create-venue?queryString=${queryString.toString()}`;
     router.push(url);
+    console.log();
   }
+
   function handleCreateMeet() {
-    const url = `/create-venue?${queryString.toString()}`;
+    const url = `/create-venue?queryString=${queryString.toString()}`;
     router.push(url);
   }
 

@@ -22,3 +22,21 @@ export async function reportVenue(
     },
   });
 }
+export async function createVenue(
+  name: string,
+  activities: string[],
+  img: string,
+  description?: string
+) {
+  return prisma.venue.create({
+    data: {
+      name,
+      activityTypes: {
+        connect: activities.map((activity) => ({ id: activity })),
+      },
+      image,
+      description,
+      },
+    },
+  });
+}
