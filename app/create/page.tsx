@@ -1,18 +1,39 @@
 import { prisma } from "@/lib/db";
-import CreateMeet from "./meet";
+import MeetForm from "./meet";
+import { protectPage } from "@/lib/auth";
 
-export default async function UpdateMeet() {
-  const tags = await prisma.tag.findMany();
-  return (
-    <div>
-      {/* <TournamentPage /> */}
-      <CreateMeet
-        isPublic={false}
-        creatorId={"as222fkt547eu392"}
-        guests={0}
-        venueId={"cac656e2-3565-4387-9e03-cb80ab885a16"}
-        tagSuggestions={tags}
-      />
-    </div>
-  );
+export default async function CreateMeet({
+  searchParams,
+}: {
+  searchParams: { queryString?: string };
+}) {
+
+  const user = await protectPage();
+
+  if (searchParams.queryString) {
+    // Location was give in query string
+    const location = JSON.parse(searchParams.queryString);
+    return (
+      <div>
+        {/* <TournamentPage /> */}
+        <MeetForm userId={user.id} location={location} />
+      </div>
+    );
+  } else {
+    // Use Venue
+    const venue = await prisma.venue.findUnique({
+      where: {
+        name: "Mussel Gym"
+      }
+    })
+    return (
+      <div>
+        {/* <TournamentPage /> */}
+        <MeetForm userId={user.id} venueId={venue?.id} />
+      </div>
+    );
+  }
+  
+
+ 
 }
