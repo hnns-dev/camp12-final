@@ -15,7 +15,4 @@ export const meetSchema = z.object({
   equipment: z.string().trim().optional(),
   description: z.string().trim().optional(),
   // competitive: z.boolean(),
-  // tournamentType: z.enum(["single", "round"], {
-  //   required_error: "Choose a tournament type",
-  // }),
 });
