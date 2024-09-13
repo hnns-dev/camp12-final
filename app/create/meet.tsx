@@ -38,18 +38,16 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-// Venue hardcoded
-const venue = "Mussel Gym";
-
 type Props = {
   userId: string;
   venueId?: string;
+  venueName?: string;
   location?: number[];
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ userId, venueId, location }: Props) {
+export default function MeetForm({ userId, venueId, venueName, location }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -126,7 +124,13 @@ export default function MeetForm({ userId, venueId, location }: Props) {
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
-              <span className="pb-6"> @ {venue}</span>
+              {
+                venueId ? (
+                  <span className="pb-6"> @ {venueName}</span>
+                ) : (
+                  <span className="pb-6">@ {location}</span>
+                )
+              }
               {/* Activity Type */}
               {(
                 <FormField

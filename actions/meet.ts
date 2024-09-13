@@ -128,7 +128,7 @@ export const submitMeetWithVenue = async (
 export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
-  loc: number[],
+  locationArray: number[],
 ) => {
     const meet = await prisma.meet.create({
       data: {
@@ -151,7 +151,7 @@ export const submitMeetWithLocation = async (
             name: values.activityType,
           },
         },
-        location: loc
+        location: locationArray
       },
     });
     return meet;

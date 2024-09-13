@@ -5,33 +5,35 @@ import { protectPage } from "@/lib/auth";
 export default async function CreateMeet({
   searchParams,
 }: {
-  searchParams: { queryString?: string };
+  searchParams: { location?: string, venueId?: string };
 }) {
 
   const user = await protectPage();
 
-  if (searchParams.queryString) {
-    // Location was give in query string
-    const location = JSON.parse(searchParams.queryString);
+  if (searchParams.location) {
+    // Location was given in url query
+    const locationArray = JSON.parse(searchParams.location);
     return (
       <div>
-        {/* <TournamentPage /> */}
-        <MeetForm userId={user.id} location={location} />
+        <MeetForm userId={user.id} location={locationArray} />
       </div>
     );
-  } else {
-    // Use Venue
-    const venue = await prisma.venue.findUnique({
-      where: {
-        name: "Mussel Gym"
+  } else if (searchParams.venueId) {
+    // Called with venueId
+   const venue = await prisma.venue.findUnique({
+    where: {
+      id: searchParams.venueId
       }
-    })
+    });
+   if (venue) {
     return (
       <div>
-        {/* <TournamentPage /> */}
-        <MeetForm userId={user.id} venueId={venue?.id} />
+        <MeetForm userId={user.id} venueId={venue.id} venueName={venue.name} />
       </div>
     );
+   }
+
+    
   }
   
 
