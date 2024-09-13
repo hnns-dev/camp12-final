@@ -16,6 +16,11 @@ export default async function FriendsListPage({
   if (!friends?.length)
     return (
       <div className="flex flex-col items-center justify-center p-10 m-5 g-5">
+        <div className="mb-4 self-start">
+          <Link href="/profile/me">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+        </div>
         <p className="font-bold text-xl text-center">
           No friends yet, add some friends by sharing your QR-Code:
         </p>
