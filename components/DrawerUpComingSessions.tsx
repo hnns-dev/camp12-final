@@ -53,24 +53,7 @@ const meets = [
   },
 ];
 
-const tournaments = [
-  {
-    title: "Pingpong",
-    address: "Erich Zeigner Allee",
-    date: "29:08.2024",
-    img: "../public/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-    creatorId: "123",
-  },
-  {
-    title: "Hide & Seek",
-    address: "Behind Bushes",
-    date: "29:08.2024",
-    img: "../public/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-    creatorId: "234",
-  },
-];
-
-type MeetOrTournament = {
+type Meet = {
   title: string;
   address: string;
   date: string;
@@ -78,10 +61,9 @@ type MeetOrTournament = {
   creatorId: string;
   time: string;
 };
-//not used yet, children and
+//not used yet
 type DrawerUpComingSessionsProps = {
-  meets: MeetOrTournament[];
-  tournaments: MeetOrTournament[];
+  meets: Meet[];
   userId: string;
 };
 
@@ -92,9 +74,9 @@ export function DrawerUpComingSessions({
   children: React.ReactNode;
   defaultTab: string;
 }) {
-  const filteredData = [...meets, ...tournaments];
+  const filteredData = [...meets];
 
-  const renderCard = (item: MeetOrTournament, key: number) => (
+  const renderCard = (item: Meet, key: number) => (
     <Card key={key}>
       <CardHeader>
         <CardTitle>{item.title}</CardTitle>
@@ -132,8 +114,8 @@ export function DrawerUpComingSessions({
         <DrawerHeader>
           <DrawerTitle className="sr-only">Upcoming sessions</DrawerTitle>
           <DrawerDescription className="sr-only">
-            You can see the upcoming sessions here: the ones near you, the ones
-            you organized, and tournaments.
+            You can see the upcoming sessions here: the ones near you and the
+            ones you organized.
           </DrawerDescription>
         </DrawerHeader>
         <Tabs
