@@ -496,6 +496,10 @@ async function main() {
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
+
+// getting an error message for await main 
+// Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher.ts(1378)
+
 await main()
   .catch((e) => {
     console.error(e);
