@@ -89,38 +89,70 @@ export async function updateMeet(
   });
 }
 
-export const submitMeet = async (
+export const submitMeetWithVenue = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
   venueId: string,
 ) => {
-  const meet = await prisma.meet.create({
-    data: {
-      date: values.date,
-      time: values.time,
-      duration: values.duration,
-      isPublic: values.public,
-      isRecurring: values.recurring,
-      guests: Number(values.guests),
-      participants: {},
-      notes: values.description,
-      equipment: values.equipment,
-      creator: {
-        connect: {
-          id: creatorId,
+    const meet = await prisma.meet.create({
+      data: {
+        date: values.date,
+        time: values.time,
+        duration: values.duration,
+        isPublic: values.public,
+        isRecurring: values.recurring,
+        guests: Number(values.guests),
+        participants: {},
+        notes: values.description,
+        equipment: values.equipment,
+        creator: {
+          connect: {
+            id: creatorId,
+          },
+        },
+        venue: {
+          connect: {
+            id: venueId,
+          },
+        },
+        activityType: {
+          connect: {
+            name: values.activityType,
+          },
         },
       },
-      venue: {
-        connect: {
-          id: venueId,
+    });
+    return meet;
+};
+
+export const submitMeetWithLocation = async (
+  values: z.infer<typeof meetSchema>,
+  creatorId: string,
+  locationArray: number[],
+) => {
+    const meet = await prisma.meet.create({
+      data: {
+        date: values.date,
+        time: values.time,
+        duration: values.duration,
+        isPublic: values.public,
+        isRecurring: values.recurring,
+        guests: Number(values.guests),
+        participants: {},
+        notes: values.description,
+        equipment: values.equipment,
+        creator: {
+          connect: {
+            id: creatorId,
+          },
         },
-      },
-      activityType: {
-        connect: {
-          name: values.activityType,
+        activityType: {
+          connect: {
+            name: values.activityType,
+          },
         },
+        location: locationArray
       },
-    },
-  });
-  return meet;
+    });
+    return meet;
 };

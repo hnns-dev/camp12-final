@@ -1,6 +1,6 @@
 "use client";
 
-import { submitMeet } from "@/actions/meet";
+import { submitMeetWithLocation, submitMeetWithVenue } from "@/actions/meet";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -38,17 +38,16 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-// Venue hardcoded
-const venue = "Mussel Gym";
-
 type Props = {
   userId: string;
-  venueId: string;
+  venueId?: string;
+  venueName?: string;
+  location?: number[];
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ userId, venueId }: Props) {
+export default function MeetForm({ userId, venueId, venueName, location }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -99,6 +98,7 @@ export default function MeetForm({ userId, venueId }: Props) {
     control: form.control,
     name: "activityType",
   });
+  
 
   useEffect(() => {
     console.log(form.formState.errors);
@@ -107,7 +107,8 @@ export default function MeetForm({ userId, venueId }: Props) {
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
     console.log(values);
-    await submitMeet(values, userId, venueId);
+    if (location) {await submitMeetWithLocation(values, userId, location)}
+   else if (venueId) {await submitMeetWithVenue(values, userId, venueId)};
   };
 
   // guest number from 1-15
@@ -123,7 +124,13 @@ export default function MeetForm({ userId, venueId }: Props) {
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
-              <span className="pb-6"> @ {venue}</span>
+              {
+                venueId ? (
+                  <span className="pb-6"> @ {venueName}</span>
+                ) : (
+                  <span className="pb-6">@ {location}</span>
+                )
+              }
               {/* Activity Type */}
               {(
                 <FormField
