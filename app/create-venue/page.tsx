@@ -3,6 +3,7 @@ import Link from "next/link";
 import CreateVenueForm from "./create-venue-form";
 
 export default async function CreateVenuePage() {
+  const activities = await prisma.activityType.findMany({});
   return (
     <main className="m-4">
       <Link href="/" className="text-2xl ml-2">
@@ -13,7 +14,7 @@ export default async function CreateVenuePage() {
         <h2 className="text-base">is there something wrong?</h2>
       </section>
       <section className="flex flex-col ">
-        <CreateVenueForm />
+        <CreateVenueForm activities={activities} />
       </section>
     </main>
   );

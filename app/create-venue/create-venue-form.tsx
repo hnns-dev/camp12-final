@@ -35,28 +35,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ActivityType } from "@prisma/client";
 
 const formSchema = z.object({
-  issue: z.string().min(1, "Please select an issue"),
-  datetime: z.date({
-    required_error: "Please select a date and time",
-  }),
-  detail: z.string().optional(),
-  venueId: z.string().min(1, "Please select a venue"),
+  name: z.string().min(1, "Please enter a name"),
+  activities: z
+    .array(z.string().min(1, "Select an activity"))
+    .min(1, "Please enter at least one activity"),
+  img: z.string().min(1, "Please upload an image"),
+  description: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function CreateVenueForm() {
+export default function CreateVenueForm({
+  activities,
+}: {
+  activities: ActivityType[];
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      issue: "",
-      detail: "",
-      venueId: "",
+      name: "",
+      activities: [],
+      img: "/signin-hero.jpg",
     },
   });
 
