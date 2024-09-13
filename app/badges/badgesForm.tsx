@@ -18,7 +18,7 @@ export default function BadgesForm({ badges }: BadgesFormProps) {
   return (
     <div className="max-w-sm mx-auto bg-white p-4 font-sans">
       <div className="mb-4">
-        <Link href="/profile">
+        <Link href="/profile/me">
           <ArrowLeft className="w-6 h-6" />
         </Link>
       </div>
