@@ -79,11 +79,7 @@ model Venue {
   name          String         @unique
   location      Float[]
   image         String?
-<<<<<<< HEAD
-  address       String? // New field for address
-=======
   address       String?
->>>>>>> eed4fed27b9e4aa4b4c7ff5ce500adb9fc0e54ba
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -104,23 +100,15 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
-<<<<<<< HEAD
   equipment      String?
-  tags           Tag[]        @relation("Meet tags")
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
   address        String? // New field for storing address if no venue is selected
-=======
-  venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  venueId        String?
-  address        String?
   location       Float[]
->>>>>>> eed4fed27b9e4aa4b4c7ff5ce500adb9fc0e54ba
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-
-  tags Tag[] @relation(name: "TagtoMeet")
+  tags           Tag[]        @relation(name: "TagtoMeet")
 }
 
 model CheckIn {
