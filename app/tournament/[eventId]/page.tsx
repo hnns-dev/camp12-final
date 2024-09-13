@@ -17,7 +17,7 @@ export default function TournamentDetail({
   const { eventId } = params;
   return (
     <main className="h-screen w-screen p-4">
-      <EditButton />
+      <EditButton creatorId={""} userId={""} />
       {/* Header */}
       <div className="flex flex-row justify-end pb-8 w-full h-6"></div>
       {/* main */}

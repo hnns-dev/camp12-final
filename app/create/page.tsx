@@ -12,7 +12,6 @@ export default async function CreateMeet() {
 
   return (
     <div>
-      {/* <TournamentPage /> */}
       <MeetForm userId={user.id} venueId={venue?.id} />
     </div>
   );

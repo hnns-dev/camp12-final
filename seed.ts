@@ -183,7 +183,7 @@ async function main() {
   await prisma.tag.create({ data: { name: "Indoor" } });
   await prisma.tag.create({ data: { name: "Relaxing" } });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-08-29"),
@@ -332,7 +332,7 @@ async function main() {
     },
   });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-15"),
@@ -419,25 +419,6 @@ async function main() {
       activityTypeId: tennis.id,
       isCompetitive: false,
       isRecurring: false,
-    },
-  });
-
-  await prisma.tournament.create({
-    data: {
-      date: new Date("2024-10-01"),
-      time: "09:00",
-      duration: 6,
-      size: 16,
-      type: "Knockout",
-      mode: "Singles",
-      public: true,
-      creatorId: user1.id,
-      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
-      guests: ["Barbara Schöneberger", "Günther Jauch"],
-      note: "Jährliches Tennisturnier",
-      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
-      venueId: musselGym.id,
-      activityTypeId: tennis.id,
     },
   });
 
