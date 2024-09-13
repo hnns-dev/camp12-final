@@ -47,6 +47,7 @@ model Session {
 
 model Tournament {
   id             String       @id @default(uuid())
+  name           String
   date           DateTime
   time           String
   duration       Float
@@ -57,7 +58,6 @@ model Tournament {
   creatorId      String
   creator        User         @relation("CreatedTournaments", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedTournaments")
-  guests         String[]
   note           String
   tags           Tag[]
   venue          Venue        @relation(fields: [venueId], references: [id])
@@ -69,7 +69,7 @@ model Tournament {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]
+  meets         Meet[]         @relation(name: "TagtoMeet")
   tournaments   Tournament[]
   activityTypes ActivityType[]
 }
@@ -80,6 +80,7 @@ model Venue {
   location      Float[]
   image         String?
   address       String?
+  description   String?
   tags          Tag[]
   tournaments   Tournament[]
   meets         Meet[]
@@ -108,7 +109,7 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  tags           Tag[]
+  tags           Tag[]        @relation(name: "TagtoMeet")
 }
 
 model CheckIn {

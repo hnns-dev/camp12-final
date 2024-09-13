@@ -60,6 +60,7 @@ async function main() {
     data: {
       name: "Weisser Rabe",
       address: "Weisser Rabe 12 in 161 Leipzig",
+      description: "Classic spot. absolutely balling here.",
       location: [51.330184277926, 12.371808439493],
       image: "/elster.jpg",
       activityTypes: {
@@ -73,6 +74,8 @@ async function main() {
   const musselGym = await prisma.venue.create({
     data: {
       name: "Mussel Gym",
+      description:
+        "Very nice Venue where you can play tabletennis a lot without getting kicked.",
       location: [51.34037781763, 12.32281923294],
       address: "Mussel Gym 12 in 161 Leipzig",
       image: "/mussel.jpg",
@@ -87,6 +90,8 @@ async function main() {
   const beachClubCossi = await prisma.venue.create({
     data: {
       name: "Beach Club Cossi",
+      description:
+        "Its nearby a lake, so on the hot days you can jump into the cossi and enjoy a round of swimming.",
       address: "Beach Club Cossi 12 in 161 Leipzig",
       location: [51.317229196977, 12.334948182106],
       image: "/cossi.jpg",
@@ -100,6 +105,8 @@ async function main() {
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
+      description:
+        "Playing boule with friends here is very nice. It's quiet and easy to access.",
       address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
@@ -182,6 +189,9 @@ async function main() {
   await prisma.tag.create({ data: { name: "Outdoor" } });
   await prisma.tag.create({ data: { name: "Indoor" } });
   await prisma.tag.create({ data: { name: "Relaxing" } });
+  await prisma.tag.create({ data: { name: "Friendly Neighborhood" } });
+  await prisma.tag.create({ data: { name: "Dogs around" } });
+  await prisma.tag.create({ data: { name: "Nice ground" } });
 
   // Meets (including one tournament)
   await prisma.meet.create({
@@ -426,6 +436,7 @@ async function main() {
     data: {
       date: new Date("2024-10-01"),
       time: "09:00",
+      name: "The Tango",
       duration: 6,
       size: 16,
       type: "Knockout",
@@ -433,7 +444,25 @@ async function main() {
       public: true,
       creatorId: user1.id,
       participants: { connect: [{ id: user3.id }, { id: user2.id }] },
-      guests: ["Barbara Schöneberger", "Günther Jauch"],
+      note: "Jährliches Tennisturnier",
+      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
+      venueId: musselGym.id,
+      activityTypeId: tennis.id,
+    },
+  });
+
+  await prisma.tournament.create({
+    data: {
+      date: new Date("2024-12-03"),
+      time: "15:00",
+      name: "Masterclass",
+      duration: 6,
+      size: 16,
+      type: "Knockout",
+      mode: "Singles",
+      public: true,
+      creatorId: user1.id,
+      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
       note: "Jährliches Tennisturnier",
       tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
       venueId: musselGym.id,
