@@ -57,7 +57,6 @@ export default function MapAndDrawer({
 
   return (
     <div>
-      <div>{JSON.stringify(crossPos)}</div>
       <Map
         crossVisible={crossVisible}
         close={close}
