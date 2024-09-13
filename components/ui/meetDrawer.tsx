@@ -3,7 +3,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { User, Meet } from "@prisma/client";
 
 interface TournamentDrawerProps {
-  tournament: Meet & { participants: User[] };
+  meet: Meet & { participants: User[] };
 }
 
 export function MeetDrawer({ meet }: TournamentDrawerProps) {
