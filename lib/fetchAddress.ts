@@ -1,4 +1,4 @@
-export async function fetchAddress(lat: string, lon: string) {
+export async function fetchAddress(lat: number, lon: number) {
   const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
   const apiUrl = `https://api.geoapify.com/v1/geocode/reverse`;
 
@@ -26,8 +26,3 @@ export async function fetchAddress(lat: string, lon: string) {
     postalCode: address.postcode,
   };
 }
-
-const lat = "37.7749";
-const lon = "-122.4194";
-const address = await fetchAddress(lat, lon);
-console.log(address);

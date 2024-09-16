@@ -9,8 +9,9 @@ import Navbar from "./Navbar";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import { LatLngExpression } from "leaflet";
 import { useRouter } from "next/navigation";
+import { fetchAddress } from "@/lib/fetchAddress";
 
-export default function MapAndDrawer({
+export default async function MapAndDrawer({
   venues,
   openMeets,
   userCreatedMeets,
@@ -42,11 +43,16 @@ export default function MapAndDrawer({
   const openDrawer = (venueData: VenueData) => {
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
+    console.log(crossPos);
   };
+
   const queryString = JSON.stringify(crossPos); // x and y coordinates
-  function handleCreateVenue() {
+
+
+  async function handleCreateVenue() {
+    const address = await fetchAddress(crossPos?[0], crossPos?[1]);
     const url = `/create-venue?location=${queryString.toString()}`;
-    router.push(url);
+    router.push(url); //
   }
 
   function handleCreateMeet() {
