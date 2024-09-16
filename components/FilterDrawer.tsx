@@ -28,6 +28,7 @@ import Filter from "@/components/Filter";
 import { Filters } from "@/lib/utils/types";
 import { ActivityType } from "@prisma/client";
 
+
 // const activities = [
 //   "tennis",
 //   "table tennis",
@@ -59,18 +60,10 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
     if (status) {
       filters.status = status;
     }
-    if (mode === "casual") {
-      filters.mode = "casual";
+
+    if (mode) {
+      filters.mode = mode;
     }
-    if (mode === "competetive") {
-      filters.mode = "competetive";
-    }
-    if (mode === "softie") {
-      filters.mode = "softie";
-    }
-    // if (mode) {
-    //   filters.mode = mode;
-    // }
 
     return filters;
   }
@@ -86,7 +79,7 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
     setMode(undefined);
 
     router.push("/");
-    window.location.href = "/";
+    //  window.location.href = "/";
   }
 
   // function handleApplyFilters() {
@@ -94,13 +87,13 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
   //   window.location.href = fullUrl;
   // }
 
-  function handleApplyFilters() {
+  async function handleApplyFilters() {
     // Construct the full URL with the query parameters
     const fullUrl = `${window.location.origin}${url}`;
 
     // Force a page reload with the updated URL
-    router.push(fullUrl);
-    // window.location.href = fullUrl;
+
+    window.location.href = fullUrl;
   }
   return (
     <>
@@ -127,7 +120,7 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
                     <SelectItem
                       className="text-base"
                       key={activity.id}
-                      value={activity.id}
+                      value={activity.name}
                     >
                       {activity.name}
                     </SelectItem>
@@ -157,9 +150,11 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
             <h2>Status</h2>
             <RadioGroup
               defaultValue="option-one"
-              className={` flex justify-between ${
-                isSelectOpen ? "hidden" : ""
-              } `}
+              disabled={isSelectOpen}
+              // className={` flex justify-between ${
+              //   isSelectOpen ? "hidden" : ""
+              // } `}
+              className="flex justify-between"
               onValueChange={setStatus}
             >
               <div className="flex flex-col w-1/2 pr-5 gap-1">
@@ -195,9 +190,13 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
           <DrawerFooter>
             <div className="flex gap-10">
               <DrawerClose asChild>
-                <Button onClick={handleApplyFilters}>Apply Filters</Button>
+                <Button onClick={handleApplyFilters} disabled={isSelectOpen}>
+                  Apply Filters
+                </Button>
               </DrawerClose>
-              <Button onClick={resetFilters}>Reset</Button>
+              <Button onClick={resetFilters} disabled={isSelectOpen}>
+                Reset
+              </Button>
             </div>
           </DrawerFooter>
         </DrawerContent>

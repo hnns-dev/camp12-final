@@ -25,7 +25,7 @@ export default async function Home({
   const filters = {
     activity: (searchParams.activity as string) ?? "",
     status: (searchParams.status as string) ?? "",
-    competitive: searchParams.competitive as "yes" | "no" | "both",
+    mode: (searchParams.mode as string) ?? "",
   };
 
   const user = {
