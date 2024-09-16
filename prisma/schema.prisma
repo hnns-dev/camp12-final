@@ -46,7 +46,7 @@ model Session {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]         @relation(name: "TagtoMeet")
+  meets         Meet[]
   activityTypes ActivityType[]
 }
 
@@ -84,7 +84,7 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  tags           Tag[]        @relation(name: "TagtoMeet")
+  tags           Tag[]
 }
 
 model CheckIn {
