@@ -5,17 +5,17 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { createActivityType } from "@/actions/activity-type"; // Import the server action
 
-interface FormValues {
-  activityType: string;
-  description: string;
+type FormValues = {
+  name: string;
+  description?: string;
   requiredNumberOfParticipants: number;
-}
+};
 
 const CreateActivityTypePage: NextPage = () => {
   const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
-      activityType: "",
-      description: "type your message here",
+      name: "",
+      description: "",
       requiredNumberOfParticipants: 1,
     },
   });
@@ -43,15 +43,8 @@ const CreateActivityTypePage: NextPage = () => {
         <input
           type="text"
           placeholder="Enter new activity type"
-          {...register("activityType", { required: true })}
+          {...register("name", { required: true })}
           className="mb-4 p-2 border border-gray-300 rounded w-full"
-        />
-
-        <input
-          type="text"
-          value="Erich-Zeigner-Allee"
-          readOnly
-          className="mb-4 p-2 border border-gray-300 rounded text-center w-full"
         />
 
         <label className="text-lg font-semibold mb-2">
@@ -70,7 +63,7 @@ const CreateActivityTypePage: NextPage = () => {
         <h2 className="text-lg font-semibold mb-2">Description</h2>
 
         <textarea
-          {...register("description", { required: true })}
+          {...register("description")}
           className="mb-6 p-2 border border-gray-300 rounded w-full"
         />
 
