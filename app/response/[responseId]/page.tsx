@@ -1,10 +1,11 @@
 // app/response/[responseId]/page.tsx
 import { getResponseData } from "@/actions/response";
-import Back from "@/components/back";
 import { LuMapPin, LuCalendarDays } from "react-icons/lu";
 import ResponseInteraction from "@/components/ResponseInteraction";
 import TagsBadges from "@/components/TagsBadges";
 import AvatarList from "@/components/AvatarList";
+import Link from "next/link";
+import Home from "@/components/Home";
 
 export default async function Response({
   params,
@@ -14,8 +15,8 @@ export default async function Response({
   const response = await getResponseData(params.responseId);
   const { meet, user } = response;
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("de-DE", {
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("de-DE", {
       weekday: "short",
       day: "2-digit",
       month: "short",
@@ -25,7 +26,7 @@ export default async function Response({
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Back />
+      <Home />
       <div className="relative flex-grow flex flex-col">
         <img
           className="w-full h-2/5 object-cover"
@@ -33,9 +34,9 @@ export default async function Response({
           alt="Person sitting on a ping pong table"
         />
         <main className="flex-grow flex flex-col bg-white rounded-t-3xl shadow-lg -mt-8 relative z-10">
-          <div className="flex-grow overflow-y-auto px-5 py-5">
+          <div className="flex-grow overflow-y-auto py-5">
             <section>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 px-5">
                 <div className="flex justify-between">
                   <h1 className="text-xl font-semibold">
                     {meet.activityType.name}
@@ -56,17 +57,26 @@ export default async function Response({
                   </p>
                 </div>
                 <div>
-                  <p className="underline">Meet Details</p>
+                  <Link
+                    href={`/meet/${meet.id}`}
+                    className="underline text-black"
+                  >
+                    Meet Details
+                  </Link>
                 </div>
                 <div>
                   <p className="font-semibold text-s pt-8">Andere Teilnehmer</p>
                 </div>
               </div>
-              <AvatarList participants={meet.participants} />
+              <AvatarList
+                people={meet.participants}
+                type="participants"
+                meetId={meet.id}
+              />
               <TagsBadges tags={meet.tags} />
             </section>
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto pb-5">
             <ResponseInteraction meetId={meet.id} />
           </div>
         </main>
