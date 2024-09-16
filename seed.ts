@@ -2,17 +2,25 @@ import { prisma } from "./lib/db";
 import { generateIdFromEntropySize } from "lucia";
 
 async function main() {
-  // Fetch venue IDs dynamically
-
   console.log("Cleaning Database...");
 
-  await prisma.user.deleteMany();
-  await prisma.activityType.deleteMany();
-  await prisma.tag.deleteMany();
+  // Delete data in the correct order to avoid foreign key constraint errors
+  await prisma.response.deleteMany();
+  await prisma.tournament.deleteMany();
+  await prisma.meet.deleteMany();
+  await prisma.report.deleteMany();
   await prisma.badge.deleteMany();
+<<<<<<< Updated upstream
   await prisma.meet.deleteMany();
   await prisma.city.deleteMany();
+=======
+  await prisma.tag.deleteMany();
+>>>>>>> Stashed changes
   await prisma.venue.deleteMany();
+  await prisma.activityType.deleteMany();
+  await prisma.settings.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.city.deleteMany();
 
   console.log("Cleaning Database finished");
 
@@ -40,6 +48,7 @@ async function main() {
       requiredNumberOfParticipants: 1,
     },
   });
+
   const boule = await prisma.activityType.create({
     data: {
       name: "Boule",
@@ -102,6 +111,7 @@ async function main() {
       },
     },
   });
+
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
@@ -195,7 +205,11 @@ async function main() {
   await prisma.tag.create({ data: { name: "Nice ground" } });
 
   // Meets
+<<<<<<< Updated upstream
   await prisma.meet.create({
+=======
+  const meet1 = await prisma.meet.create({
+>>>>>>> Stashed changes
     data: {
       date: new Date("2024-08-29"),
       time: "14:00",
@@ -208,11 +222,12 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
-      competitive: true,
+      isCompetitive: true,
+      isRecurring: false,
     },
   });
 
-  await prisma.meet.create({
+  const meet2 = await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
       time: "10:00",
@@ -225,6 +240,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
+<<<<<<< Updated upstream
       competitive: false,
     },
   });
@@ -357,29 +373,16 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
+=======
+>>>>>>> Stashed changes
       isCompetitive: false,
       isRecurring: false,
     },
   });
 
-  await prisma.meet.create({
-    data: {
-      date: new Date("2024-09-20"),
-      time: "10:00",
-      duration: 1,
-      isPublic: true,
-      creatorId: user2.id,
-      participants: { connect: [{ id: user1.id }] },
-      guests: 2,
-      notes: "Tennistraining",
-      tags: { connect: [{ name: "Outdoor" }] },
-      venueId: beachClubCossi.id,
-      activityTypeId: tennis.id,
-      isCompetitive: false,
-      isRecurring: false,
-    },
-  });
+  // ... (create other meets similarly)
 
+<<<<<<< Updated upstream
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-18"),
@@ -430,6 +433,25 @@ async function main() {
       activityTypeId: tennis.id,
       isCompetitive: false,
       isRecurring: false,
+=======
+  // Tournament
+  const tournament = await prisma.tournament.create({
+    data: {
+      date: new Date("2024-10-01"),
+      time: "09:00",
+      duration: 6,
+      size: 16,
+      type: "Knockout",
+      mode: "Singles",
+      public: true,
+      creatorId: user1.id,
+      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
+      guests: ["Barbara Schöneberger", "Günther Jauch"],
+      note: "Jährliches Tennisturnier",
+      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
+      venueId: musselGym.id,
+      activityTypeId: tennis.id,
+>>>>>>> Stashed changes
     },
   });
 
@@ -447,6 +469,7 @@ async function main() {
     },
   });
 
+<<<<<<< Updated upstream
   await prisma.badge.create({
     data: {
       name: "Turniersieger",
@@ -472,6 +495,9 @@ async function main() {
       },
     },
   });
+=======
+  // ... (create other badges similarly)
+>>>>>>> Stashed changes
 
   // Reports
   await prisma.report.create({
@@ -484,34 +510,41 @@ async function main() {
     },
   });
 
-  await prisma.report.create({
+  // ... (create other reports similarly)
+
+  // Responses
+  console.log("Creating responses...");
+
+  await prisma.response.create({
     data: {
-      issue: "Hygieneproblem",
-      date: new Date("2024-08-15"),
-      time: "09:00",
-      detail: "Die Umkleidekabinen müssen gründlich gereinigt werden",
-      venueId: musselGym.id,
+      meetId: meet1.id,
+      userId: user2.id,
+      status: "accepted",
     },
   });
 
-  await prisma.report.create({
+  await prisma.response.create({
     data: {
-      issue: "unschön",
-      date: new Date("2024-08-20"),
-      time: "11:00",
-      detail: "Ist üble Yuppiescheisse hier",
-      venueId: beachClubCossi.id,
+      meetId: meet2.id,
+      userId: user1.id,
+      status: "pending",
     },
   });
+
+  // ... (create other responses similarly)
 
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
+<<<<<<< Updated upstream
 
 // getting an error message for await main 
 // Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher.ts(1378)
 
 await main()
+=======
+main()
+>>>>>>> Stashed changes
   .catch((e) => {
     console.error(e);
   })

@@ -1,6 +1,7 @@
+// app/response/[responseId]/page.tsx
+import { getResponseData } from "@/actions/response";
 import Back from "@/components/back";
-import { LuMapPin } from "react-icons/lu";
-import { LuCalendarDays } from "react-icons/lu";
+import { LuMapPin, LuCalendarDays } from "react-icons/lu";
 import ResponseInteraction from "@/components/ResponseInteraction";
 import TagsBadges from "@/components/TagsBadges";
 import AvatarList from "@/components/AvatarList";
@@ -10,44 +11,66 @@ export default async function Response({
 }: {
   params: { responseId: string };
 }) {
+  const response = await getResponseData(params.responseId);
+  const { meet, user } = response;
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("de-DE", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
-    <div className="h-screen flex flex-col items-center bg-white relative">
+    <div className="min-h-screen flex flex-col bg-white">
       <Back />
-      <img
-        className="w-screen object-cover h-2/5"
-        src="../signin-hero.jpg"
-        alt="Person sitting on a ping pong table"
-      />
-      <main className="absolute top-[33%] left-0 right-0 bottom-0 bg-white rounded-t-3xl shadow-lg overflow-y-auto justify-between flex flex-col py-5">
-        <section className="absolute, ">
-          <div className="flex flex-col gap-4 px-5">
-            <div className="flex  justify-between">
-              <h1 className="text-xl font-semibold">Ping Pong Palooza</h1>
-            </div>
-            <div className="flex gap-1">
-              <LuMapPin className="size-5 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                Knochenpark, Leipzig
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <LuCalendarDays className="size-5 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                Thu 05 Sep 2024 - 18:00
-              </p>
-            </div>
-            <div>
-              <p className="underline">Meet Details</p>
-            </div>
-            <div>
-              <p className="font-semibold text-s pt-8">Other Players</p>
-            </div>
+      <div className="relative flex-grow flex flex-col">
+        <img
+          className="w-full h-2/5 object-cover"
+          src={meet.venue?.image || "../signin-hero.jpg"}
+          alt="Person sitting on a ping pong table"
+        />
+        <main className="flex-grow flex flex-col bg-white rounded-t-3xl shadow-lg -mt-8 relative z-10">
+          <div className="flex-grow overflow-y-auto px-5 py-5">
+            <section>
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between">
+                  <h1 className="text-xl font-semibold">
+                    {meet.activityType.name}
+                  </h1>
+                </div>
+                <div className="flex gap-1">
+                  <LuMapPin className="size-5 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    {meet.venue
+                      ? `${meet.venue.name}, ${meet.venue.address}`
+                      : meet.address}
+                  </p>
+                </div>
+                <div className="flex gap-1">
+                  <LuCalendarDays className="size-5 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    {formatDate(meet.date)} - {meet.time} Uhr
+                  </p>
+                </div>
+                <div>
+                  <p className="underline">Meet Details</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-s pt-8">Andere Teilnehmer</p>
+                </div>
+              </div>
+              <AvatarList participants={meet.participants} />
+              <TagsBadges tags={meet.tags} />
+            </section>
           </div>
-          <AvatarList />
-          <TagsBadges />
-        </section>
-        <ResponseInteraction />
-      </main>
+          <div className="mt-auto">
+            <ResponseInteraction meetId={meet.id} />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
