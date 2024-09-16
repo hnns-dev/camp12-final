@@ -11,42 +11,22 @@ datasource db {
 }
 
 model User {
-<<<<<<< Updated upstream
-  id                 String    @id
-  googleId           String?   @unique
-  email              String    @unique
+  id                 String     @id
+  googleId           String?    @unique
+  email              String     @unique
   name               String?
   picture            String?
   session            Session[]
-  meetsCreated       Meet[]    @relation("CreatedMeets")
-  meetsParticipating Meet[]    @relation("ParticipatedMeets")
+  meetsCreated       Meet[]     @relation("CreatedMeets")
+  meetsParticipating Meet[]     @relation("ParticipatedMeets")
   badges             Badge[]
-  friends            User[]    @relation("Friends")
-  friendOf           User[]    @relation("Friends")
+  friends            User[]     @relation("Friends")
+  friendOf           User[]     @relation("Friends")
   settings           Settings?
   checkIns           CheckIn[]
-  city               City?     @relation(fields: [cityName], references: [name])
+  city               City?      @relation(fields: [cityName], references: [name])
   cityName           String?
-=======
-  id                       String       @id
-  googleId                 String?      @unique
-  email                    String       @unique
-  name                     String?
-  picture                  String?
-  session                  Session[]
-  tournamentsCreated       Tournament[] @relation("CreatedTournaments")
-  tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
-  meetsCreated             Meet[]       @relation("CreatedMeets")
-  meetsParticipating       Meet[]       @relation("ParticipatedMeets")
-  badges                   Badge[]
-  friends                  User[]       @relation("Friends")
-  friendOf                 User[]       @relation("Friends")
-  settings                 Settings?
-  checkIns                 CheckIn[]
-  city                     City?        @relation(fields: [cityName], references: [name])
-  cityName                 String?
-  responses Response[]
->>>>>>> Stashed changes
+  responses          Response[]
 }
 
 model Badge {
@@ -105,13 +85,8 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-<<<<<<< Updated upstream
   tags           Tag[]        @relation(name: "TagtoMeet")
-=======
-  responses Response[]
-
-  tags Tag[] @relation(name: "TagtoMeet")
->>>>>>> Stashed changes
+  Response       Response[]
 }
 
 model Response {
