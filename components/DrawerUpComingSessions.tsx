@@ -78,14 +78,20 @@ type MeetOrTournament = {
   creatorId: string;
   time: string;
 };
-
+//not used yet, children and
 type DrawerUpComingSessionsProps = {
   meets: MeetOrTournament[];
   tournaments: MeetOrTournament[];
   userId: string;
 };
 
-export function DrawerUpComingSessions() {
+export function DrawerUpComingSessions({
+  children,
+  defaultTab,
+}: {
+  children: React.ReactNode;
+  defaultTab: string;
+}) {
   const filteredData = [...meets, ...tournaments];
 
   const renderCard = (item: MeetOrTournament, key: number) => (
@@ -121,9 +127,7 @@ export function DrawerUpComingSessions() {
 
   return (
     <Drawer>
-      <DrawerTrigger>
-        <FaTableTennis className="size-8 fill-white" />
-      </DrawerTrigger>
+      <DrawerTrigger>{children}</DrawerTrigger>
       <DrawerContent className="z-[9999] h-[calc(100vh-16vh)] flex flex-col">
         <DrawerHeader>
           <DrawerTitle className="sr-only">Upcoming sessions</DrawerTitle>
@@ -133,7 +137,7 @@ export function DrawerUpComingSessions() {
           </DrawerDescription>
         </DrawerHeader>
         <Tabs
-          defaultValue="near-me"
+          defaultValue={defaultTab}
           className="w-[350px] flex flex-col flex-1 mt-4 max-h-full"
         >
           <TabsList className="flex justify-center">

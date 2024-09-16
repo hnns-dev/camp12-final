@@ -1,6 +1,7 @@
 "use client";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -96,7 +97,8 @@ export function FilterDrawer() {
     const fullUrl = `${window.location.origin}${url}`;
 
     // Force a page reload with the updated URL
-    window.location.href = fullUrl;
+    router.push(fullUrl);
+    // window.location.href = fullUrl;
   }
   return (
     <>
@@ -195,9 +197,9 @@ export function FilterDrawer() {
             </div>
           </div>
           <DrawerFooter>
-            <Button onClick={handleApplyFilters}>
-              <DrawerTrigger>Apply Filters</DrawerTrigger>
-            </Button>
+            <DrawerClose asChild>
+              <Button onClick={handleApplyFilters}>Apply Filters</Button>
+            </DrawerClose>
             <Button onClick={resetFilters}>Reset</Button>
           </DrawerFooter>
         </DrawerContent>

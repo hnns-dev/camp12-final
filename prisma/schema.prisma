@@ -31,10 +31,11 @@ model User {
 }
 
 model Badge {
-  name      String   @id @unique
-  icon      String?
-  users     User[]
-  createdAt DateTime @default(now())
+  name        String   @id @unique
+  icon        String?
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
 }
 
 model Session {
@@ -100,15 +101,15 @@ model Meet {
   participants   User[]       @relation("ParticipatedMeets")
   guests         Int
   notes          String?
+  equipment      String?
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
-  address        String?
+  address        String? // New field for storing address if no venue is selected
   location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-
-  tags Tag[] @relation(name: "TagtoMeet")
+  tags           Tag[]
 }
 
 model CheckIn {

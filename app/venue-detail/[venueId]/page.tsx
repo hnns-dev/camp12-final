@@ -2,6 +2,8 @@ import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DisplayWeather from "@/components/display-weather";
+
 export default async function VenueDetailsPage({
   params,
 }: {
@@ -77,6 +79,8 @@ export default async function VenueDetailsPage({
           </div>
         </h1>
       </div>
+
+      <DisplayWeather lat={51.323402553555816} lon={12.336260685620882} />
 
       {/* Venue Image */}
       <div className="relative w-full max-w-md">
