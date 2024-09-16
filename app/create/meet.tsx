@@ -43,6 +43,7 @@ type Props = {
   venueId?: string;
   venueName?: string;
   location?: number[];
+  meet?: string[];
 };
 
 // Defining a schema for Meetsession Creation
