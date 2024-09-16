@@ -1,12 +1,23 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import QRCodeGenerator from "@/components/QRCodeGenerator";
 import Link from "next/link";
 import { protectPage } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 
-export default async function QRPage() {
+export default async function FriendPage({
+  searchParams,
+}: {
+  searchParams: { userId: string };
+}) {
 
   const user = await protectPage();
+  const friend = await prisma.user.findUnique({
+    where: {
+      id: searchParams.userId
+    }
+  })
+
+  console.log(friend);
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
@@ -18,18 +29,12 @@ export default async function QRPage() {
         </div>
         <div className="flex flex-col items-center flex-grow justify-center">
           <h1 className="text-3xl font-bold text-center mb-2">
-            let's become friends
+            Do you want to become friends with {friend.name}?
           </h1>
-          <p className="text-center text-gray-600 mb-6">
-            Share the code and
-            <br />
-            grow your own community
-          </p>
-          <div className="m-14">
-            <QRCodeGenerator userId={user.id} />
-          </div>
         </div>
+        
       </div>
     </div>
   );
 }
+

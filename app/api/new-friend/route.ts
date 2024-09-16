@@ -3,7 +3,7 @@ import { addFriend } from '@/lib/utils/add-friend';
 
 
 export async function GET(req: NextRequest) {
-  const userIdOne = req.nextUrl.searchParams.get("user-one") as string
+  const userIdOne = req.nextUrl.searchParams.get("user-id") as string
   const userIdTwo = req.nextUrl.searchParams.get("user-two") as string
 
   try {

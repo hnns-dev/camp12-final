@@ -1,13 +1,17 @@
+"use client";
+
 import React, { useEffect } from "react";
 import QRCode from "react-qr-code";
 import { useState } from "react";
 
-export default function QRCodeGenerator() {
+type Props = {
+	userId: String;
+}
+
+export default function QRCodeGenerator({userId}: Props) {
 	const [value, setValue] = useState<string>("");
 
-	const userIdOne = "123456";
-	const userIdTwo = "654321";
-	const connectURL = `http://localhost:3000/api/new-friend?user-one=${userIdOne}&user-two=${userIdTwo}`;
+	const connectURL = `http://localhost:3000/send-friend-request?userId=${userId}`;
 
 	useEffect(() => {
 		setValue(connectURL);
