@@ -43,7 +43,7 @@ export default function MapAndDrawer({
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
   };
-  const queryString = JSON.stringify(crossPos);
+  const queryString = JSON.stringify(crossPos); // x and y coordinates
   function handleCreateVenue() {
     const url = `/create-venue?location=${queryString.toString()}`;
     router.push(url);
