@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isProtected } from "./lib/auth";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -7,7 +6,9 @@ export function middleware(request: NextRequest) {
   // pathname
   const getPathname = request.nextUrl.pathname;
 
-  if (isProtected) {
+  const regex = new RegExp("\\.(png|jpg|txt|jpeg|gif|svg|ico)|login");
+
+  if (!regex.test(getPathname)) {
     response.cookies.set("location", getPathname, {
       httpOnly: true,
       path: "/",
@@ -22,8 +23,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/settings",
-    "/profile/me",
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*|/login)",
   ],
 };
