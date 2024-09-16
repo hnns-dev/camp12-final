@@ -14,6 +14,7 @@ import {
   getUserCreatedMeets,
   getUserParticipatingMeets,
 } from "@/lib/utils/getMeets";
+import { prisma } from "@/lib/db";
 
 export default async function Home({
   searchParams,
@@ -38,7 +39,7 @@ export default async function Home({
 
   const myMeets = await getUserCreatedMeets(user?.id);
   const participatingMeets = await getUserParticipatingMeets(user?.id);
-
+  const activities = await prisma.activityType.findMany({});
   console.log(filters);
 
   const filteredVenues = filterVenues(venues, filters);
@@ -53,7 +54,7 @@ export default async function Home({
       />
 
       <Search />
-      <FilterDrawer />
+      <FilterDrawer activities={activities} />
     </div>
   );
 }

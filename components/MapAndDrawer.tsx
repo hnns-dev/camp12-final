@@ -8,6 +8,7 @@ import { VenueData } from "./Map"; // Import VenueData type
 import Navbar from "./Navbar";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import { LatLngExpression } from "leaflet";
+import { useRouter } from "next/navigation";
 
 export default function MapAndDrawer({
   venues,
@@ -20,6 +21,7 @@ export default function MapAndDrawer({
   userCreatedMeets: UserCreatedMeet[];
   userPariticpatingMeets: UserParticipatingMeet[];
 }) {
+  const router = useRouter(); // useRouter hook from next/navigatio
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {
@@ -41,6 +43,17 @@ export default function MapAndDrawer({
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
   };
+  const queryString = JSON.stringify(crossPos);
+  function handleCreateVenue() {
+    const url = `/create-venue?location=${queryString.toString()}`;
+    router.push(url);
+    console.log();
+  }
+
+  function handleCreateMeet() {
+    const url = `/create-venue?location=${queryString.toString()}`;
+    router.push(url);
+  }
 
   return (
     <div>
@@ -52,6 +65,8 @@ export default function MapAndDrawer({
         openMeets={openMeets}
         isDrawerOpen={isDrawerOpen}
         updateCrossPos={updateCrossPos}
+        handleCreateVenue={handleCreateVenue}
+        handleCreateMeet={handleCreateMeet}
       />
       <DrawerHompage
         isOpen={isDrawerOpen}

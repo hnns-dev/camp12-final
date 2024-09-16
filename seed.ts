@@ -110,6 +110,7 @@ async function main() {
       address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
+      description: "here you can toss metal balls quite smoothly",
       activityTypes: {
         connect: {
           id: boule.id,
