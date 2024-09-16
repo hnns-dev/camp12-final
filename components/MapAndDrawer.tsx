@@ -47,11 +47,10 @@ export default function MapAndDrawer({
   function handleCreateVenue() {
     const url = `/create-venue?location=${queryString.toString()}`;
     router.push(url);
-    console.log();
   }
 
   function handleCreateMeet() {
-    const url = `/create-venue?location=${queryString.toString()}`;
+    const url = `/create?location=${queryString.toString()}`;
     router.push(url);
   }
 
