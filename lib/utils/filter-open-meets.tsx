@@ -75,13 +75,13 @@ export function filterOpenMeets(
       if (isMeetPlanned(openMeet) && openMeet.isPublic) return true;
       else return false;
     }
-    if (filters.competitive === "both") return true;
-    if (filters.competitive === "yes") {
-      if (openMeet.competitive) return true;
+    if (filters.mode === "casual") return true;
+    if (filters.mode === "competetive") {
+      if (openMeet.mode) return true;
       else return false;
     }
-    if (filters.competitive === "no") {
-      if (!openMeet.competitive) return true;
+    if (filters.mode === "softie") {
+      if (!openMeet.mode) return true;
       else return false;
     }
     return true;

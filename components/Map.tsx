@@ -139,7 +139,7 @@ export default function Map2({
             .on("click", () => {
               const venueData: VenueData = {
                 name: meet.activityType.name || "Unnamed Meet",
-                address: meet.address || "Unknown address",
+                address: meet.adress || "Unknown address",
                 geolocation: meet.location as LatLngExpression,
               };
               openDrawer(venueData);

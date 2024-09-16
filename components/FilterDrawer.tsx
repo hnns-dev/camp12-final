@@ -48,8 +48,7 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
   const router = useRouter();
   const [activity, setActivity] = useState<string | undefined>();
   const [status, setStatus] = useState<string | undefined>();
-  const [excludeCompetitive, setExcludeCompetitive] = useState(true);
-  const [isCompetitive, setIsCompetitive] = useState(false);
+  const [mode, setMode] = useState<string | undefined>("");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   function addFilters() {
@@ -60,15 +59,18 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
     if (status) {
       filters.status = status;
     }
-    if (excludeCompetitive) {
-      filters.competitive = "both";
+    if (mode === "casual") {
+      filters.mode = "casual";
     }
-    if (!excludeCompetitive && isCompetitive) {
-      filters.competitive = "yes";
+    if (mode === "competetive") {
+      filters.mode = "competetive";
     }
-    if (!excludeCompetitive && !isCompetitive) {
-      filters.competitive = "no";
+    if (mode === "softie") {
+      filters.mode = "softie";
     }
+    // if (mode) {
+    //   filters.mode = mode;
+    // }
 
     return filters;
   }
@@ -81,8 +83,7 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
   function resetFilters() {
     setActivity(undefined);
     setStatus(undefined);
-    setExcludeCompetitive(true);
-    setIsCompetitive(false);
+    setMode(undefined);
 
     router.push("/");
     window.location.href = "/";
@@ -118,7 +119,7 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
             <h2>Activity</h2>
             <Select onValueChange={setActivity} onOpenChange={setIsSelectOpen}>
               <SelectTrigger className="text-base">
-                <SelectValue placeholder="all activities" />
+                <SelectValue placeholder="All Activities" />
               </SelectTrigger>
               <SelectContent className="bg-white p-3 z-[9999] pointer-events-auto">
                 <SelectGroup>
@@ -134,6 +135,25 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {/* Competetive/Casual/Softie */}
+            <div className="text-base flex justify-between items-center gap-1">
+              <Select onValueChange={setMode} onOpenChange={setIsSelectOpen}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue className="text-base" placeholder="Level" />
+                </SelectTrigger>
+                <SelectContent className="bg-white p-3 z-[9999] pointer-events-auto">
+                  <SelectItem className="text-base" value="softie">
+                    Softie
+                  </SelectItem>
+                  <SelectItem className="text-base" value="casual">
+                    Casual
+                  </SelectItem>
+                  <SelectItem className="text-base" value="competitive">
+                    Competitive
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <h2>Status</h2>
             <RadioGroup
               defaultValue="option-one"
@@ -171,37 +191,14 @@ export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
                 </div>
               </div>
             </RadioGroup>
-            <div className="flex justify-between items-center gap-1">
-              <h2
-                className={`${
-                  excludeCompetitive ? "text-muted-foreground" : "text-primary"
-                }`}
-              >
-                Competitive
-              </h2>
-              <Switch
-                onCheckedChange={setIsCompetitive}
-                disabled={excludeCompetitive}
-              />
-
-              <h2 className="pl-4">show both</h2>
-              <Checkbox
-                id="excludeCompetitive"
-                checked={excludeCompetitive}
-                onCheckedChange={(checked) => {
-                  setExcludeCompetitive(checked as boolean);
-                  if (!checked) {
-                    setIsCompetitive(false);
-                  }
-                }}
-              />
-            </div>
           </div>
           <DrawerFooter>
-            <DrawerClose asChild>
-              <Button onClick={handleApplyFilters}>Apply Filters</Button>
-            </DrawerClose>
-            <Button onClick={resetFilters}>Reset</Button>
+            <div className="flex gap-10">
+              <DrawerClose asChild>
+                <Button onClick={handleApplyFilters}>Apply Filters</Button>
+              </DrawerClose>
+              <Button onClick={resetFilters}>Reset</Button>
+            </div>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
