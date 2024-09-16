@@ -26,24 +26,25 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import Filter from "@/components/Filter";
 import { Filters } from "@/lib/utils/types";
+import { ActivityType } from "@prisma/client";
 
-const activities = [
-  "tennis",
-  "table tennis",
-  "basketball",
-  "volleyball",
-  "yoga",
-  "boule",
-  "chess",
-  "boxing",
-  "badminton",
-];
+// const activities = [
+//   "tennis",
+//   "table tennis",
+//   "basketball",
+//   "volleyball",
+//   "yoga",
+//   "boule",
+//   "chess",
+//   "boxing",
+//   "badminton",
+// ];
 
 // type FilterDrawerProps = {
 //   onFiltersApplied: (filters: Filters) => void;
 // };
 
-export function FilterDrawer() {
+export function FilterDrawer({ activities }: { activities: ActivityType[] }) {
   const router = useRouter();
   const [activity, setActivity] = useState<string | undefined>();
   const [status, setStatus] = useState<string | undefined>();
@@ -124,10 +125,10 @@ export function FilterDrawer() {
                   {activities.map((activity) => (
                     <SelectItem
                       className="text-base"
-                      key={activity}
-                      value={activity}
+                      key={activity.id}
+                      value={activity.id}
                     >
-                      {activity}
+                      {activity.name}
                     </SelectItem>
                   ))}
                 </SelectGroup>

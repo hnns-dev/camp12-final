@@ -110,6 +110,7 @@ async function main() {
       address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
+      description: "here you can toss metal balls quite smoothly",
       activityTypes: {
         connect: {
           id: boule.id,
@@ -193,7 +194,7 @@ async function main() {
   await prisma.tag.create({ data: { name: "Dogs around" } });
   await prisma.tag.create({ data: { name: "Nice ground" } });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-08-29"),
@@ -342,7 +343,7 @@ async function main() {
     },
   });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-15"),
@@ -432,44 +433,6 @@ async function main() {
     },
   });
 
-  await prisma.tournament.create({
-    data: {
-      date: new Date("2024-10-01"),
-      time: "09:00",
-      name: "The Tango",
-      duration: 6,
-      size: 16,
-      type: "Knockout",
-      mode: "Singles",
-      public: true,
-      creatorId: user1.id,
-      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
-      note: "Jährliches Tennisturnier",
-      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
-      venueId: musselGym.id,
-      activityTypeId: tennis.id,
-    },
-  });
-
-  await prisma.tournament.create({
-    data: {
-      date: new Date("2024-12-03"),
-      time: "15:00",
-      name: "Masterclass",
-      duration: 6,
-      size: 16,
-      type: "Knockout",
-      mode: "Singles",
-      public: true,
-      creatorId: user1.id,
-      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
-      note: "Jährliches Tennisturnier",
-      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
-      venueId: musselGym.id,
-      activityTypeId: tennis.id,
-    },
-  });
-
   // Badges
   await prisma.badge.create({
     data: {
@@ -488,7 +451,7 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
-      description: "won 10 tournaments",
+      description: "won 10 sessions",
       users: {
         connect: {
           id: user1.id,
@@ -543,6 +506,10 @@ async function main() {
 
   console.log("Seed-Daten erfolgreich eingefügt");
 }
+
+
+// getting an error message for await main 
+// Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher.ts(1378)
 
 await main()
   .catch((e) => {
