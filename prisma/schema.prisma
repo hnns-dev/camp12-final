@@ -47,7 +47,6 @@ model Tag {
   name          String         @id @unique
   venues        Venue[]
   meets         Meet[]         @relation(name: "TagtoMeet")
-  tournaments   Tournament[]
   activityTypes ActivityType[]
 }
 
