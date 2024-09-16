@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function ProfileForm({ user }: { user: User }) {
   const [name, setName] = useState(user.name ?? "");
-  const [email, setEmail] = useState(user.email ?? "");
+  const [bio, setBio] = useState(user.bio ?? "");
   const [imageUrl, setImageUrl] = useState<string>(user.picture ?? "");
   const [image, setImage] = useState<File | null>(null);
   const { edgestore } = useEdgeStore();
@@ -19,7 +19,7 @@ export function ProfileForm({ user }: { user: User }) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    await updateProfile(user.id, name, email);
+    await updateProfile(user.id, name, bio);
     toast("Profile Updated!");
   }
 
@@ -30,9 +30,15 @@ export function ProfileForm({ user }: { user: User }) {
           <ArrowLeft className="w-6 h-6 text-black" />
         </Link>
       </div>
+      <label
+        className="block text-gray-700 text-sm font-bold mb-2"
+        htmlFor="picture"
+      >
+        Picture
+      </label>
       <Link
         href={`/profile/${user.id}/update/picture`}
-        className="relative self-start"
+        className="relative self-start mb-4"
       >
         <Avatar className="object-cover">
           <AvatarImage src={user.picture ?? ""} />
@@ -54,21 +60,21 @@ export function ProfileForm({ user }: { user: User }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
 
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
+            htmlFor="bio"
           >
-            E-Mail
+            Bio
           </label>
           <input
-            id="email"
+            id="bio"
             type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>

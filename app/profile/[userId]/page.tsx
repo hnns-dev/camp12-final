@@ -105,7 +105,7 @@ export default async function ProfilePage({
               : "mt-2 text-sm text-muted-foreground px-11 text-center pt-3"
           }
         >
-          This is a little Bio which is only shown to friends of the Person
+          {user?.bio ?? "space for your bio"}
         </div>
         <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
           {user.cityName}

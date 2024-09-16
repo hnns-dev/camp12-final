@@ -16,6 +16,7 @@ model User {
   email                    String       @unique
   name                     String?
   picture                  String?
+  bio                      String?
   session                  Session[]
   tournamentsCreated       Tournament[] @relation("CreatedTournaments")
   tournamentsParticipating Tournament[] @relation("ParticipatedTournaments")
