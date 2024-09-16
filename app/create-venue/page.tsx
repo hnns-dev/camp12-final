@@ -18,7 +18,7 @@ export default async function CreateVenuePage({
   console.log(location);
 
   return (
-    <main className="m-4">
+    <div className="m-4">
       <Link href="/" className="text-2xl ml-2">
         ←
       </Link>
@@ -28,6 +28,6 @@ export default async function CreateVenuePage({
       <section className="flex flex-col ">
         <CreateVenueForm activityTypes={activityTypes} location={location} />
       </section>
-    </main>
+    </div>
   );
 }
