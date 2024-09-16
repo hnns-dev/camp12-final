@@ -5,7 +5,7 @@ import { OAuth2RequestError } from "arctic";
 import axios from "axios";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 interface GoogleUser {
   id: string;
@@ -73,14 +73,9 @@ export async function GET(request: NextRequest) {
         sessionCookie.value,
         sessionCookie.attributes
       );
-      const cookieStore = cookies();
-      const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: intendedPath,
-        },
-      });
+      const intendedPath = cookies().get("location")?.value || "/";
+
+      return NextResponse.redirect(new URL(intendedPath, request.url), 302);
     }
 
     const userId = generateIdFromEntropySize(10);
@@ -107,14 +102,9 @@ export async function GET(request: NextRequest) {
       sessionCookie.value,
       sessionCookie.attributes
     );
-    const cookieStore = cookies();
-    const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: intendedPath,
-      },
-    });
+    const intendedPath = cookies().get("location")?.value || "/";
+
+    return NextResponse.redirect(new URL(intendedPath, request.url), 302);
   } catch (err) {
     if (err instanceof OAuth2RequestError) {
       return new Response(null, { status: 400 });

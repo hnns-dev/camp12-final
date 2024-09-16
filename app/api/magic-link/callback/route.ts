@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const state = url.searchParams.get("state") as string;
   const email = url.searchParams.get("email") as string;
+  const intendedPath = cookies().get("location")?.value || "/";
 
   if (!state) {
     return NextResponse.json({ error: "State is required" }, { status: 400 });
@@ -60,15 +61,6 @@ export async function GET(request: NextRequest) {
     sessionCookie.attributes
   );
 
-  //get the inetended path from the user cia the cookie storage
-  const cookieStore = cookies();
-  const intendedPath = cookieStore.get("intendedPath")?.value || "/login";
-
   // Respond with a success message or redirect
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: intendedPath,
-    },
-  });
+  return NextResponse.redirect(new URL(intendedPath, request.url), 302);
 }
