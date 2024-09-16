@@ -69,6 +69,17 @@ export default async function ProfilePage({
   //   return redirect("/login");
   // }
 
+  function showPicture() {
+    if (user?.settings?.profileVisibility === "Public") return user.picture;
+    if (loggedInUser?.id === user?.id) return user?.picture;
+    if (user?.settings?.profileVisibility === "FriendsOnly") {
+      if (user.friends.some((f) => f.id === loggedInUser?.id))
+        return user.picture;
+      return "";
+    }
+    return "";
+  }
+
   return (
     <div>
       <div className={isOwnProfile() ? "" : "hidden"}>
@@ -78,11 +89,7 @@ export default async function ProfilePage({
       <div className="flex flex-col items-center pt-5">
         <Avatar className="h-40 w-40">
           <AvatarImage
-            src={
-              user.settings?.profileVisibility === "Private"
-                ? undefined
-                : user?.picture ?? undefined
-            }
+            src={showPicture()}
             alt="@shadcn"
             className="object-cover"
           />
