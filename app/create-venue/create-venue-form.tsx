@@ -46,9 +46,11 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateVenueForm({
   activityTypes,
   location,
+  address,
 }: {
   activityTypes: ActivityType[];
   location: number[];
+  address: string[],
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);

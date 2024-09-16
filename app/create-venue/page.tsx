@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import CreateVenueForm from "./create-venue-form";
+import { fetchAddress } from "@/lib/fetchAddress";
 
 export default async function CreateVenuePage({
   searchParams,
@@ -17,6 +18,9 @@ export default async function CreateVenuePage({
     .map(Number); // Convert each item to a number
   console.log(location);
 
+
+  const address = await fetchAddress(location[0], location[1]);
+
   return (
     <div className="m-4">
       <Link href="/" className="text-2xl ml-2">
@@ -24,9 +28,11 @@ export default async function CreateVenuePage({
       </Link>
       <section className="flex flex-col items-center gap-3">
         <h1 className="text-2xl font-bold">Add a venue</h1>
+        <h2>{address[0]}</h2>
+        <h2>{address[1]}</h2>
       </section>
       <section className="flex flex-col ">
-        <CreateVenueForm activityTypes={activityTypes} location={location} />
+        <CreateVenueForm activityTypes={activityTypes} location={location} address={address} />
       </section>
     </div>
   );

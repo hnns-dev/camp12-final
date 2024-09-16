@@ -7,6 +7,7 @@ export async function fetchAddress(lat: number, lon: number) {
       "Geoapify API Key is not defined in environment variables."
     );
   }
+  
 
   const response = await fetch(
     `${apiUrl}?lat=${lat}&lon=${lon}&format=json&apiKey=${apiKey}`
@@ -17,12 +18,10 @@ export async function fetchAddress(lat: number, lon: number) {
   }
 
   const data = await response.json();
-  const address = data.features[0].properties;
 
-  return {
-    street: address.street,
-    city: address.city,
-    state: address.state,
-    postalCode: address.postcode,
-  };
+  console.log(data.results);
+  const street = data.results[0].address_line1;
+  const area = data.results[0].address_line2;
+
+  return [street, area];
 }
