@@ -43,11 +43,12 @@ type Props = {
   venueId?: string;
   venueName?: string;
   location?: number[];
+  address?: string[];
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ userId, venueId, venueName, location }: Props) {
+export default function MeetForm({ userId, venueId, venueName, location, address }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -127,9 +128,13 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
               {
                 venueId ? (
                   <span className="pb-6"> @ {venueName}</span>
-                ) : (
-                  <span className="pb-6">@ {location}</span>
-                )
+                ) : address ? (
+                  <div>
+                  <span className="pb-6">{address[0]}</span><br />
+                  <span className="pb-6">{address[1]}</span>
+                  </div>
+                ) :
+                <span>Special Location</span>
               }
               {/* Activity Type */}
               {(

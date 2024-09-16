@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import MeetForm from "./meet";
 import { protectPage } from "@/lib/auth";
+import { fetchAddress } from "@/lib/fetchAddress";
 
 export default async function CreateMeet({
   searchParams,
@@ -13,9 +14,10 @@ export default async function CreateMeet({
   if (searchParams.location) {
     // Location was given in url query
     const locationArray = JSON.parse(searchParams.location);
+    const address = await fetchAddress(locationArray[0], locationArray[1]);
     return (
       <div>
-        <MeetForm userId={user.id} location={locationArray} />
+        <MeetForm userId={user.id} location={locationArray} address={address} />
       </div>
     );
   } else if (searchParams.venueId) {
