@@ -194,24 +194,7 @@ async function main() {
   await prisma.tag.create({ data: { name: "Nice ground" } });
 
   // Meets
-  await prisma.meet.create({
-    data: {
-      date: new Date("2024-08-29"),
-      time: "14:00",
-      duration: 2,
-      isPublic: false,
-      creatorId: user1.id,
-      participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: 2,
-      notes: "Freundliches Basketballspiel",
-      tags: { connect: [{ name: "Outdoor" }] },
-      venueId: weisseElster.id,
-      activityTypeId: basketball.id,
-      mode: "competitive",
-      adress: "Weisse Elster",
-    },
-  });
-
+  // 1
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -226,9 +209,10 @@ async function main() {
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
       mode: "softie",
-      adress: "Beach Club Cossi",
+      address: "Beach Club Cossi",
     },
   });
+  // 2
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -245,6 +229,7 @@ async function main() {
       mode: "casual",
     },
   });
+  //  3
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -261,7 +246,7 @@ async function main() {
       mode: "softie",
     },
   });
-
+  // 5
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -278,6 +263,7 @@ async function main() {
       mode: "softie",
     },
   });
+  // 6
   await prisma.meet.create({
     data: {
       date: new Date("2024-08-20"),
@@ -294,6 +280,7 @@ async function main() {
       mode: "softie",
     },
   });
+  // 7
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -310,6 +297,7 @@ async function main() {
       mode: "softie",
     },
   });
+  // 8
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-21"),
@@ -326,24 +314,7 @@ async function main() {
       mode: "casual",
     },
   });
-  await prisma.meet.create({
-    data: {
-      date: new Date("2024-09-20"),
-      time: "11:00",
-      duration: 4,
-      isPublic: true,
-      creatorId: user2.id,
-      participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 5,
-      notes: "ballineasily",
-      tags: { connect: [{ name: "Outdoor" }] },
-      activityTypeId: basketball.id,
-      location: [51.333132141369, 12.335911095141],
-      mode: "casual",
-    },
-  });
-
-  // Meets
+  // 9
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-29"),
@@ -361,25 +332,7 @@ async function main() {
       mode: "softie",
     },
   });
-
-  await prisma.meet.create({
-    data: {
-      date: new Date("2024-09-26"),
-      time: "10:00",
-      duration: 1,
-      isPublic: true,
-      creatorId: user2.id,
-      participants: { connect: [{ id: user1.id }] },
-      guests: 2,
-      notes: "Tennistraining",
-      tags: { connect: [{ name: "Outdoor" }] },
-      venueId: beachClubCossi.id,
-      activityTypeId: tennis.id,
-      isRecurring: false,
-      mode: "competitive",
-    },
-  });
-
+  // 10
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
@@ -397,6 +350,7 @@ async function main() {
       mode: "competitive",
     },
   });
+  // 11
   await prisma.meet.create({
     data: {
       date: new Date("2024-10-03"),
@@ -412,24 +366,6 @@ async function main() {
       activityTypeId: basketball.id,
       isRecurring: false,
       mode: "casual",
-    },
-  });
-
-  await prisma.meet.create({
-    data: {
-      date: new Date("2024-09-30"),
-      time: "14:00",
-      duration: 2,
-      isPublic: false,
-      creatorId: user2.id,
-      participants: { connect: [{ id: user3.id }] },
-      guests: 2,
-      notes: "Freundliches Basketballspiel YAY",
-      tags: { connect: [{ name: "Outdoor" }] },
-      venueId: musselGym.id,
-      activityTypeId: tennis.id,
-      isRecurring: false,
-      mode: "softie",
     },
   });
 
