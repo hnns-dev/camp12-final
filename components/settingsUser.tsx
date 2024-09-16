@@ -5,6 +5,8 @@ import { updateSettings } from "@/actions/settings";
 import { Settings } from "@prisma/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type Props = {
   userId: string;
@@ -33,10 +35,14 @@ export default function SettingsUser({ userId, settings }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
+    <div className="min-h-screen flex flex-col items-center justify-between bg-white px-8 py-28 g-10">
       {/* Top bar with back arrow */}
       <div className="w-full flex items-center mb-8">
-        <button className="text-2xl ml-2">←</button>
+        <div className="mb-4">
+          <Link href="/profile/me">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+        </div>
         <h1 className="flex-1 text-center text-2xl font-bold">Settings</h1>
       </div>
 

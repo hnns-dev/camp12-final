@@ -214,7 +214,7 @@ export default function Map2({
   }, [venues, openDrawer]);
 
   return (
-    <div className="h-screen w-screen relative">
+    <div ref={mapContainer} className="h-screen w-screen absolute">
       {crossVisible ? (
         <div className="absolute  top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2">
           <GiCrosshair className="size-20" />
@@ -237,8 +237,6 @@ export default function Map2({
           </div>
         </div>
       ) : null}
-      <div ref={mapContainer} className="h-full w-full absolute" />
-      {loading && <div>Loading...</div>}
     </div>
   );
 }

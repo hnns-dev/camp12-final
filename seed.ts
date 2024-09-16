@@ -10,6 +10,7 @@ async function main() {
   await prisma.activityType.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.badge.deleteMany();
+  await prisma.meet.deleteMany();
   await prisma.city.deleteMany();
   await prisma.venue.deleteMany();
 
@@ -46,12 +47,20 @@ async function main() {
       requiredNumberOfParticipants: 2,
     },
   });
+  const tableTennis = await prisma.activityType.create({
+    data: {
+      name: "Table Tennis",
+      description: "Fast-paced sport with paddles and lightweight ball",
+      requiredNumberOfParticipants: 2,
+    },
+  });
 
   // Venues
   const weisseElster = await prisma.venue.create({
     data: {
       name: "Weisser Rabe",
       address: "Weisser Rabe 12 in 161 Leipzig",
+      description: "Classic spot. absolutely balling here.",
       location: [51.330184277926, 12.371808439493],
       image: "/elster.jpg",
       activityTypes: {
@@ -65,6 +74,8 @@ async function main() {
   const musselGym = await prisma.venue.create({
     data: {
       name: "Mussel Gym",
+      description:
+        "Very nice Venue where you can play tabletennis a lot without getting kicked.",
       location: [51.34037781763, 12.32281923294],
       address: "Mussel Gym 12 in 161 Leipzig",
       image: "/mussel.jpg",
@@ -79,6 +90,8 @@ async function main() {
   const beachClubCossi = await prisma.venue.create({
     data: {
       name: "Beach Club Cossi",
+      description:
+        "Its nearby a lake, so on the hot days you can jump into the cossi and enjoy a round of swimming.",
       address: "Beach Club Cossi 12 in 161 Leipzig",
       location: [51.317229196977, 12.334948182106],
       image: "/cossi.jpg",
@@ -92,6 +105,8 @@ async function main() {
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
+      description:
+        "Playing boule with friends here is very nice. It's quiet and easy to access.",
       address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
@@ -99,6 +114,20 @@ async function main() {
       activityTypes: {
         connect: {
           id: boule.id,
+        },
+      },
+    },
+  });
+
+  const tableTennis001 = await prisma.venue.create({
+    data: {
+      name: "Ping Pong Table - Güntz Park",
+      address: "Dr.-Güntz-Park in 04299 Leipzig",
+      location: [51.32106056582742, 12.409769051059083],
+      image: "/venue-img/IMG_5534.jpg",
+      activityTypes: {
+        connect: {
+          id: tableTennis.id,
         },
       },
     },
@@ -161,8 +190,11 @@ async function main() {
   await prisma.tag.create({ data: { name: "Outdoor" } });
   await prisma.tag.create({ data: { name: "Indoor" } });
   await prisma.tag.create({ data: { name: "Relaxing" } });
+  await prisma.tag.create({ data: { name: "Friendly Neighborhood" } });
+  await prisma.tag.create({ data: { name: "Dogs around" } });
+  await prisma.tag.create({ data: { name: "Nice ground" } });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-08-29"),
@@ -311,7 +343,7 @@ async function main() {
     },
   });
 
-  // Meets (including one tournament)
+  // Meets
   await prisma.meet.create({
     data: {
       date: new Date("2024-09-15"),
@@ -401,25 +433,6 @@ async function main() {
     },
   });
 
-  await prisma.tournament.create({
-    data: {
-      date: new Date("2024-10-01"),
-      time: "09:00",
-      duration: 6,
-      size: 16,
-      type: "Knockout",
-      mode: "Singles",
-      public: true,
-      creatorId: user1.id,
-      participants: { connect: [{ id: user3.id }, { id: user2.id }] },
-      guests: ["Barbara Schöneberger", "Günther Jauch"],
-      note: "Jährliches Tennisturnier",
-      tags: { connect: [{ name: "Outdoor" }, { name: "Indoor" }] },
-      venueId: musselGym.id,
-      activityTypeId: tennis.id,
-    },
-  });
-
   // Badges
   await prisma.badge.create({
     data: {
@@ -438,7 +451,7 @@ async function main() {
     data: {
       name: "Turniersieger",
       icon: "/gold.svg",
-      description: "won 10 tournaments",
+      description: "won 10 sessions",
       users: {
         connect: {
           id: user1.id,
@@ -493,6 +506,10 @@ async function main() {
 
   console.log("Seed-Daten erfolgreich eingefügt");
 }
+
+
+// getting an error message for await main 
+// Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher.ts(1378)
 
 await main()
   .catch((e) => {
