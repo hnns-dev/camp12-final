@@ -3,7 +3,7 @@ import { addFriend } from '@/lib/utils/add-friend';
 
 
 export async function GET(req: NextRequest) {
-  const userIdOne = req.nextUrl.searchParams.get("user-id") as string
+  const userIdOne = req.nextUrl.searchParams.get("user-one") as string
   const userIdTwo = req.nextUrl.searchParams.get("user-two") as string
 
   try {
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/profile",
+        Location: `/profile/me`,
       },
     });  } catch (error) {
     return NextResponse.json({ error: 'Failed to add into friends list' }, { status: 500 });

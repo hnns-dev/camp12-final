@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { protectPage } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { Button } from "@/components/ui/button";
 
 export default async function FriendPage({
   searchParams,
@@ -15,9 +16,9 @@ export default async function FriendPage({
     where: {
       id: searchParams.userId
     }
-  })
+  });
 
-  console.log(friend);
+  const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
@@ -29,10 +30,21 @@ export default async function FriendPage({
         </div>
         <div className="flex flex-col items-center flex-grow justify-center">
           <h1 className="text-3xl font-bold text-center mb-2">
-            Do you want to become friends with {friend.name}?
+            Do you want to become friends{friend.name ? ` with {friend.name}` : ''}?
           </h1>
         </div>
-        
+        <div className="flex items-center justify-center gap-5">
+
+          <Link href={connectURL}>
+            <Button className="h-11 w-32 items-center py-6">
+              Yes
+            </Button>
+          </Link>
+
+          <Button className="h-11 w-32 items-center py-6">
+            No
+          </Button>
+        </div>
       </div>
     </div>
   );
