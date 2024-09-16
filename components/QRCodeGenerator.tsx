@@ -7,7 +7,7 @@ export default function QRCodeGenerator() {
 
 	const userIdOne = "123456";
 	const userIdTwo = "654321";
-	const connectURL = `https://localhost:3000/api/connect?userone=${userIdOne}&usertwo=${userIdTwo}`;
+	const connectURL = `http://localhost:3000/api/new-friend?user-one=${userIdOne}&user-two=${userIdTwo}`;
 
 	useEffect(() => {
 		setValue(connectURL);
