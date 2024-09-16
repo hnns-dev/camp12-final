@@ -86,6 +86,7 @@ export async function GET(request: NextRequest) {
         googleId: googleUser.id,
         email: googleUser.email,
         picture: googleUser.picture,
+        name: googleUser.name,
         settings: {
           create: {
             friendsVisibility: "Private",

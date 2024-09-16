@@ -43,7 +43,7 @@ const VenueDetailsPage = async () => {
       <div className="bg-gray-200 rounded-lg p-4 w-full max-w-md">
         <div className="flex justify-between">
           <div>
-            <p>Type: Tournament</p>
+            <p>Session</p>
             <p>Date: 16.03.2067</p>
             <p>Time: 06:00</p>
           </div>
@@ -60,7 +60,7 @@ const VenueDetailsPage = async () => {
       <div className="bg-gray-200 rounded-lg p-4 w-full max-w-md">
         <div className="flex justify-between">
           <div>
-            <p>Type: Session</p>
+            <p>Session</p>
             <p>Date: 18.03.2067</p>
             <p>Time: 12:00</p>
           </div>
