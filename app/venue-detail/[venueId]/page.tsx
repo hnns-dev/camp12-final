@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DisplayWeather from "@/components/display-weather";
+
 export default async function VenueDetailsPage({
   params,
 }: {
@@ -18,13 +19,6 @@ export default async function VenueDetailsPage({
       description: true,
       tags: {
         select: { name: true },
-      },
-      tournaments: {
-        select: {
-          name: true,
-          time: true,
-          date: true,
-        },
       },
       meets: {
         select: {
@@ -106,30 +100,6 @@ export default async function VenueDetailsPage({
       {/* Description */}
       <div className="flex h-auto max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70">
         <p>{venue?.description}</p>
-      </div>
-
-      {/* Tournaments at this Place */}
-      <div className="w-full">
-        <h3 className="text-sm text-gray-500 font-bold py-2">Tournaments</h3>
-        <div className="flex gap-2 h-auto min-h-36 max-h-40 w-full rounded border-2 border-input bg-gray-100 px-3 py-2 text-sm text-gray-500 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70 overflow-scroll">
-          {venue?.tournaments.map((tournament, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle>{tournament.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col mb-1">
-                  <Label>Date</Label>
-                  <p>{tournament.date.toLocaleDateString()}</p>
-                </div>
-                <div className="flex flex-col">
-                  <Label>Time</Label>
-                  <p className="text-left">{tournament.time}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
       </div>
 
       {/* Planned Meets */}
