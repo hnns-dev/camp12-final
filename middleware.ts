@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isProtected } from "./lib/auth";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -6,7 +7,7 @@ export function middleware(request: NextRequest) {
   // pathname
   const getPathname = request.nextUrl.pathname;
 
-  if (getPathname === "/settings" || getPathname === "/profile/me") {
+  if (isProtected) {
     response.cookies.set("location", getPathname, {
       httpOnly: true,
       path: "/",

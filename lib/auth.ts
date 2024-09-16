@@ -10,6 +10,8 @@ const client = new PrismaClient();
 
 const adapter = new PrismaAdapter(client.session, client.user); // your adapter
 
+export let isProtected = false;
+
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     // this sets cookies with super long expiration
@@ -75,6 +77,7 @@ export const validateRequest = cache(
 );
 
 export async function protectPage() {
+  isProtected = true;
   const { user } = await validateRequest();
   if (!user) {
     return redirect("/login");
