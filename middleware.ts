@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   // pathname
   const getPathname = request.nextUrl.pathname;
 
-  if (getPathname === "/settings" || getPathname === "/me") {
+  if (getPathname === "/settings" || getPathname === "/profile/me") {
     response.cookies.set("location", getPathname, {
       httpOnly: true,
       path: "/",
@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/settings",
-    "/me",
+    "/profile/me",
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*|/login)",
   ],
 };
