@@ -116,7 +116,6 @@ async function main() {
       address: "Boule Bahn Berlin 12 in 161 Leipzig",
       location: [51.320008587211, 12.337681353092],
       image: "/example.png",
-      description: "here you can toss metal balls quite smoothly",
       activityTypes: {
         connect: {
           id: boule.id,
@@ -193,12 +192,13 @@ async function main() {
   });
 
   // Tags
-  await prisma.tag.create({ data: { name: "Outdoor" } });
-  await prisma.tag.create({ data: { name: "Indoor" } });
+  await prisma.tag.create({ data: { name: "public ground" } });
+  await prisma.tag.create({ data: { name: "wheelchair-accessible" } });
   await prisma.tag.create({ data: { name: "Relaxing" } });
   await prisma.tag.create({ data: { name: "Friendly Neighborhood" } });
   await prisma.tag.create({ data: { name: "Dogs around" } });
-  await prisma.tag.create({ data: { name: "Nice ground" } });
+  await prisma.tag.create({ data: { name: "illuminated at night" } });
+  await prisma.tag.create({ data: { name: "sheltered" } });
 
   // Meets
   const meet1 = await prisma.meet.create({
@@ -211,7 +211,7 @@ async function main() {
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
       groupSize: 2,
       notes: "Freundliches Basketballspiel",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
       isCompetitive: true,
@@ -229,7 +229,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }] },
       groupSize: 1,
       notes: "Tennistraining",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
       competitive: false,
@@ -245,7 +245,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
       groupSize: 3,
       notes: "juhu boule",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: bouleBahnBerlin.id,
       activityTypeId: boule.id,
     },
@@ -260,7 +260,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }] },
       groupSize: 1,
       notes: "yogimogi",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: musselGym.id,
       activityTypeId: yoga.id,
     },
@@ -276,7 +276,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
       groupSize: 3,
       notes: "spontaneous tennis",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       activityTypeId: tennis.id,
       location: [51.328261109658, 12.361901700496],
       address: "FCKAFD-Weg 2 in 161 Leipzig",
@@ -292,7 +292,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }] },
       groupSize: 1,
       notes: "yogimogi2",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       activityTypeId: yoga.id,
       location: [51.312818371408, 12.379196584224],
       address: "Bernd-Höcke-ist-ein-Nazi-Weg 8 in 161 Leipzig",
@@ -308,7 +308,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }] },
       groupSize: 1,
       notes: "free&competitiveboule",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       activityTypeId: boule.id,
       location: [51.333365079861, 12.402499616146],
       competitive: true,
@@ -325,7 +325,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
       groupSize: 5,
       notes: "ballintomorrow",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       activityTypeId: basketball.id,
       location: [51.298389433094, 12.3746411875],
       competitive: false,
@@ -342,7 +342,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
       groupSize: 5,
       notes: "ballineasily",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       activityTypeId: basketball.id,
       location: [51.333132141369, 12.335911095141],
       competitive: false,
@@ -361,7 +361,7 @@ async function main() {
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
       groupSize: 2,
       notes: "Freundliches Basketballspiel",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
       isCompetitive: false,
@@ -379,7 +379,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }] },
       groupSize: 2,
       notes: "Tennistraining",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
       isCompetitive: false,
@@ -397,7 +397,7 @@ async function main() {
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
       groupSize: 2,
       notes: "Tennistraining",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
       isCompetitive: false,
@@ -414,7 +414,7 @@ async function main() {
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
       groupSize: 2,
       notes: "Freundliches Basketballspiel",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
       isCompetitive: false,
@@ -432,7 +432,7 @@ async function main() {
       participants: { connect: [{ id: user3.id }] },
       groupSize: 2,
       notes: "Freundliches Basketballspiel",
-      tags: { connect: [{ name: "Outdoor" }] },
+      tags: { connect: [{ name: "Relaxing" }] },
       venueId: musselGym.id,
       activityTypeId: tennis.id,
       isCompetitive: false,

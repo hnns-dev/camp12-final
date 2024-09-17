@@ -7,7 +7,11 @@ export default async function CreateVenuePage({
 }: {
   searchParams: { [key: string]: string | string[] };
 }) {
-  const activityTypes = await prisma.activityType.findMany({});
+  const activityTypes = await prisma.activityType.findMany();
+
+  const tags = await prisma.tag.findMany();
+
+  console.log(tags);
 
   const locationString = searchParams.location as string;
 
@@ -26,7 +30,11 @@ export default async function CreateVenuePage({
         <h1 className="text-2xl font-bold">Add a venue</h1>
       </section>
       <section className="flex flex-col ">
-        <CreateVenueForm activityTypes={activityTypes} location={location} />
+        <CreateVenueForm
+          activityTypes={activityTypes}
+          location={location}
+          tags={tags}
+        />
       </section>
     </div>
   );

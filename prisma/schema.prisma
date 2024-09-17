@@ -45,7 +45,7 @@ model Session {
 }
 
 model Tag {
-  name          String         @id @unique
+  name          String         @id @default(uuid())
   venues        Venue[]
   meets         Meet[]
   activityTypes ActivityType[]
@@ -86,7 +86,7 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  tags           Tag[]        @relation(name: "TagtoMeet")
+  tags           Tag[]
   Response       Response[]
 }
 
