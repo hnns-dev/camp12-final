@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default async function VenueDetailsPage({
   params,
 }: {
-  params: { venueId: string };
+  params: { venueId?: string };
 }) {
   const venue = await prisma.venue.findUnique({
     where: { id: params.venueId },
@@ -43,6 +43,8 @@ export default async function VenueDetailsPage({
       },
     },
   });
+
+  console.log(venue);
 
   // handle an undefined case
   const coordinates: number[] | undefined = venue?.location;
