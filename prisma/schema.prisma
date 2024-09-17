@@ -45,7 +45,7 @@ model Session {
 }
 
 model Tag {
-  name          String         @id @unique
+  name          String         @id @default(uuid())
   venues        Venue[]
   meets         Meet[]
   activityTypes ActivityType[]

@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ActivityType } from "@prisma/client";
+import { ActivityType, Tag } from "@prisma/client";
 import Link from "next/link";
 
 const formSchema = z.object({
@@ -39,6 +39,7 @@ const formSchema = z.object({
   location: z
     .array(z.number())
     .min(2, "location will be inserted automatically"),
+  tags: z.array(z.string()), // Optional, defaults to an empty array
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -46,15 +47,19 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateVenueForm({
   activityTypes,
   location,
-  address,
+  tags,
+  address
 }: {
   activityTypes: ActivityType[];
   location: number[];
-  address: string,
+  tags: Tag[];
+  address: string;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  console.log("inside create venue form");
 
+  console.log(tags);
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,6 +67,7 @@ export default function CreateVenueForm({
       activityTypes: [],
       image: "/signin-hero.jpg",
       location: [],
+      tags: [],
     },
   });
 
@@ -71,7 +77,6 @@ export default function CreateVenueForm({
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
-
     try {
       const result = await createVenue(
         data.name,
@@ -79,6 +84,7 @@ export default function CreateVenueForm({
         data.location,
         data.image || "",
         data.description || "",
+        data.tags || [],
         address || ""
       );
       console.log("Venue created successfully:", result);
@@ -179,6 +185,48 @@ export default function CreateVenueForm({
                   className="h-20"
                   {...field}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      {" "}
+                      {field.value.length > 0
+                        ? `${field.value.length} selected`
+                        : "Select a tag"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Tags</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    {tags.map((tag) => (
+                      <DropdownMenuCheckboxItem
+                        key={tag.name}
+                        checked={field.value.includes(tag.name)}
+                        onCheckedChange={(checked) => {
+                          const updatedValue = checked
+                            ? [...field.value, tag.name]
+                            : field.value.filter((name) => name !== tag.name);
+                          field.onChange(updatedValue);
+                        }}
+                      >
+                        {tag.name}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </FormControl>
               <FormMessage />
             </FormItem>

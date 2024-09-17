@@ -8,7 +8,11 @@ export default async function CreateVenuePage({
 }: {
   searchParams: { [key: string]: string | string[] };
 }) {
-  const activityTypes = await prisma.activityType.findMany({});
+  const activityTypes = await prisma.activityType.findMany();
+
+  const tags = await prisma.tag.findMany();
+
+  console.log(tags);
 
   const locationString = searchParams.location as string;
 
@@ -37,7 +41,12 @@ export default async function CreateVenuePage({
         </div>
       </section>
       <section className="flex flex-col ">
-        <CreateVenueForm activityTypes={activityTypes} location={location} address={address} />
+        <CreateVenueForm
+          activityTypes={activityTypes}
+          location={location}
+          tags={tags}
+          address={address}
+        />
       </section>
     </div>
   );
