@@ -45,8 +45,8 @@ model Session {
 }
 
 model Tag {
-  id            String         @id @default(uuid())
-  name          String         @unique
+  // A name as identifier is totally fine. only if you want to have two tags with the same name butt different attributes, you need an id
+  name          String         @id @default(uuid())
   venues        Venue[]
   meets         Meet[]         @relation("TagsOnMeets")
   activityTypes ActivityType[]
@@ -69,7 +69,7 @@ model Meet {
 id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean      @default(false)
+  mode           String
   isRecurring    Boolean      @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
@@ -82,12 +82,12 @@ id             String       @id @default(uuid())
   equipment      String?
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
-  address        String? // New field for storing address if no venue is selected
   location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
   tags           Tag[]        @relation("TagsOnMeets")
+  address        String?
   Response       Response[]
 }
 

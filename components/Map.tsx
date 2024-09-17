@@ -17,6 +17,7 @@ import { Button } from "./ui/button";
 import { GiCrosshair } from "react-icons/gi";
 
 export interface VenueData {
+  id: string;
   name: string;
   address: string;
   distance?: string;
@@ -30,7 +31,7 @@ type MapProps = {
   isDrawerOpen: boolean; // Add this prop
   crossVisible: boolean;
   close: () => void;
-  updateCrossPos: (pos: LatLngExpression) => void;
+  updateCrossPos: (pos: number[]) => void;
   handleCreateMeet: () => void;
   handleCreateVenue: () => void;
 };
@@ -113,7 +114,10 @@ export default function Map2({
           })
             .bindPopup(venue.name || "Unnamed Venue")
             .on("click", () => {
+              console.log(venue);
+
               const venueData: VenueData = {
+                id: venue.id,
                 name: venue.name || "Unnamed Venue",
                 address: venue.address || "Unknown address",
                 geolocation: venue.location as LatLngExpression,
@@ -138,6 +142,7 @@ export default function Map2({
             .bindPopup("Meet: " + meet.activityType.name)
             .on("click", () => {
               const venueData: VenueData = {
+                id: meet.venueId,
                 name: meet.activityType.name || "Unnamed Meet",
                 address: meet.address || "Unknown address",
                 geolocation: meet.location as LatLngExpression,

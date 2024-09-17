@@ -9,6 +9,7 @@ import Navbar from "./Navbar";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import { LatLngExpression } from "leaflet";
 import { useRouter } from "next/navigation";
+import { fetchAddress } from "@/lib/utils/fetchAddress";
 
 export default function MapAndDrawer({
   venues,
@@ -21,7 +22,9 @@ export default function MapAndDrawer({
   userCreatedMeets: UserCreatedMeet[];
   userPariticpatingMeets: UserParticipatingMeet[];
 }) {
-  const router = useRouter(); // useRouter hook from next/navigatio
+  const router = useRouter(); // useRouter hook from next/navigation
+  // const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`;
+
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {
@@ -33,24 +36,31 @@ export default function MapAndDrawer({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
   const [crossVisible, setCrossVisible] = useState(false);
-  const [crossPos, setCrossPos] = useState<LatLngExpression | null>(null);
+  const [crossPos, setCrossPos] = useState<number[]>([0,0]);
 
   const toggleCross = () => setCrossVisible((prev) => !prev);
   const close = () => setCrossVisible(false);
-  const updateCrossPos = (pos: LatLngExpression) => setCrossPos(pos);
+  const updateCrossPos = (pos: number[]) => setCrossPos(pos);
 
   const openDrawer = (venueData: VenueData) => {
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
+    console.log(crossPos);
   };
-  const queryString = JSON.stringify(crossPos);
-  function handleCreateVenue() {
+
+  const queryString = JSON.stringify(crossPos); // x and y coordinates
+
+  async function handleCreateVenue() {
+    try {
     const url = `/create-venue?location=${queryString.toString()}`;
-    router.push(url);
+    router.push(url); //
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function handleCreateMeet() {
-    const url = `/create?location=${queryString.toString()}`;
+    const url = `/create-meet?location=${queryString.toString()}`;
     router.push(url);
   }
 
