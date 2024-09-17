@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
+import { FaAddressBook } from "react-icons/fa6";
 
 // Helper function to check if a given time is in the future
 function isTimeInFuture(time: string) {
@@ -92,44 +93,45 @@ export async function updateMeet(
 export const submitMeetWithVenue = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
-  venueId: string,
+  venueId: string
 ) => {
-    const meet = await prisma.meet.create({
-      data: {
-        date: values.date,
-        time: values.time,
-        duration: values.duration,
-        isPublic: values.public,
-        isRecurring: values.recurring,
-        guests: Number(values.guests),
-        participants: {},
-        notes: values.description,
-        equipment: values.equipment,
-        creator: {
-          connect: {
-            id: creatorId,
-          },
-        },
-        venue: {
-          connect: {
-            id: venueId,
-          },
-        },
-        activityType: {
-          connect: {
-            name: values.activityType,
-          },
+  const meet = await prisma.meet.create({
+    data: {
+      date: values.date,
+      time: values.time,
+      duration: values.duration,
+      isPublic: values.public,
+      isRecurring: values.recurring,
+      guests: Number(values.guests),
+      participants: {},
+      notes: values.description,
+      equipment: values.equipment,
+
+      creator: {
+        connect: {
+          id: creatorId,
         },
       },
-    });
-    return meet;
+      venue: {
+        connect: {
+          id: venueId,
+        },
+      },
+      activityType: {
+        connect: {
+          name: values.activityType,
+        },
+      },
+    },
+  });
+  return meet;
 };
 
 export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
   locationArray: number[],
-  address?: string,
+  address?: string | null,
 ) => {
     const meet = await prisma.meet.create({
       data: {
@@ -149,12 +151,11 @@ export const submitMeetWithLocation = async (
           },
         },
         activityType: {
-          connect: {
-            name: values.activityType,
-          },
-        },
-        location: locationArray
-      },
-    });
-    return meet;
+        connect: {
+          name: values.activityType,
+        },},
+      location: locationArray,
+    }
+  })
+  return meet;
 };

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import CreateVenueForm from "./create-venue-form";
-import { fetchAddress } from "@/lib/fetchAddress";
+import { fetchAddress } from "@/lib/utils/fetchAddress";
 
 export default async function CreateVenuePage({
   searchParams,

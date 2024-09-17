@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchWeather } from "../lib/weather";
-import { fetchCityName } from "../lib/fetchCity";
+import { fetchCityName } from "../lib/utils/fetchCity";
 
 interface Props {
   lat: number;
