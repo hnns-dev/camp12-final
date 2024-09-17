@@ -137,6 +137,7 @@ export const submitMeetWithLocation = async (
   const meet = await prisma.meet.create({
     data: {
       date: values.date,
+      mode: values.mode,
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
