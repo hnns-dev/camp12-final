@@ -146,8 +146,10 @@ export default function MeetForm({
                 ) : address ? (
                   <div>
                     <ul className="text-center">{
-                    address.split(",").map((item) =>
-                    <span className="pb-6">{item}<br /></span>
+                    address.split(",").map((item, idx) =>
+                      <li key={idx}>
+                        <span className="pb-6">{item}<br /></span>
+                      </li>
                     )}
                     </ul>
                   </div>
