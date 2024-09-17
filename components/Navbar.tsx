@@ -11,7 +11,7 @@ import {
 } from "@/lib/utils/getMeets";
 import { DrawerCreateVenue } from "./DrawerCreateVenue";
 import { cn } from "@/lib/utils";
-import { FaTableTennis } from "react-icons/fa";
+import { LuCalendarDays } from "react-icons/lu";
 import { Meet, User } from "@prisma/client";
 
 type Props = {
@@ -40,7 +40,7 @@ export default function Navbar({
       )}
     >
       <DrawerUpComingSessions meets={meets} user={user} defaultTab="near-me">
-        <FaTableTennis className="size-8 fill-white" />
+        <LuCalendarDays className="size-8 stroke-white" />
       </DrawerUpComingSessions>
       <FaLocationCrosshairs className="size-8 fill-white" />
       <button onClick={toggleCross}>

@@ -1,44 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { FaTableTennis } from "react-icons/fa";
-import { InteractionBar } from "./InteractionBar";
-import {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "./ui/card";
+import Link from "next/link";
 import {
   Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
-  DrawerClose,
   DrawerContent,
   DrawerHeader,
-  DrawerFooter,
   DrawerTitle,
   DrawerDescription,
+  DrawerTrigger,
 } from "./ui/drawer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
-import { Button } from "./ui/button";
-import { AllMeet, getAllMeets } from "@/lib/utils/getMeets";
-import { Meet, User } from "@prisma/client";
+import { Card, CardContent } from "./ui/card";
+import { Label } from "./ui/label";
+import { Meet, User, Venue, ActivityType } from "@prisma/client";
+import { LuMapPin } from "react-icons/lu";
 
-type ExtendedMeet = AllMeet & { distance?: number };
+type ExtendedMeet = Meet & {
+  venue: Venue | null;
+  activityType: ActivityType;
+  distance?: number;
+};
+
+interface DrawerUpComingSessionsProps {
+  children: React.ReactNode;
+  defaultTab: string;
+  meets: ExtendedMeet[];
+  user: User | null;
+}
 
 export function DrawerUpComingSessions({
   children,
   defaultTab,
   meets,
   user,
-}: {
-  children: React.ReactNode;
-  defaultTab: string;
-  meets: AllMeet[];
-  user: User;
-}) {
+}: DrawerUpComingSessionsProps) {
   const [sortedMeets, setSortedMeets] = useState<ExtendedMeet[]>([]);
 
   useEffect(() => {
@@ -46,84 +40,71 @@ export function DrawerUpComingSessions({
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
-        const meetsWithDistance = meets.map((meet) => {
-          let meetLocation =
-            meet.location || (meet.venue && meet.venue.location);
-          let distance = Infinity;
-
-          if (meetLocation) {
-            distance = Math.sqrt(
-              Math.pow(latitude - meetLocation[0], 2) +
-                Math.pow(longitude - meetLocation[1], 2)
-            );
-          }
-
-          return {
+        const meetsWithDistance = meets
+          .filter((meet) => meet.isPublic)
+          .map((meet) => ({
             ...meet,
-            distance: distance,
-          };
-        });
+            distance: calculateDistance(latitude, longitude, meet),
+          }));
 
-        const sorted = meetsWithDistance.sort(
-          (a, b) => a.distance - b.distance
+        setSortedMeets(
+          meetsWithDistance.sort(
+            (a, b) => (a.distance || 0) - (b.distance || 0)
+          )
         );
-        setSortedMeets(sorted);
       });
     }
   }, [meets]);
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("de-DE", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const calculateDistance = (lat: number, lon: number, meet: ExtendedMeet) => {
+    const meetLocation = meet.location || (meet.venue && meet.venue.location);
+    if (!meetLocation) return Infinity;
+
+    return Math.sqrt(
+      Math.pow(lat - meetLocation[0], 2) + Math.pow(lon - meetLocation[1], 2)
+    );
   };
-
-  const renderCard = (item: ExtendedMeet, key: number) => (
-    <Card key={key}>
-      <CardHeader>
-        <CardTitle>{item.venue ? item.venue.name : "No Venue"}</CardTitle>
-        <CardDescription>{item.notes}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Date: {formatDate(item.date)}</p>
-        {item.time && <p>time: {item.time}</p>}
-        {/* {item.distance !== undefined && (
-          <p>
-            Entfernung:{" "}
-            {item.distance === Infinity
-              ? "Unbekannt"
-              : `${item.distance.toFixed(2)} km`}
-          </p>
-        )} */}
-        <p>
-          adress:{" "}
-          {item.venue && item.venue.address
-            ? item.venue.address
-            : "No adress available"}
-        </p>
-      </CardContent>
-    </Card>
-  );
-
-  const nearMe = sortedMeets.map(renderCard);
 
   const ownMeets = sortedMeets.filter((meet) =>
     meet.participants.some((participant) => participant.id === user?.id)
   );
 
-  const renderEmptyState = (message: string) => <p>{message}</p>;
-
-  const nearMeContent =
-    nearMe.length > 0
-      ? nearMe
-      : renderEmptyState("No venues found in the area");
-
-  const ownMeetsContent =
-    ownMeets.length > 0
-      ? ownMeets.map(renderCard)
-      : renderEmptyState("you are not participating in any meets");
+  const renderMeetCards = (meetsToRender: ExtendedMeet[]) => (
+    <div className="flex flex-col gap-2 w-full">
+      {meetsToRender.map((meet) => (
+        <Link href={`/meet/${meet.id}`} key={meet.id}>
+          <Card className="px-5 py-3 mt-2 relative w-full hover:bg-gray-50 transition-colors">
+            <CardContent className="px-0 py-0">
+              <h3 className="font-semibold mb-2">{meet.activityType.name}</h3>
+              <p className="text-sm italic mb-2">
+                {meet.notes || "No description available"}
+              </p>
+              <div className="flex gap-1">
+                <LuMapPin className="size-5 text-muted-foreground" />
+                <p className="text-sm">
+                  {meet.venue?.address ||
+                    meet.address ||
+                    "No address available"}
+                </p>
+              </div>
+              <div className="flex flex-row justify-between items-center mb-2">
+                <div className="flex flex-row gap-4">
+                  <div>
+                    <Label className="text-gray-500">Date</Label>
+                    <p>{new Date(meet.date).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Time</Label>
+                    <p>{meet.time}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  );
 
   return (
     <Drawer>
@@ -132,8 +113,8 @@ export function DrawerUpComingSessions({
         <DrawerHeader>
           <DrawerTitle className="sr-only">Upcoming meets</DrawerTitle>
           <DrawerDescription className="sr-only">
-            Hier sehen Sie die bevorstehenden Sitzungen: die in Ihrer Nähe und
-            die, die Sie organisiert haben.
+            Here you can see upcoming public sessions: those near you and those
+            you've organized.
           </DrawerDescription>
         </DrawerHeader>
         <Tabs
@@ -144,26 +125,44 @@ export function DrawerUpComingSessions({
             <TabsTrigger className="flex-1" value="near-me">
               Near me
             </TabsTrigger>
-            {user ? (
+            {user && (
               <TabsTrigger className="flex-1" value="own-meets">
                 Own meets
               </TabsTrigger>
-            ) : null}
+            )}
           </TabsList>
           <TabsContent
             value="near-me"
-            className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
+            className="py-2 flex-1 overflow-y-scroll"
           >
-            {nearMeContent}
+            <div className="mt-4">
+              <label htmlFor="meets" className="font-semibold">
+                Public Sessions Near You
+              </label>
+              {sortedMeets.length > 0 ? (
+                renderMeetCards(sortedMeets)
+              ) : (
+                <p>No public meets found near you.</p>
+              )}
+            </div>
           </TabsContent>
-          {user ? (
+          {user && (
             <TabsContent
               value="own-meets"
-              className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
+              className="py-2 flex-1 overflow-y-scroll"
             >
-              {ownMeetsContent}
+              <div className="mt-4">
+                <label htmlFor="meets" className="font-semibold">
+                  Your Public Sessions
+                </label>
+                {ownMeets.length > 0 ? (
+                  renderMeetCards(ownMeets)
+                ) : (
+                  <p>You are not participating in any public meets.</p>
+                )}
+              </div>
             </TabsContent>
-          ) : null}
+          )}
         </Tabs>
       </DrawerContent>
     </Drawer>
