@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { createVenue, reportVenue } from "@/actions/venues";
+import { createVenue } from "@/actions/venues";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,9 +46,11 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateVenueForm({
   activityTypes,
   location,
+  address,
 }: {
   activityTypes: ActivityType[];
   location: number[];
+  address: string,
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -69,19 +71,26 @@ export default function CreateVenueForm({
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
+
     try {
       const result = await createVenue(
         data.name,
         data.activityTypes,
         data.location,
         data.image || "",
-        data.description || ""
+        data.description || "",
+        address || ""
       );
-      console.log("Report submitted successfully:", result);
-      router.push("/");
+      console.log("Venue created successfully:", result);
+      if (result && result.id) {
+        router.push(`venue-detail/${result.id}`);
+      } else {
+        setError("Venue created but ID not returned.");
+        router.push("/");
+      }
     } catch (error) {
-      console.error("Error submitting report:", error);
-      setError("Failed to submit report. Please try again.");
+      console.error("Error creating venue:", error);
+      setError("Failed to create venue. Please try again.");
     }
   };
 
