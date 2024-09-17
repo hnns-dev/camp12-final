@@ -2,17 +2,21 @@ import { prisma } from "./lib/db";
 import { generateIdFromEntropySize } from "lucia";
 
 async function main() {
-  // Fetch venue IDs dynamically
-
   console.log("Cleaning Database...");
 
-  await prisma.user.deleteMany();
-  await prisma.activityType.deleteMany();
-  await prisma.tag.deleteMany();
+  // Delete data in the correct order to avoid foreign key constraint errors
+  await prisma.response.deleteMany();
+  await prisma.meet.deleteMany();
+  await prisma.report.deleteMany();
   await prisma.badge.deleteMany();
   await prisma.meet.deleteMany();
   await prisma.city.deleteMany();
+  await prisma.tag.deleteMany();
   await prisma.venue.deleteMany();
+  await prisma.activityType.deleteMany();
+  await prisma.settings.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.city.deleteMany();
 
   console.log("Cleaning Database finished");
 
@@ -40,6 +44,7 @@ async function main() {
       requiredNumberOfParticipants: 1,
     },
   });
+
   const boule = await prisma.activityType.create({
     data: {
       name: "Boule",
@@ -102,6 +107,7 @@ async function main() {
       },
     },
   });
+
   const bouleBahnBerlin = await prisma.venue.create({
     data: {
       name: "Boule Bahn Berlin",
@@ -195,7 +201,7 @@ async function main() {
   await prisma.tag.create({ data: { name: "Nice ground" } });
 
   // Meets
-  await prisma.meet.create({
+  const meet1 = await prisma.meet.create({
     data: {
       date: new Date("2024-08-29"),
       time: "14:00",
@@ -203,16 +209,17 @@ async function main() {
       isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
-      competitive: true,
+      isCompetitive: true,
+      isRecurring: false,
     },
   });
 
-  await prisma.meet.create({
+  const meet2 = await prisma.meet.create({
     data: {
       date: new Date("2024-09-20"),
       time: "10:00",
@@ -220,7 +227,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      groupSize: 1,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
@@ -236,7 +243,7 @@ async function main() {
       isPublic: false,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 3,
+      groupSize: 3,
       notes: "juhu boule",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: bouleBahnBerlin.id,
@@ -251,7 +258,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      groupSize: 1,
       notes: "yogimogi",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: musselGym.id,
@@ -267,7 +274,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 3,
+      groupSize: 3,
       notes: "spontaneous tennis",
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: tennis.id,
@@ -283,7 +290,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      groupSize: 1,
       notes: "yogimogi2",
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: yoga.id,
@@ -299,7 +306,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 1,
+      groupSize: 1,
       notes: "free&competitiveboule",
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: boule.id,
@@ -316,7 +323,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 5,
+      groupSize: 5,
       notes: "ballintomorrow",
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: basketball.id,
@@ -333,7 +340,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 5,
+      groupSize: 5,
       notes: "ballineasily",
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: basketball.id,
@@ -352,7 +359,7 @@ async function main() {
       isPublic: false,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -370,7 +377,7 @@ async function main() {
       isPublic: true,
       creatorId: user2.id,
       participants: { connect: [{ id: user1.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
@@ -388,7 +395,7 @@ async function main() {
       isPublic: false,
       creatorId: user3.id,
       participants: { connect: [{ id: user1.id }, { id: user2.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Tennistraining",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: beachClubCossi.id,
@@ -405,7 +412,7 @@ async function main() {
       isPublic: true,
       creatorId: user1.id,
       participants: { connect: [{ id: user2.id }, { id: user3.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: weisseElster.id,
@@ -423,7 +430,7 @@ async function main() {
       isPublic: false,
       creatorId: user2.id,
       participants: { connect: [{ id: user3.id }] },
-      guests: 2,
+      groupSize: 2,
       notes: "Freundliches Basketballspiel",
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: musselGym.id,
@@ -484,34 +491,36 @@ async function main() {
     },
   });
 
-  await prisma.report.create({
+  // ... (create other reports similarly)
+
+  // Responses
+  console.log("Creating responses...");
+
+  await prisma.response.create({
     data: {
-      issue: "Hygieneproblem",
-      date: new Date("2024-08-15"),
-      time: "09:00",
-      detail: "Die Umkleidekabinen müssen gründlich gereinigt werden",
-      venueId: musselGym.id,
+      meetId: meet1.id,
+      userId: user2.id,
+      status: "accepted",
     },
   });
 
-  await prisma.report.create({
+  await prisma.response.create({
     data: {
-      issue: "unschön",
-      date: new Date("2024-08-20"),
-      time: "11:00",
-      detail: "Ist üble Yuppiescheisse hier",
-      venueId: beachClubCossi.id,
+      meetId: meet2.id,
+      userId: user1.id,
+      status: "pending",
     },
   });
+
+  // ... (create other responses similarly)
 
   console.log("Seed-Daten erfolgreich eingefügt");
 }
 
-
-// getting an error message for await main 
+// getting an error message for await main
 // Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', 'nodenext', or 'preserve', and the 'target' option is set to 'es2017' or higher.ts(1378)
 
-await main()
+main()
   .catch((e) => {
     console.error(e);
   })

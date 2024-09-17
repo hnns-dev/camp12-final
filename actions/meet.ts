@@ -6,6 +6,7 @@ import { isFuture, isToday, format } from "date-fns";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
 import { FaAddressBook } from "react-icons/fa6";
+import { redirect } from "next/navigation";
 
 // Helper function to check if a given time is in the future
 function isTimeInFuture(time: string) {
@@ -84,7 +85,7 @@ export async function updateMeet(
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
-      guests: Number(values.guests),
+      groupSize: Number(values.groupSize),
       notes: values.description,
     },
   });
@@ -102,11 +103,10 @@ export const submitMeetWithVenue = async (
       duration: values.duration,
       isPublic: values.public,
       isRecurring: values.recurring,
-      guests: Number(values.guests),
+      groupSize: Number(values.groupSize),
       participants: {},
       notes: values.description,
       equipment: values.equipment,
-
       creator: {
         connect: {
           id: creatorId,
@@ -124,7 +124,7 @@ export const submitMeetWithVenue = async (
       },
     },
   });
-  return meet;
+  redirect(`/meet/${meet?.id}`);
 };
 
 export const submitMeetWithLocation = async (
@@ -132,30 +132,32 @@ export const submitMeetWithLocation = async (
   creatorId: string,
   locationArray: number[],
   address?: string | null,
+  
 ) => {
-    const meet = await prisma.meet.create({
-      data: {
-        date: values.date,
-        time: values.time,
-        duration: values.duration,
-        isPublic: values.public,
-        isRecurring: values.recurring,
-        guests: Number(values.guests),
-        participants: {},
-        notes: values.description,
-        equipment: values.equipment,
-        address: address,
-        creator: {
-          connect: {
-            id: creatorId,
-          },
+  const meet = await prisma.meet.create({
+    data: {
+      date: values.date,
+      time: values.time,
+      duration: values.duration,
+      isPublic: values.public,
+      isRecurring: values.recurring,
+      groupSize: Number(values.groupSize),
+      participants: {},
+      notes: values.description,
+      equipment: values.equipment,
+      address: address,
+      creator: {
+        connect: {
+          id: creatorId,
         },
-        activityType: {
+      },
+      activityType: {
         connect: {
           name: values.activityType,
-        },},
+        },
+      },
       location: locationArray,
-    }
-  })
-  return meet;
+    },
+  });
+  redirect(`/meet/${meet?.id}`);
 };
