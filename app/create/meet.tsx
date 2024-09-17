@@ -345,7 +345,7 @@ export default function MeetForm({
               {/* Participants */}
               <FormField
                 control={form.control}
-                name="guests"
+                name="groupSize"
                 render={({ field }) => (
                   <FormItem>
                     <Select onValueChange={field.onChange}>
