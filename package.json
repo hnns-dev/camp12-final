@@ -32,11 +32,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
-<<<<<<< HEAD
     "@react-email/components": "0.0.25",
-=======
-    "@react-email/components": "^0.0.25",
->>>>>>> main
     "@types/geojson": "^7946.0.14",
     "@types/leaflet.markercluster": "^1.5.4",
     "arctic": "^1.9.2",
