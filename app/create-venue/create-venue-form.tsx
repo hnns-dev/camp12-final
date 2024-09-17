@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { createVenue, reportVenue } from "@/actions/venues";
+import { createVenue } from "@/actions/venues";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,9 +46,11 @@ type FormData = z.infer<typeof formSchema>;
 export default function CreateVenueForm({
   activityTypes,
   location,
+  address,
 }: {
   activityTypes: ActivityType[];
   location: number[];
+  address: string,
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +77,8 @@ export default function CreateVenueForm({
         data.activityTypes,
         data.location,
         data.image || "",
-        data.description || ""
+        data.description || "",
+        address || ""
       );
       console.log("Report submitted successfully:", result);
       router.push("/");
