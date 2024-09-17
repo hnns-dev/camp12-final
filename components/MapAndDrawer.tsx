@@ -6,21 +6,30 @@ import { GetVenuesResult } from "@/app/api/data-acces/get-venues";
 import { GetOpenMeetsResult } from "@/app/api/data-acces/get-open-meets";
 import { VenueData } from "./Map"; // Import VenueData type
 import Navbar from "./Navbar";
-import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
+import {
+  AllMeet,
+  UserCreatedMeet,
+  UserParticipatingMeet,
+} from "@/lib/utils/getMeets";
 import { LatLngExpression } from "leaflet";
 import { useRouter } from "next/navigation";
 import { fetchAddress } from "@/lib/utils/fetchAddress";
+import { Meet, User } from "@prisma/client";
 
 export default function MapAndDrawer({
   venues,
   openMeets,
   userCreatedMeets,
   userPariticpatingMeets,
+  meets,
+  user,
 }: {
   venues: GetVenuesResult;
   openMeets: GetOpenMeetsResult;
   userCreatedMeets: UserCreatedMeet[];
   userPariticpatingMeets: UserParticipatingMeet[];
+  meets: AllMeet[];
+  user: User;
 }) {
   const router = useRouter(); // useRouter hook from next/navigation
   // const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`;
@@ -36,7 +45,7 @@ export default function MapAndDrawer({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
   const [crossVisible, setCrossVisible] = useState(false);
-  const [crossPos, setCrossPos] = useState<number[]>([0,0]);
+  const [crossPos, setCrossPos] = useState<number[]>([0, 0]);
 
   const toggleCross = () => setCrossVisible((prev) => !prev);
   const close = () => setCrossVisible(false);
@@ -52,10 +61,10 @@ export default function MapAndDrawer({
 
   async function handleCreateVenue() {
     try {
-    const url = `/create-venue?location=${queryString.toString()}`;
-    router.push(url); //
+      const url = `/create-venue?location=${queryString.toString()}`;
+      router.push(url); //
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -87,6 +96,8 @@ export default function MapAndDrawer({
         userPariticpatingMeets={userPariticpatingMeets}
         isDrawerOpen={isDrawerOpen}
         toggleCross={toggleCross}
+        meets={meets}
+        user={user}
       />
     </div>
   );
