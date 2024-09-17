@@ -1,3 +1,4 @@
+import { BackArrow } from "@/components/BackArrow";
 import Search from "@/components/Search";
 import { prisma } from "@/lib/db";
 import { ArrowLeft } from "lucide-react";
@@ -5,69 +6,67 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const SearchPage = async ({
-  searchParams,
+	searchParams,
 }: {
-  searchParams: { q: string };
+	searchParams: { q: string };
 }) => {
-  console.log("Search Params", searchParams.q);
+	console.log("Search Params", searchParams.q);
 
-  const searchQuery = searchParams.q || "";
+	const searchQuery = searchParams.q || "";
 
-  const venues = await prisma.venue.findMany({
-    where: {
-      OR: [
-        { name: { contains: searchQuery, mode: "insensitive" } },
-        { address: { contains: searchQuery, mode: "insensitive" } },
-        {
-          activityTypes: {
-            some: {
-              name: { contains: searchQuery, mode: "insensitive" },
-            },
-          },
-        },
-        {
-          tags: {
-            some: {
-              name: { contains: searchQuery, mode: "insensitive" },
-            },
-          },
-        },
-      ],
-    },
-    include: { activityTypes: true, tags: true },
-    take: 5,
-  });
+	const venues = await prisma.venue.findMany({
+		where: {
+			OR: [
+				{ name: { contains: searchQuery, mode: "insensitive" } },
+				{ address: { contains: searchQuery, mode: "insensitive" } },
+				{
+					activityTypes: {
+						some: {
+							name: { contains: searchQuery, mode: "insensitive" },
+						},
+					},
+				},
+				{
+					tags: {
+						some: {
+							name: { contains: searchQuery, mode: "insensitive" },
+						},
+					},
+				},
+			],
+		},
+		include: { activityTypes: true, tags: true },
+		take: 5,
+	});
 
-  const meets = await prisma.meet.findMany({
-    where: {
-      OR: [
-        { notes: { contains: searchQuery, mode: "insensitive" } },
-        {
-          activityType: {
-            name: { contains: searchQuery, mode: "insensitive" },
-          },
-        },
-        {
-          tags: {
-            some: {
-              name: { contains: searchQuery, mode: "insensitive" },
-            },
-          },
-        },
-      ],
-    },
-    include: { activityType: true, tags: true },
-    take: 10,
-  });
+	const meets = await prisma.meet.findMany({
+		where: {
+			OR: [
+				{ notes: { contains: searchQuery, mode: "insensitive" } },
+				{
+					activityType: {
+						name: { contains: searchQuery, mode: "insensitive" },
+					},
+				},
+				{
+					tags: {
+						some: {
+							name: { contains: searchQuery, mode: "insensitive" },
+						},
+					},
+				},
+			],
+		},
+		include: { activityType: true, tags: true },
+		take: 10,
+	});
 
-  return (
-    <div className="container mx-auto p-4">
-      <Link href="/">
-        <ArrowLeft className="w-6 h-6 mb-5" />
-      </Link>
-      <h1 className="text-2xl font-bold mb-4">
-        Search results for: {searchQuery}
-      </h1>
+	return (
+		<div className='container mx-auto p-4'>
+			<BackArrow variant='link' />
+			<h1 className='text-2xl font-bold mb-4'>
+				Search results for: {searchQuery}
+			</h1>
 
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Venues</h2>
