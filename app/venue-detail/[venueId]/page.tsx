@@ -1,133 +1,157 @@
-// app/meet/[meetId]/page.tsx
-import { getMeetData } from "@/actions/meet";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { EditButton } from "@/components/EditButton";
-import { ShareInvite } from "@/components/ShareInvite";
+import Image from "next/image";
+import { prisma } from "@/lib/db";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DisplayWeather from "@/components/display-weather";
 import Back from "@/components/Back";
-import { FaBasketball } from "react-icons/fa6";
-import { LuMapPin, LuCalendarDays } from "react-icons/lu";
+import { LuMapPin, LuAlertTriangle, LuLock } from "react-icons/lu";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import TagsBadges from "@/components/TagsBadges";
-import AvatarList from "@/components/AvatarList";
-import { formatDate } from "@/lib/utils/formatDate";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default async function MeetDetailPage({
+export default async function VenueDetailsPage({
   params,
 }: {
-  params: { meetId: string };
+  params: { venueId: string };
 }) {
-  console.log("Rendering MeetDetailPage with meetId:", params.meetId);
+  const venue = await prisma.venue.findUnique({
+    where: { id: params.venueId },
+    select: {
+      name: true,
+      location: true,
+      image: true,
+      address: true,
+      description: true,
+      tags: {
+        select: { name: true },
+      },
+      meets: {
+        select: {
+          date: true,
+          time: true,
+          isPublic: true,
+        },
+      },
+      reports: {
+        select: {
+          issue: true,
+          detail: true,
+        },
+      },
+    },
+  });
 
-  if (!params.meetId) {
-    console.error("No meetId provided");
-    return <div>Meet ID is missing</div>;
+  // handle an undefined case
+  const coordinates: number[] | undefined = venue?.location;
+  let address: string;
+  if (Array.isArray(coordinates) && coordinates.length >= 2) {
+    const [lat, lng] = coordinates;
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch address");
+    }
+    const data = await response.json();
+    address = data.display_name;
+  } else {
+    throw new Error("The coordinates are undefined or in wrong format");
   }
 
-  try {
-    const meetData = await getMeetData(params.meetId);
-    console.log(
-      "Meet data in page component:",
-      JSON.stringify(meetData, null, 2)
-    );
-
-    if (!meetData) {
-      console.log("No meet data found");
-      return <div>Meet not found</div>;
-    }
-
-    // Get the current user's session
-    const session = await getServerSession(authOptions);
-    const currentUserId = session?.user?.id || "";
-
-    const isParticipating = meetData.participants.some(
-      (p) => p.id === currentUserId
-    );
-
-    return (
-      <div className="h-screen flex flex-col items-center bg-white relative">
-        <Back />
-        <ShareInvite
-          responseId={meetData.id}
-          userId={currentUserId}
-          creatorId={meetData.creatorId}
-          isPublic={meetData.isPublic}
-        />
+  return (
+    <div className="h-screen flex flex-col bg-white">
+      <div className="relative h-2/5">
+        <Back className="absolute top-4 left-4 z-10" />
         <img
-          className="w-screen object-cover h-2/5"
-          src={meetData.venue?.image || "../signin-hero.jpg"}
-          alt={meetData.venue?.name || "Event venue"}
+          className="w-full h-full object-cover"
+          src={venue?.image || "/signin-hero.jpg"}
+          alt={venue?.name || "Venue image"}
         />
-        <main className="absolute top-[33%] left-0 right-0 bottom-0 bg-white rounded-t-3xl shadow-lg overflow-y-auto">
-          <header className="flex justify-between p-3"></header>
-          <section className="absolute w-full">
-            <div className="flex flex-col gap-4">
-              <div className="flex gap-2 px-5">
-                <FaBasketball className="size-6 fill-orange" />
-                <p className="font-medium">
-                  {meetData.activityType?.name || "Activity"}
-                </p>
-              </div>
-              <div className="flex justify-between px-5">
-                <h1 className="text-xl font-semibold">
-                  {meetData.activityType?.name || "Meet"}
-                </h1>
-                <EditButton
-                  userId={currentUserId}
-                  creatorId={meetData.creatorId}
+      </div>
+      <main className="flex flex-col h-3/5 bg-white rounded-t-3xl -mt-6 relative z-10 overflow-hidden">
+        <div className="flex-grow overflow-y-auto">
+          <div className="flex flex-col gap-4 py-6">
+            <div className="flex flex-col gap-1 px-5">
+              <div className="flex justify-between items-center">
+                <h1 className="text-xl font-semibold">{venue?.name}</h1>
+                <DisplayWeather
+                  lat={coordinates?.[0] || 0}
+                  lon={coordinates?.[1] || 0}
                 />
               </div>
-              <div className="flex gap-1 px-5">
+              <div className="flex gap-1">
                 <LuMapPin className="size-5 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  {meetData.venue?.name ||
-                    meetData.venue?.address ||
-                    "Location not specified"}
-                </p>
+                <p className="text-sm text-muted-foreground ">{address}</p>
               </div>
-              <div className="flex gap-1 px-5">
-                <LuCalendarDays className="size-5 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  {meetData.date
-                    ? formatDate(meetData.date)
-                    : "Date not specified"}{" "}
-                  - {meetData.time || "Time not specified"}
-                  {meetData.isRecurring && " (recurring)"}
-                </p>
-              </div>
-              <AvatarList
-                people={meetData.participants}
-                type="participants"
-                meetId={meetData.id}
-              />
-              <TagsBadges tags={meetData.tags} />
-              <label htmlFor="description" className="font-semibold px-5 pt-4">
-                About the meet
-              </label>
-              <p className="text-muted-foreground px-5">
-                {meetData.notes || "No description available."}
-              </p>
             </div>
-          </section>
-          <div className="flex flex-col items-stretch flex-grow justify-end mb-14 mt-6 px-5">
-            <button
-              className={`font-medium text-white rounded-lg py-4 ${
-                isParticipating ? "bg-green-500" : "bg-slate-900"
-              }`}
-              // Note: This button won't work as-is in a server component. You'll need to implement this functionality differently.
-              disabled={isParticipating}
-            >
-              {isParticipating ? "Participating" : "Participate"}
-            </button>
-            <p className="text-center mt-2">
-              {meetData.participants.length} participant
-              {meetData.participants.length !== 1 ? "s" : ""}
-            </p>
+            <Separator />
+            <div className="px-5">
+              {venue?.reports.map((report, index) => (
+                <Alert
+                  key={index}
+                  variant="destructive"
+                  className="bg-red-100 px-5"
+                >
+                  <LuAlertTriangle className="h-4 w-4" />
+                  <AlertTitle>{report.issue}</AlertTitle>
+                  <AlertDescription>{report.detail}</AlertDescription>
+                </Alert>
+              ))}
+            </div>
+
+            <div className="px-5">
+              <TagsBadges tags={venue.tags} />
+              <div className="-mt-">
+                <label htmlFor="description" className="font-semibold">
+                  About the venue
+                </label>
+                <p className="text-muted-foreground">{venue?.description}</p>
+              </div>
+
+              <div className="mt-4">
+                <label htmlFor="meets" className="font-semibold">
+                  Sessions
+                </label>
+                <div className="flex flex-col gap-2 w-full">
+                  {venue?.meets.map((meet, index) => (
+                    <Card
+                      key={index}
+                      className="px-5 py-3 mt-2 relative w-full"
+                    >
+                      {!meet.isPublic && (
+                        <div className="absolute top-3 right-5 flex items-center text-gray-400">
+                          <Label className="mr-1">Private</Label>
+                          <LuLock className="h-4 w-4" />
+                        </div>
+                      )}
+                      <CardContent className="px-0 py-0">
+                        <div className="flex flex-row justify-between items-center">
+                          <div className="flex flex-row gap-4">
+                            <div>
+                              <Label className="text-gray-500">Date</Label>
+                              <p>{new Date(meet.date).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                              <Label className="text-gray-500">Time</Label>
+                              <p>{meet.time}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </main>
-      </div>
-    );
-  } catch (error) {
-    console.error("Error in MeetDetailPage:", error);
-    return <div>An error occurred while loading the meet details</div>;
-  }
+        </div>
+        <div className="p-5">
+          <Button className="w-full font-medium text-white rounded-lg py-4">
+            Create Session
+          </Button>
+        </div>
+      </main>
+    </div>
+  );
 }
