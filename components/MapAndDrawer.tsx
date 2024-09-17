@@ -52,10 +52,10 @@ export default function MapAndDrawer({
 
   async function handleCreateVenue() {
     try {
-    const url = `/create-venue?location=${queryString.toString()}`;
-    router.push(url); //
+      const url = `/create-venue?location=${queryString.toString()}`;
+      router.push(url);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 

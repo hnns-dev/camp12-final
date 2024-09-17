@@ -15,6 +15,7 @@ import "leaflet.markercluster";
 import { CrosshairIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { GiCrosshair } from "react-icons/gi";
+import MapPointer from "./MapPointer";
 
 export interface VenueData {
   id: string;
@@ -142,7 +143,7 @@ export default function Map2({
             .bindPopup("Meet: " + meet.activityType.name)
             .on("click", () => {
               const venueData: VenueData = {
-                id: meet.venueId,
+                id: meet.venueId || "",
                 name: meet.activityType.name || "Unnamed Meet",
                 address: meet.address || "Unknown address",
                 geolocation: meet.location as LatLngExpression,
@@ -205,6 +206,7 @@ export default function Map2({
           const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.current?.flyTo(nearestVenue, 16);
           const venueData: VenueData = {
+            id: "",
             name: "Nearest Venue",
             address: "Some Address",
             distance: distanceFormatted,
@@ -217,12 +219,14 @@ export default function Map2({
       }
     }
   }, [venues, openDrawer]);
+  // For MapPointer Animation
+  // const [isPointerExpanded, setIsPointerExpanded] = useState(false);
 
   return (
     <div ref={mapContainer} className="h-screen w-screen absolute">
       {crossVisible ? (
         <div className="absolute  top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2">
-          <GiCrosshair className="size-20" />
+          <MapPointer />
         </div>
       ) : null}
       {crossVisible ? (
