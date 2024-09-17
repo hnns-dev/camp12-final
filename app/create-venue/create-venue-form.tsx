@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { createVenue, reportVenue } from "@/actions/venues";
+import { createVenue } from "@/actions/venues";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -48,10 +48,12 @@ export default function CreateVenueForm({
   activityTypes,
   location,
   tags,
+  address
 }: {
   activityTypes: ActivityType[];
   location: number[];
   tags: Tag[];
+  address: string;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +77,6 @@ export default function CreateVenueForm({
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
-    console.log(data.tags);
     try {
       const result = await createVenue(
         data.name,
@@ -83,19 +84,14 @@ export default function CreateVenueForm({
         data.location,
         data.image || "",
         data.description || "",
-        data.tags
+        data.tags || [],
+        address || ""
       );
-      console.log("datatags");
-      console.log(data.tags);
       console.log("Venue created successfully:", result);
-
-      // Assuming createVenue returns the created venue with an id
       if (result && result.id) {
-        router.push(`/venue-detail/${result.id}`);
+        router.push(`venue-detail/${result.id}`);
       } else {
-        setError(
-          "Venue created but ID not returned. Please check the venues list."
-        );
+        setError("Venue created but ID not returned.");
         router.push("/");
       }
     } catch (error) {

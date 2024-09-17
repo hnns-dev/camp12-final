@@ -30,7 +30,8 @@ export async function createVenue(
   location: number[],
   image: string,
   description?: string,
-  tags?: string[]
+  tags?: string[],
+  address?: string
 ) {
   return prisma.venue.create({
     data: {
@@ -44,6 +45,7 @@ export async function createVenue(
       tags: {
         connect: tags?.length ? tags.map((tag) => ({ name: tag })) : [], // Ensure this matches TagWhereUniqueInput
       },
+      address
     },
   });
 }

@@ -68,7 +68,7 @@ model Meet {
   id             String       @id @default(uuid())
   date           DateTime
   time           String
-  isCompetitive  Boolean      @default(false)
+  mode           String
   isRecurring    Boolean      @default(false)
   duration       Float
   isPublic       Boolean      @default(false)
@@ -81,11 +81,11 @@ model Meet {
   equipment      String?
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   venueId        String?
-  address        String? // New field for storing address if no venue is selected
   location       Float[]
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
+  address        String?
   tags           Tag[]
   Response       Response[]
 }
