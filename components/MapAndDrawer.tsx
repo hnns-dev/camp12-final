@@ -58,7 +58,7 @@ export default function MapAndDrawer({
   }
 
   function handleCreateMeet() {
-    const url = `/create?location=${queryString.toString()}`;
+    const url = `/create-meet?location=${queryString.toString()}`;
     router.push(url);
   }
 
