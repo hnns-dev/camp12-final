@@ -19,9 +19,9 @@ export async function fetchAddress(lat: number, lon: number) {
 
   const data = await response.json();
 
-  console.log(data.results);
-  const street = data.results[0].address_line1;
-  const area = data.results[0].address_line2;
+  console.log(data);
 
-  return [street, area];
+  const address = data.results[0].formatted;
+
+  return address;
 }

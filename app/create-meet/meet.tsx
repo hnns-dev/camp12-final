@@ -34,6 +34,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { divIcon } from "leaflet";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -43,7 +44,7 @@ type Props = {
   venueId?: string;
   venueName?: string;
   location?: number[];
-  address?: string[];
+  address?: string;
 };
 
 // Defining a schema for Meetsession Creation
@@ -130,8 +131,11 @@ export default function MeetForm({ userId, venueId, venueName, location, address
                   <span className="pb-6"> @ {venueName}</span>
                 ) : address ? (
                   <div>
-                  <span className="pb-6">{address[0]}</span><br />
-                  <span className="pb-6">{address[1]}</span>
+                    <ul className="text-center">{
+                    address.split(",").map((item) =>
+                    <span className="pb-6">{item}<br /></span>
+                    )}
+                    </ul>
                   </div>
                 ) :
                 <span>Special Location</span>

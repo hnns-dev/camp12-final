@@ -28,8 +28,13 @@ export default async function CreateVenuePage({
       </Link>
       <section className="flex flex-col items-center gap-3">
         <h1 className="text-2xl font-bold">Add a venue</h1>
-        <h2>{address[0]}</h2>
-        <h2>{address[1]}</h2>
+        <div>
+          <ul className="text-center">{
+          address.split(",").map((item: string) =>
+          <span className="pb-6">{item}<br /></span>
+          )}
+          </ul>
+        </div>
       </section>
       <section className="flex flex-col ">
         <CreateVenueForm activityTypes={activityTypes} location={location} address={address} />
