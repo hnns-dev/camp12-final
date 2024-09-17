@@ -17,7 +17,7 @@ export function InteractionBar({ venueData }: Props) {
           <p>Report</p>
         </div>
       </Link>
-      <Link href={`/create?venueId=${venueData?.id}`}>
+      <Link href={`/create-meet?venueId=${venueData?.id}`}>
         <div className="flex flex-col gap-2 items-center">
           <FiPlusCircle className="w-8 h-8" />
           <p>Create Session</p>
