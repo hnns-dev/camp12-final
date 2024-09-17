@@ -45,13 +45,13 @@ export const updatePicture = async (formData: FormData) => {
 export const updateProfile = async (
   userId: string,
   name: string,
-  email: string
+  bio: string
 ) => {
   await prisma.user.update({
     where: { id: userId },
     data: {
       name,
-      email,
+      bio,
     },
   });
   revalidatePath(`/profile/${userId}`);

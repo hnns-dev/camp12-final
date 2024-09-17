@@ -98,14 +98,8 @@ export default async function ProfilePage({
         <div className="pt-4 text-lg font-semibold">
           {user?.name ?? "No name provided"}
         </div>
-        <div
-          className={
-            user.settings?.profileVisibility === "Private"
-              ? "hidden"
-              : "mt-2 text-sm text-muted-foreground px-11 text-center pt-3"
-          }
-        >
-          {user?.bio ?? "space for your bio"}
+        <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
+          {user.bio ?? "space for your bio"}
         </div>
         <div className="mt-2 text-sm text-muted-foreground px-11 text-center pt-3">
           {user.cityName}
