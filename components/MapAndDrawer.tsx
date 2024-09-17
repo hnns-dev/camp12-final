@@ -9,7 +9,7 @@ import Navbar from "./Navbar";
 import { UserCreatedMeet, UserParticipatingMeet } from "@/lib/utils/getMeets";
 import { LatLngExpression } from "leaflet";
 import { useRouter } from "next/navigation";
-import { fetchAddress } from "@/lib/fetchAddress";
+import { fetchAddress } from "@/lib/utils/fetchAddress";
 
 export default function MapAndDrawer({
   venues,

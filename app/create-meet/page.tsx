@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import MeetForm from "./meet";
 import { protectPage } from "@/lib/auth";
-import { fetchAddress } from "@/lib/fetchAddress";
+import { fetchAddress } from "@/lib/utils/fetchAddress";
 
 export default async function CreateMeet({
   searchParams,

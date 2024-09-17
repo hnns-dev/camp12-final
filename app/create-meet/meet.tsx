@@ -109,8 +109,11 @@ export default function MeetForm({ userId, venueId, venueName, location, address
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
     console.log(values);
-    if (location) {await submitMeetWithLocation(values, userId, location)}
-   else if (venueId) {await submitMeetWithVenue(values, userId, venueId)};
+    if (location) {
+      await submitMeetWithLocation(values, userId, location, address);
+    } else if (venueId) {
+      await submitMeetWithVenue(values, userId, venueId);
+    }
   };
 
   // guest number from 1-15
