@@ -1,5 +1,5 @@
-// app/response/[responseId]/page.tsx
-import { getResponseData } from "@/actions/response";
+// app/response/[meetId]/page.tsx
+import { getMeetData } from "@/actions/meet";
 import { LuMapPin, LuCalendarDays } from "react-icons/lu";
 import ResponseInteraction from "@/components/ResponseInteraction";
 import TagsBadges from "@/components/TagsBadges";
@@ -10,11 +10,14 @@ import Home from "@/components/Home";
 export default async function Response({
   params,
 }: {
-  params: { responseId: string };
+  params: { meetId: string };
 }) {
-  const response = await getResponseData(params.responseId);
-  const { meet, user } = response;
+  const meet = await getMeetData(params.meetId);
 
+  if (!meet) {
+    console.log("No meet data found");
+    return <div>Meet not found</div>;
+  }
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("de-DE", {
       weekday: "short",

@@ -41,7 +41,7 @@ export default async function MeetDetailPage({
         <div className="relative h-2/5">
           <Back className="absolute top-4 left-4 z-10" />
           <ShareInvite
-            responseId={meetData.id}
+            meetId={meetData.id}
             userId={currentUserId}
             creatorId={meetData.creator.id}
             isPublic={meetData.isPublic}

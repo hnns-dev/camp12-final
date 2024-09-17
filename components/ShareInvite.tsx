@@ -5,14 +5,14 @@ import { RWebShare } from "react-web-share";
 import { LuShare2 } from "react-icons/lu";
 
 type ShareInviteProps = {
-  responseId: string;
+  meetId: string;
   isPublic: boolean;
   creatorId: string;
   userId: string;
 };
 
 export function ShareInvite({
-  responseId,
+  meetId,
   isPublic: isPublic,
   creatorId,
   userId,
@@ -32,7 +32,7 @@ export function ShareInvite({
     <RWebShare
       data={{
         text: "You got invited to play!",
-        url: `http://localhost:3000/response-page/${responseId}`,
+        url: `http://localhost:3000/response/${meetId}`,
         title: "Invite",
       }}
     >
