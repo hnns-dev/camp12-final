@@ -1,7 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import DisplayWeather from "@/components/display-weather";
 import Back from "@/components/Back";
 import { LuMapPin, LuAlertTriangle, LuLock } from "react-icons/lu";
@@ -28,6 +29,7 @@ export default async function VenueDetailsPage({
       },
       meets: {
         select: {
+          id: true,
           date: true,
           time: true,
           isPublic: true,
@@ -114,32 +116,33 @@ export default async function VenueDetailsPage({
                   Sessions
                 </label>
                 <div className="flex flex-col gap-2 w-full">
-                  {venue?.meets.map((meet, index) => (
-                    <Card
-                      key={index}
-                      className="px-5 py-3 mt-2 relative w-full"
-                    >
-                      {!meet.isPublic && (
-                        <div className="absolute top-3 right-5 flex items-center text-gray-400">
-                          <Label className="mr-1">Private</Label>
-                          <LuLock className="h-4 w-4" />
-                        </div>
-                      )}
-                      <CardContent className="px-0 py-0">
-                        <div className="flex flex-row justify-between items-center">
-                          <div className="flex flex-row gap-4">
-                            <div>
-                              <Label className="text-gray-500">Date</Label>
-                              <p>{new Date(meet.date).toLocaleDateString()}</p>
-                            </div>
-                            <div>
-                              <Label className="text-gray-500">Time</Label>
-                              <p>{meet.time}</p>
+                  {venue?.meets.map((meet) => (
+                    <Link href={`/meet/${meet.id}`} key={meet.id}>
+                      <Card className="px-5 py-3 mt-2 relative w-full hover:bg-gray-50 transition-colors">
+                        {!meet.isPublic && (
+                          <div className="absolute top-3 right-5 flex items-center text-gray-400">
+                            <Label className="mr-1">Private</Label>
+                            <LuLock className="h-4 w-4" />
+                          </div>
+                        )}
+                        <CardContent className="px-0 py-0">
+                          <div className="flex flex-row justify-between items-center">
+                            <div className="flex flex-row gap-4">
+                              <div>
+                                <Label className="text-gray-500">Date</Label>
+                                <p>
+                                  {new Date(meet.date).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div>
+                                <Label className="text-gray-500">Time</Label>
+                                <p>{meet.time}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
               </div>
