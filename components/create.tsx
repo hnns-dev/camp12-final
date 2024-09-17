@@ -7,13 +7,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -46,16 +39,7 @@ export default function Create({ suggestions }: Props) {
   return (
     <div className="h-screen w-screen py-8 px-8 flex flex-col gap-6 items-center">
       <div className="flex gap-4 items-center">
-        <h2 className="text-xl font-bold">Create</h2>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Meet" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="meet">Meet</SelectItem>
-            <SelectItem value="tournament">Tournament</SelectItem>
-          </SelectContent>
-        </Select>
+        <h2 className="text-xl font-bold pb-3">Create a Session</h2>
       </div>
       <Input placeholder="Erich Zeigner Allee" />
       <Popover>

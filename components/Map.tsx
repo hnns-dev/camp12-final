@@ -30,7 +30,9 @@ type MapProps = {
   isDrawerOpen: boolean; // Add this prop
   crossVisible: boolean;
   close: () => void;
-  updateCrossPos: (pos: LatLngExpression) => void;
+  updateCrossPos: (pos: number[]) => void;
+  handleCreateMeet: () => void;
+  handleCreateVenue: () => void;
 };
 
 const venueIcon = new L.Icon({
@@ -63,6 +65,8 @@ export default function Map2({
   crossVisible,
   updateCrossPos,
   close,
+  handleCreateMeet,
+  handleCreateVenue,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
@@ -151,7 +155,7 @@ export default function Map2({
       console.error("Error initializing map:", error);
       setLoading(false);
     }
-  }, [venues, openMeets, openDrawer, isDrawerOpen]); // Add isDrawerOpen to dependencies
+  }, [venues, openMeets, openDrawer, isDrawerOpen, updateCrossPos]); // Add isDrawerOpen to dependencies
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -224,8 +228,12 @@ export default function Map2({
             </Button>
           </div>
           <div className="flex gap-4">
-            <Button className="flex-1">Create Meet</Button>
-            <Button className="flex-1">Create Venue</Button>
+            <Button className="flex-1" onClick={handleCreateMeet}>
+              Create Meet
+            </Button>
+            <Button className="flex-1" onClick={handleCreateVenue}>
+              Create Venue
+            </Button>
           </div>
         </div>
       ) : null}

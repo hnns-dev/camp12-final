@@ -2,11 +2,11 @@
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { User, Meet } from "@prisma/client";
 
-interface TournamentDrawerProps {
-  tournament: Meet & { participants: User[] };
+interface MeetDrawerProps {
+  meet: Meet & { participants: User[] };
 }
 
-export function MeetDrawer({ meet }: TournamentDrawerProps) {
+export function MeetDrawer({ meet }: MeetDrawerProps) {
   return (
     <Drawer>
       <DrawerTrigger className="bg-zinc-300 text-purple-700 rounded-full text-xs py-1 px-2 border-2 border-purple-700">

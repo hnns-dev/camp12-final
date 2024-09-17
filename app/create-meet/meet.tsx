@@ -1,11 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { useForm, useWatch } from "react-hook-form";
-import { boolean, string, z } from "zod";
-import { cn } from "@/lib/utils";
+import { submitMeetWithLocation, submitMeetWithVenue } from "@/actions/meet";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -21,87 +16,62 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectSeparator,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
-import React from "react";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import GroupSizeSelect from "@/components/group-size-select";
-import { createMeet } from "@/actions/settings";
-import { Tag } from "@prisma/client";
-import { TagInput } from "@/components/tagInput";
-
-// Venue hardcoded
-
-const venue = "Clara-Zetkin-Park";
-const creatorId = "kdmnbiygv4lngtze";
+import { prisma } from "@/lib/db";
+import { cn } from "@/lib/utils";
+import { meetSchema } from "@/lib/validation/zod-meet";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ActivityType, Meet } from "@prisma/client";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+import { divIcon } from "leaflet";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
 type Props = {
-  isPublic: boolean;
-  creatorId: string;
-  guests: number;
-  notes?: string;
-  venueId: string;
-  tagSuggestions: Tag[];
+  userId: string;
+  venueId?: string;
+  venueName?: string;
+  location?: number[];
+  address?: string;
+  activityTypes: ActivityType[];
 };
 
-// Defining a schema for Tournament Creation
-const formSchema = z.object({
-  activityType: z.enum(["Tennis", "Basketball"], {
-    required_error: "Choose a Sport",
-  }),
-  mode: z.enum(["softie", "casual", "competetive"], {
-    required_error: "Choose a Mode",
-  }),
-  // tournamentType: z.enum(["single", "round"], {
-  //   required_error: "Choose a tournament type",
-  // }),
-  public: z.boolean(),
-  date: z.date({ required_error: "Date is required" }),
-  time: z.string({ required_error: "Time is required" }),
-  duration: z.number(),
-  participants: z.coerce
-    .number({
-      invalid_type_error:
-        "Please enter a number of people, you'd like to play with",
-    })
-    .positive({ message: "this👏is👏too👏low" }),
-  competetive: z.boolean(),
-  recurring: z.boolean(),
-  equipment: z.string().trim().optional(),
-  description: z.string().trim().optional(),
-});
+// Defining a schema for Meetsession Creation
 
-export default function UpdateMeet({
-  isPublic,
-  tagSuggestions,
-  creatorId,
-  guests,
-  notes,
+export default function MeetForm({
+  userId,
   venueId,
+  venueName,
+  location,
+  address,
+  activityTypes,
 }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
   // Setting up React Hook Form with Zod resolver for validation
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof meetSchema>>({
+    resolver: zodResolver(meetSchema),
     defaultValues: {
       duration: 0.5,
       public: false,
-      competetive: false,
+      // competetive: false,
       recurring: false,
-
       date: new Date(),
       time: "12:00",
       description: "",
@@ -115,12 +85,18 @@ export default function UpdateMeet({
     name: "duration",
     defaultValue: 0.5,
   });
+
+  const level = useWatch({
+    control: form.control,
+    name: "mode",
+    defaultValue: "casual",
+  });
+
   const privacy = useWatch({
     control: form.control,
     name: "public",
     defaultValue: false,
   });
-  console.log(privacy);
 
   const date = useWatch({
     control: form.control,
@@ -130,7 +106,8 @@ export default function UpdateMeet({
     control: form.control,
     name: "time",
   });
-  const activityType = useWatch({
+
+  let activityType = useWatch({
     control: form.control,
     name: "activityType",
   });
@@ -139,61 +116,87 @@ export default function UpdateMeet({
     console.log(form.formState.errors);
   }, [form.formState.errors]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
-
-    await createMeet({
-      date,
-      time,
-      duration,
-      isPublic,
-      creatorId: "kdmnbiygv4lngtze",
-      guests,
-      notes,
-      venueId: "1c5d63c2-6204-4ee1-a7fb-7018b983a6ad",
-      activityTypeName: activityType
-    });
-
-    console.log("finished submitting");
+    console.log(values);
+    let meet;
+    if (location) {
+      meet = await submitMeetWithLocation(values, userId, location, address);
+    } else if (venueId) {
+      meet = await submitMeetWithVenue(values, userId, venueId);
+    }
   };
 
-  const [meetTags, setMeetTags] = useState<string[]>([]);
+  // guest number from 1-15
+  const groupSizes = Array.from({ length: 30 }, (_, i) => i + 1);
 
   return (
     <>
       <Form {...form}>
-        <form className="space-y-8 w-full my-6 flex flex-col items-center">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full my-6 flex flex-col items-center"
+        >
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
-              <span className="pb-6"> @ {venue}</span>
+              {
+                venueId ? (
+                  <span className="pb-6"> @ {venueName}</span>
+                ) : address ? (
+                  <div>
+                    <ul className="text-center">{
+                    address.split(",").map((item) =>
+                    <span className="pb-6">{item}<br /></span>
+                    )}
+                    </ul>
+                  </div>
+                ) :
+                <span>Special Location</span>
+              }
               {/* Activity Type */}
-              <FormField
-                control={form.control}
-                name="activityType"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Username</FormLabel> */}
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Activity Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="tennis">Tennis</SelectItem>
-                          <SelectItem value="Basketball">Basketball</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+              {
+                <FormField
+                  control={form.control}
+                  name="activityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      {/* <FormLabel>Username</FormLabel> */}
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Activity Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {activityTypes.map((activity) => (
+                              <SelectItem
+                                key={activity.id}
+                                value={activity.name}
+                              >
+                                {activity.name}
+                              </SelectItem>
+                            ))}
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                            <SelectSeparator />
+
+                            <Link
+                              href="/activity-type"
+                              className="text-blue-600 underline text-sm pt-5 pl-3"
+                            >
+                              Create a new Activity
+                            </Link>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              }
               {/* Level */}
               <FormField
                 control={form.control}
@@ -211,8 +214,8 @@ export default function UpdateMeet({
                         <SelectContent>
                           <SelectItem value="softie">Softie</SelectItem>
                           <SelectItem value="casual">Casual</SelectItem>
-                          <SelectItem value="competetive">
-                            Competetive
+                          <SelectItem value="competitive">
+                            Competitive
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -352,20 +355,37 @@ export default function UpdateMeet({
                 )}
               />
               {/* Participants */}
-                <FormItem>
-                  <GroupSizeSelect groupSizes={[2, 4, 6]} />
-                </FormItem>
-              
-              {/* Tags */}
-              <TagInput
-                suggestions={tagSuggestions}
-                value={meetTags}
-                setValue={setMeetTags}
-              />
-              {/* Competetive */}
               <FormField
                 control={form.control}
-                name="competetive"
+                name="groupSize"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="min-w-full">
+                        <SelectValue placeholder={"select group size"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groupSizes.map((size) => (
+                          <SelectItem key={size} value={size.toString()}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              {/* Tags */}
+              {/* <TagInput
+                suggestions={tagSuggestions}
+                value={value}
+                setValue={setValue}
+              /> */}
+              {/* Competitive */}
+              {/* took out competetive because we have mode */}
+              {/* <FormField
+                control={form.control}
+                name="competitive"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -381,14 +401,14 @@ export default function UpdateMeet({
                               : "text-muted-foreground"
                           )}
                         >
-                          Competetive
+                          Competitive
                         </span>
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* Recurring */}
               <FormField
                 control={form.control}
@@ -454,7 +474,7 @@ export default function UpdateMeet({
               />
             </div>
           </div>
-          <Button onClick={handleSubmit} type="submit" className="w-2/3">
+          <Button type="submit" className="w-2/3">
             Create
           </Button>
         </form>

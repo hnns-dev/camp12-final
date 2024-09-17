@@ -1,7 +1,12 @@
+"use server";
 // Import necessary dependencies
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
+import { meetSchema } from "@/lib/validation/zod-meet";
+import { z } from "zod";
+import { FaAddressBook } from "react-icons/fa6";
+import { redirect } from "next/navigation";
 
 // Helper function to check if a given time is in the future
 function isTimeInFuture(time: string) {
@@ -12,6 +17,8 @@ function isTimeInFuture(time: string) {
   // Compare meet time with current time
   return meetTimeNumber > timeNowNumber;
 }
+
+// get creatorId from params
 
 // Main function to delete a meet
 export async function deleteMeet(meetId: string, userId: string) {
@@ -78,19 +85,28 @@ export async function updateMeet(
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
-      guests: values.guests,
-      notes: values.notes,
+      groupSize: Number(values.groupSize),
+      notes: values.description,
     },
   });
 }
 
-export const createMeet = async (values: z.infer<typeof meetSchema>) => {
-  await prisma.meet.create({
+export const submitMeetWithVenue = async (
+  values: z.infer<typeof meetSchema>,
+  creatorId: string,
+  venueId: string
+) => {
+  const meet = await prisma.meet.create({
     data: {
       date: values.date,
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
+      isRecurring: values.recurring,
+      groupSize: Number(values.groupSize),
+      participants: {},
+      notes: values.description,
+      equipment: values.equipment,
       creator: {
         connect: {
           id: creatorId,
@@ -103,11 +119,46 @@ export const createMeet = async (values: z.infer<typeof meetSchema>) => {
       },
       activityType: {
         connect: {
-          name: activityTypeName,
+          name: values.activityType,
         },
       },
-      guests: guests,
-      notes: notes,
     },
   });
+  redirect(`/meet/${meet?.id}`);
+};
+
+export const submitMeetWithLocation = async (
+  values: z.infer<typeof meetSchema>,
+  creatorId: string,
+  locationArray: number[],
+  address?: string | null,
+  
+) => {
+  const meet = await prisma.meet.create({
+    data: {
+      date: values.date,
+      mode: values.mode,
+      time: values.time,
+      duration: values.duration,
+      isPublic: values.public,
+      isRecurring: values.recurring,
+      groupSize: Number(values.groupSize),
+      participants: {},
+      notes: values.description,
+      equipment: values.equipment,
+      address: address,
+      creator: {
+        connect: {
+          id: creatorId,
+        },
+      },
+      activityType: {
+        connect: {
+          name: values.activityType,
+        },
+      },
+      location: locationArray,
+    },
+  });
+  redirect(`/meet/${meet?.id}`);
 };

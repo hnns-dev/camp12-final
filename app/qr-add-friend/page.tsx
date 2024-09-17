@@ -1,10 +1,13 @@
-"use client";
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import Link from "next/link";
+import { protectPage } from "@/lib/auth";
 
-export default function QRPage() {
+export default async function QRPage() {
+
+  const user = await protectPage();
+
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
       <div className="w-full max-w-sm bg-white rounded-lg p-6 flex flex-col justify-between flex-grow">
@@ -23,7 +26,7 @@ export default function QRPage() {
             grow your own community
           </p>
           <div className="m-14">
-            <QRCodeGenerator />
+            <QRCodeGenerator userId={user.id} />
           </div>
         </div>
       </div>
