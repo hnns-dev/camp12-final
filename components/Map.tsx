@@ -67,6 +67,7 @@ export default function Map2({
         venues={venues}
       />
       <MapLibreTileLayer
+        style=""
         attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
         url="https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json"
       />
