@@ -226,6 +226,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: bouleBahnBerlin.id,
       activityTypeId: boule.id,
+      address: "Leiser Weg 2 in 1621 Leipzig",
       mode: "casual",
     },
   });
@@ -243,6 +244,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       venueId: musselGym.id,
       activityTypeId: yoga.id,
+      address: "FCKAFD-Weg 2 in 161 Leipzig",
       mode: "softie",
     },
   });
@@ -260,6 +262,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: tennis.id,
       location: [51.328261109658, 12.361901700496],
+      address: "Lauter Weg 3 in 1621 Leipzig",
       mode: "softie",
     },
   });
@@ -277,6 +280,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: yoga.id,
       location: [51.312818371408, 12.379196584224],
+      address: "Lieber Weg 13 in 16221 Leipzig",
       mode: "softie",
     },
   });
@@ -294,6 +298,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: boule.id,
       location: [51.333365079861, 12.402499616146],
+      address: "Roeckelstraße 2, 1621 Leipzig",
       mode: "softie",
     },
   });
@@ -311,6 +316,7 @@ async function main() {
       tags: { connect: [{ name: "Outdoor" }] },
       activityTypeId: basketball.id,
       location: [51.298389433094, 12.3746411875],
+      address: "Zionstraße 13, 1621 Leipzig",
       mode: "casual",
     },
   });
@@ -329,6 +335,7 @@ async function main() {
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
       isRecurring: false,
+      address: "Brandstraße 2, 1621 Leipzig",
       mode: "softie",
     },
   });
@@ -347,6 +354,7 @@ async function main() {
       venueId: beachClubCossi.id,
       activityTypeId: tennis.id,
       isRecurring: false,
+      address: "Kurt-Eisner-Straße 2, 1621 Leipzig",
       mode: "competitive",
     },
   });
@@ -365,6 +373,7 @@ async function main() {
       venueId: weisseElster.id,
       activityTypeId: basketball.id,
       isRecurring: false,
+      address: "Roeckelstraße 21, 1621 Leipzig",
       mode: "casual",
     },
   });
