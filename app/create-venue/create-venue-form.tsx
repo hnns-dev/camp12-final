@@ -69,6 +69,7 @@ export default function CreateVenueForm({
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitting form data:", data);
+
     try {
       const result = await createVenue(
         data.name,
@@ -77,11 +78,16 @@ export default function CreateVenueForm({
         data.image || "",
         data.description || ""
       );
-      console.log("Report submitted successfully:", result);
-      router.push("/");
+      console.log("Venue created successfully:", result);
+      if (result && result.id) {
+        router.push(`venue-detail/${result.id}`);
+      } else {
+        setError("Venue created but ID not returned.");
+        router.push("/");
+      }
     } catch (error) {
-      console.error("Error submitting report:", error);
-      setError("Failed to submit report. Please try again.");
+      console.error("Error creating venue:", error);
+      setError("Failed to create venue. Please try again.");
     }
   };
 
