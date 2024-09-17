@@ -11,7 +11,7 @@ import {
   getUserParticipatingMeets,
 } from "@/lib/utils/getMeets";
 import { prisma } from "@/lib/db";
-import { protectPage } from "@/lib/auth";
+import { protectPage, validateRequest } from "@/lib/auth";
 
 export default async function Home({
   searchParams,
@@ -24,7 +24,7 @@ export default async function Home({
 
   const meets = await getAllMeets();
 
-  const user = await protectPage();
+  const { user } = await validateRequest();
   console.log("user");
   console.log(user);
 

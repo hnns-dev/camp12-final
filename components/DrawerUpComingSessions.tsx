@@ -39,7 +39,6 @@ export function DrawerUpComingSessions({
   meets: AllMeet[];
   user: User;
 }) {
-  const userId = user.id;
   const [sortedMeets, setSortedMeets] = useState<ExtendedMeet[]>([]);
 
   useEffect(() => {
@@ -111,7 +110,7 @@ export function DrawerUpComingSessions({
   const nearMe = sortedMeets.map(renderCard);
 
   const ownMeets = sortedMeets.filter((meet) =>
-    meet.participants.some((participant) => participant.id === userId)
+    meet.participants.some((participant) => participant.id === user?.id)
   );
 
   const renderEmptyState = (message: string) => <p>{message}</p>;
@@ -145,9 +144,11 @@ export function DrawerUpComingSessions({
             <TabsTrigger className="flex-1" value="near-me">
               Near me
             </TabsTrigger>
-            <TabsTrigger className="flex-1" value="own-meets">
-              Own meets
-            </TabsTrigger>
+            {user ? (
+              <TabsTrigger className="flex-1" value="own-meets">
+                Own meets
+              </TabsTrigger>
+            ) : null}
           </TabsList>
           <TabsContent
             value="near-me"
@@ -155,12 +156,14 @@ export function DrawerUpComingSessions({
           >
             {nearMeContent}
           </TabsContent>
-          <TabsContent
-            value="own-meets"
-            className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
-          >
-            {ownMeetsContent}
-          </TabsContent>
+          {user ? (
+            <TabsContent
+              value="own-meets"
+              className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
+            >
+              {ownMeetsContent}
+            </TabsContent>
+          ) : null}
         </Tabs>
       </DrawerContent>
     </Drawer>
