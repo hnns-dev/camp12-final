@@ -36,6 +36,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { divIcon } from "leaflet";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -43,21 +44,23 @@ import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 type Props = {
-	userId: string;
-	venueId?: string;
-	venueName?: string;
-	location?: number[];
-	activityTypes: ActivityType[];
+  userId: string;
+  venueId?: string;
+  venueName?: string;
+  location?: number[];
+  address?: string;
+  activityTypes: ActivityType[];
 };
 
 // Defining a schema for Meetsession Creation
 
 export default function MeetForm({
-	userId,
-	venueId,
-	venueName,
-	location,
-	activityTypes,
+  userId,
+  venueId,
+  venueName,
+  location,
+  address,
+  activityTypes,
 }: Props) {
 	// Calender Popover open
 	const [isOpen, setIsOpen] = useState(false);
@@ -114,64 +117,71 @@ export default function MeetForm({
 		console.log(form.formState.errors);
 	}, [form.formState.errors]);
 
-	const onSubmit = async (values: z.infer<typeof meetSchema>) => {
-		console.log("submitting");
-		console.log(values);
-		let meet;
-		if (location) {
-			meet = await submitMeetWithLocation(values, userId, location);
-		} else if (venueId) {
-			meet = await submitMeetWithVenue(values, userId, venueId);
-		}
-	};
+  const onSubmit = async (values: z.infer<typeof meetSchema>) => {
+    console.log("submitting");
+    console.log(values);
+    let meet;
+    if (location) {
+      meet = await submitMeetWithLocation(values, userId, location, address);
+    } else if (venueId) {
+      meet = await submitMeetWithVenue(values, userId, venueId);
+    }
+  };
 
 	// guest number from 1-15
 	const groupSizes = Array.from({ length: 30 }, (_, i) => i + 1);
 
-	return (
-		<>
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className='space-y-8 w-full my-6 flex flex-col items-center'
-				>
-					<div>
-						<div></div>
-						<div className='flex flex-col gap-4 items-center relative'>
-							<div className='flex w-full justify-center items-center'>
-								<BackArrow variant='link' />
-								<h2 className='text-xl font-bold pb-3'>Create a Session</h2>
-							</div>
-							{venueId ? (
-								<span className='pb-6'> @ {venueName}</span>
-							) : (
-								<span className='pb-6'>@ {location}</span>
-							)}
-							{/* Activity Type */}
-							{
-								<FormField
-									control={form.control}
-									name='activityType'
-									render={({ field }) => (
-										<FormItem>
-											{/* <FormLabel>Username</FormLabel> */}
-											<FormControl>
-												<Select
-													value={field.value}
-													onValueChange={field.onChange}
-												>
-													<SelectTrigger className='w-[180px]'>
-														<SelectValue placeholder='Activity Type' />
-													</SelectTrigger>
-													<SelectContent>
-														{activityTypes.map((activity) => (
-															<SelectItem
-																key={activity.id}
-																value={activity.name}
-															>
-																{activity.name}
-															</SelectItem>
-														))}
+  return (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full my-6 flex flex-col items-center"
+        >
+          <div>
+            <div className="flex flex-col gap-4 items-center">
+              <h2 className="text-xl font-bold pb-3">Create a Session</h2>
+              {
+                venueId ? (
+                  <span className="pb-6"> @ {venueName}</span>
+                ) : address ? (
+                  <div>
+                    <ul className="text-center">{
+                    address.split(",").map((item, idx) =>
+                      <li key={idx}>
+                        <span className="pb-6">{item}<br /></span>
+                      </li>
+                    )}
+                    </ul>
+                  </div>
+                ) :
+                <span>Special Location</span>
+              }
+              {/* Activity Type */}
+              {
+                <FormField
+                  control={form.control}
+                  name="activityType"
+                  render={({ field }) => (
+                    <FormItem>
+                      {/* <FormLabel>Username</FormLabel> */}
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Activity Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {activityTypes.map((activity) => (
+                              <SelectItem
+                                key={activity.id}
+                                value={activity.name}
+                              >
+                                {activity.name}
+                              </SelectItem>
+                            ))}
 
 														<SelectSeparator />
 
