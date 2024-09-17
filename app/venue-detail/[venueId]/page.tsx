@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DisplayWeather from "@/components/display-weather";
+
 export default async function VenueDetailsPage({
   params,
 }: {

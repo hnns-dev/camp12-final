@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/profile",
+        Location: `/profile/me`,
       },
     });  } catch (error) {
     return NextResponse.json({ error: 'Failed to add into friends list' }, { status: 500 });
