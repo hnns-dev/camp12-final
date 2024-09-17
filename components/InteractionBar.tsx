@@ -10,19 +10,19 @@ type Props = {
 export function InteractionBar({ venueData }: Props) {
   return (
     <div className="flex w-screen h-auto px-6 py-4 justify-between text-xs font-medium self-end">
-      <Link href={`/report-venue?location=${venueData?.geolocation}`}>
+      <Link href={`/report-venue?location=[${venueData?.geolocation}]`}>
         <div className="flex flex-col gap-2 items-center">
           <FiFlag className="w-8 h-8" />
           <p>Report</p>
         </div>
       </Link>
-      <Link href={`/create?location=${venueData?.geolocation}`}>
+      <Link href={`/create?location=[${venueData?.geolocation}]`}>
         <div className="flex flex-col gap-2 items-center">
           <FiPlusCircle className="w-8 h-8" />
           <p>Create Session</p>
         </div>
       </Link>
-      <Link href={`/venue-detail?location=${venueData?.geolocation}`}>
+      <Link href={`/venue-detail?location=[${venueData?.geolocation}]`}>
         <div className="flex flex-col gap-2 items-center">
           <FiInfo className="w-8 h-8" />
           <p>Details</p>
