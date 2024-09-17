@@ -36,7 +36,9 @@ export default function MapAndDrawer({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
   const [crossVisible, setCrossVisible] = useState(false);
-  const [crossPos, setCrossPos] = useState<number[]>([0,0]);
+  const [crossPos, setCrossPos] = useState<number[]>([0, 0]);
+
+  // MapPointer animation onclick
 
   const toggleCross = () => setCrossVisible((prev) => !prev);
   const close = () => setCrossVisible(false);
@@ -60,9 +62,9 @@ export default function MapAndDrawer({
   }
 
   function handleCreateMeet() {
-    const url = `/create-meet?location=${queryString.toString()}`;
-    router.push(url);
-  }
+     const url = `/create-meet?location=${queryString.toString()}`;
+     router.push(url);
+   }
 
   return (
     <div>
