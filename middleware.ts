@@ -3,8 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
+  console.log(request);
+  
+
   // pathname
-  const getPathname = request.nextUrl.pathname;
+  const getPathname = request.nextUrl.pathname + request.nextUrl.search;
 
   const regex = new RegExp("\\.(png|jpg|txt|jpeg|gif|svg|ico)|login");
 
