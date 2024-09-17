@@ -47,7 +47,7 @@ model Session {
 model Tag {
   name          String         @id @unique
   venues        Venue[]
-  meets         Meet[]         @relation(name: "TagtoMeet")
+  meets         Meet[]
   activityTypes ActivityType[]
 }
 
@@ -75,7 +75,8 @@ model Meet {
   creatorId      String
   creator        User         @relation("CreatedMeets", fields: [creatorId], references: [id], onDelete: Cascade)
   participants   User[]       @relation("ParticipatedMeets")
-  guests         Int
+  guests         String[]     @default([])
+  groupSize      Int
   notes          String?
   equipment      String?
   venue          Venue?       @relation(fields: [venueId], references: [id], onDelete: Cascade)

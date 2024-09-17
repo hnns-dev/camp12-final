@@ -23,6 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectSeparator,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -34,6 +35,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -43,11 +46,18 @@ type Props = {
   venueId?: string;
   venueName?: string;
   location?: number[];
+  activityTypes: ActivityType[];
 };
 
 // Defining a schema for Meetsession Creation
 
-export default function MeetForm({ userId, venueId, venueName, location }: Props) {
+export default function MeetForm({
+  userId,
+  venueId,
+  venueName,
+  location,
+  activityTypes,
+}: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
 
@@ -98,7 +108,6 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
     control: form.control,
     name: "activityType",
   });
-  
 
   useEffect(() => {
     console.log(form.formState.errors);
@@ -107,12 +116,16 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
     console.log(values);
-    if (location) {await submitMeetWithLocation(values, userId, location)}
-   else if (venueId) {await submitMeetWithVenue(values, userId, venueId)};
+    let meet;
+    if (location) {
+      meet = await submitMeetWithLocation(values, userId, location);
+    } else if (venueId) {
+      meet = await submitMeetWithVenue(values, userId, venueId);
+    }
   };
 
   // guest number from 1-15
-  const groupSizes = Array.from({ length: 15 }, (_, i) => i + 1);
+  const groupSizes = Array.from({ length: 30 }, (_, i) => i + 1);
 
   return (
     <>
@@ -124,15 +137,13 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
-              {
-                venueId ? (
-                  <span className="pb-6"> @ {venueName}</span>
-                ) : (
-                  <span className="pb-6">@ {location}</span>
-                )
-              }
+              {venueId ? (
+                <span className="pb-6"> @ {venueName}</span>
+              ) : (
+                <span className="pb-6">@ {location}</span>
+              )}
               {/* Activity Type */}
-              {(
+              {
                 <FormField
                   control={form.control}
                   name="activityType"
@@ -148,10 +159,23 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
                             <SelectValue placeholder="Activity Type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Tennis">Tennis</SelectItem>
-                            <SelectItem value="Basketball">
-                              Basketball
-                            </SelectItem>
+                            {activityTypes.map((activity) => (
+                              <SelectItem
+                                key={activity.id}
+                                value={activity.name}
+                              >
+                                {activity.name}
+                              </SelectItem>
+                            ))}
+
+                            <SelectSeparator />
+
+                            <Link
+                              href="/activity-type"
+                              className="text-blue-600 underline text-sm pt-5 pl-3"
+                            >
+                              Create a new Activity
+                            </Link>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -160,7 +184,7 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
                     </FormItem>
                   )}
                 />
-              )}
+              }
               {/* Level */}
               <FormField
                 control={form.control}
@@ -321,21 +345,20 @@ export default function MeetForm({ userId, venueId, venueName, location }: Props
               {/* Participants */}
               <FormField
                 control={form.control}
-                name="guests"
+                name="groupSize"
                 render={({ field }) => (
                   <FormItem>
                     <Select onValueChange={field.onChange}>
-                    <SelectTrigger className="min-w-full">
-                      <SelectValue placeholder={"select group size"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {groupSizes.map((size) => (
-                        <SelectItem key={size} value={size.toString()}>
-                          {size}
-                        </SelectItem>
-                        
-                      ))}
-                    </SelectContent>
+                      <SelectTrigger className="min-w-full">
+                        <SelectValue placeholder={"select group size"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groupSizes.map((size) => (
+                          <SelectItem key={size} value={size.toString()}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormItem>
                 )}
