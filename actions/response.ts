@@ -1,4 +1,3 @@
-// /actions/response.ts
 "use server";
 
 import { PrismaClient } from "@prisma/client";
@@ -6,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function getResponseData(responseId: string) {
+  console.log("Fetching response data for ID:", responseId);
   try {
     const response = await prisma.response.findUnique({
       where: { id: responseId },
@@ -28,8 +28,16 @@ export async function getResponseData(responseId: string) {
       },
     });
 
+    console.log("Raw response data:", JSON.stringify(response, null, 2));
+
     if (!response) {
-      throw new Error("Response not found");
+      console.log("Response not found for ID:", responseId);
+      return null;
+    }
+
+    if (!response.meet) {
+      console.log("Meet data not found in response:", responseId);
+      return null;
     }
 
     return response;

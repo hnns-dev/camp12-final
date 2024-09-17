@@ -128,6 +128,46 @@ export const submitMeetWithVenue = async (
   redirect(`/meet/${meet?.id}`);
 };
 
+export async function getMeetData(meetId: string) {
+  console.log("Fetching meet data for ID:", meetId);
+  try {
+    const meet = await prisma.meet.findUnique({
+      where: { id: meetId },
+      include: {
+        venue: true,
+        activityType: true,
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        tags: true, // Hier fügen wir die tags hinzu
+      },
+    });
+
+    console.log("Raw meet data:", JSON.stringify(meet, null, 2));
+
+    if (!meet) {
+      console.log("Meet not found for ID:", meetId);
+      return null;
+    }
+
+    return meet;
+  } catch (error) {
+    console.error("Error fetching meet:", error);
+    throw error;
+  }
+}
+
 export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
