@@ -52,7 +52,6 @@ export default async function Home({
         userCreatedMeets={myMeets}
         userPariticpatingMeets={participatingMeets}
       />
-
       <Search />
       <FilterDrawer activities={activities} />
     </div>
