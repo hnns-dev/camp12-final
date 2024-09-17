@@ -45,9 +45,10 @@ model Session {
 }
 
 model Tag {
-  name          String         @id @unique
+  id            String         @id @default(uuid())
+  name          String         @unique
   venues        Venue[]
-  meets         Meet[]
+  meets         Meet[]         @relation("TagsOnMeets")
   activityTypes ActivityType[]
 }
 
@@ -65,7 +66,7 @@ model Venue {
 }
 
 model Meet {
-  id             String       @id @default(uuid())
+id             String       @id @default(uuid())
   date           DateTime
   time           String
   isCompetitive  Boolean      @default(false)
@@ -86,7 +87,7 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  tags           Tag[]        @relation(name: "TagtoMeet")
+  tags           Tag[]        @relation("TagsOnMeets")
   Response       Response[]
 }
 
@@ -118,7 +119,7 @@ model ActivityType {
   description                  String?
   requiredNumberOfParticipants Int
   meets                        Meet[]
-  tags                         Tag[]
+  tags          Tag[]
   venues                       Venue[]
 
   CheckIn CheckIn[]
