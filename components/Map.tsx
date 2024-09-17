@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
+import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { icon, LatLngExpression, LatLngLiteral } from "leaflet";
-import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
@@ -15,6 +15,7 @@ import "leaflet.markercluster";
 import { CrosshairIcon, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { GiCrosshair } from "react-icons/gi";
+import { MapLibreTileLayer } from "@/lib/utils/map/MapTileLayer";
 
 export interface VenueData {
   name: string;
@@ -99,9 +100,9 @@ export default function Map2({
         }
       });
 
-      new MaptilerLayer({
-        apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
-      }).addTo(map.current);
+      // new MaptilerLayer({
+      //   apiKey: process.env.NEXT_PUBLIC_MAPTILER_API_KEY,
+      // }).addTo(map.current);
 
       const VenueMarkers = L.markerClusterGroup();
       const OpenMeetMarkers = L.markerClusterGroup();
@@ -200,7 +201,7 @@ export default function Map2({
           const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.current?.flyTo(nearestVenue, 16);
           const venueData: VenueData = {
-            name: "Nearest Venue",
+            name: "Closest Venue",
             address: "Some Address",
             distance: distanceFormatted,
             geolocation: nearestVenue,
@@ -214,7 +215,18 @@ export default function Map2({
   }, [venues, openDrawer]);
 
   return (
-    <div ref={mapContainer} className="h-screen w-screen absolute">
+    <MapContainer
+      center={[51.3397, 12.3731]}
+      zoom={12}
+      scrollWheelZoom={true}
+      zoomControl={false}
+      className="w-screen h-screen relative"
+      attributionControl={false}
+    >
+      <MapLibreTileLayer
+        attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+        url="https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_top.json"
+      />
       {crossVisible ? (
         <div className="absolute  top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2">
           <GiCrosshair className="size-20" />
@@ -237,7 +249,7 @@ export default function Map2({
           </div>
         </div>
       ) : null}
-    </div>
+    </MapContainer>
   );
 }
 
