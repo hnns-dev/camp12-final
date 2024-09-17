@@ -28,7 +28,8 @@ export async function createVenue(
   activities: string[],
   location: number[],
   image: string,
-  description?: string
+  description?: string,
+  address?: string
 ) {
   return prisma.venue.create({
     data: {
@@ -39,6 +40,7 @@ export async function createVenue(
       location,
       image,
       description,
+      address
     },
   });
 }
