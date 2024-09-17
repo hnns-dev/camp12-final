@@ -36,6 +36,7 @@ import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -115,10 +116,11 @@ export default function MeetForm({
   const onSubmit = async (values: z.infer<typeof meetSchema>) => {
     console.log("submitting");
     console.log(values);
+    let meet;
     if (location) {
-      await submitMeetWithLocation(values, userId, location);
+      meet = await submitMeetWithLocation(values, userId, location);
     } else if (venueId) {
-      await submitMeetWithVenue(values, userId, venueId);
+      meet = await submitMeetWithVenue(values, userId, venueId);
     }
   };
 
