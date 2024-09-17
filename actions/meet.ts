@@ -129,7 +129,7 @@ export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
   locationArray: number[],
-  address: string,
+  address?: string,
 ) => {
     const meet = await prisma.meet.create({
       data: {
