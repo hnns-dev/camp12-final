@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { MapMarkers } from "./MapMarkers";
 
 export interface VenueData {
+  id: string;
   name: string;
   address: string;
   distance?: string;

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
+import { FaAddressBook } from "react-icons/fa6";
 import { redirect } from "next/navigation";
 
 // Helper function to check if a given time is in the future
@@ -100,6 +101,7 @@ export const submitMeetWithVenue = async (
       date: values.date,
       time: values.time,
       duration: values.duration,
+      mode: values.mode,
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
@@ -169,11 +171,14 @@ export async function getMeetData(meetId: string) {
 export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
-  locationArray: number[]
+  locationArray: number[],
+  address?: string | null,
+  
 ) => {
   const meet = await prisma.meet.create({
     data: {
       date: values.date,
+      mode: values.mode,
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
@@ -182,6 +187,7 @@ export const submitMeetWithLocation = async (
       participants: {},
       notes: values.description,
       equipment: values.equipment,
+      address: address,
       creator: {
         connect: {
           id: creatorId,

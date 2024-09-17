@@ -1,6 +1,7 @@
 "use client";
 
 import { submitMeetWithLocation, submitMeetWithVenue } from "@/actions/meet";
+import { TagInput } from "@/components/tagInput";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -396,7 +397,7 @@ export default function MeetForm({
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               {/* Recurring */}
               <FormField
                 control={form.control}
