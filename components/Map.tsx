@@ -30,7 +30,7 @@ type MapProps = {
   isDrawerOpen: boolean; // Add this prop
   crossVisible: boolean;
   close: () => void;
-  updateCrossPos: (pos: LatLngExpression) => void;
+  updateCrossPos: (pos: number[]) => void;
   handleCreateMeet: () => void;
   handleCreateVenue: () => void;
 };

@@ -26,6 +26,7 @@ export const lucia = new Lucia(adapter, {
       email: attributes.email,
       name: attributes.name,
       picture: attributes.picture,
+      bio: attributes.bio,
     };
   },
 });

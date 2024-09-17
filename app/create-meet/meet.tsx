@@ -35,6 +35,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ActivityType, Meet } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { divIcon } from "leaflet";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -46,6 +47,7 @@ type Props = {
   venueId?: string;
   venueName?: string;
   location?: number[];
+  address?: string;
   activityTypes: ActivityType[];
 };
 
@@ -56,6 +58,7 @@ export default function MeetForm({
   venueId,
   venueName,
   location,
+  address,
   activityTypes,
 }: Props) {
   // Calender Popover open
@@ -118,7 +121,7 @@ export default function MeetForm({
     console.log(values);
     let meet;
     if (location) {
-      meet = await submitMeetWithLocation(values, userId, location);
+      meet = await submitMeetWithLocation(values, userId, location, address);
     } else if (venueId) {
       meet = await submitMeetWithVenue(values, userId, venueId);
     }
@@ -137,11 +140,20 @@ export default function MeetForm({
           <div>
             <div className="flex flex-col gap-4 items-center">
               <h2 className="text-xl font-bold pb-3">Create a Session</h2>
-              {venueId ? (
-                <span className="pb-6"> @ {venueName}</span>
-              ) : (
-                <span className="pb-6">@ {location}</span>
-              )}
+              {
+                venueId ? (
+                  <span className="pb-6"> @ {venueName}</span>
+                ) : address ? (
+                  <div>
+                    <ul className="text-center">{
+                    address.split(",").map((item) =>
+                    <span className="pb-6">{item}<br /></span>
+                    )}
+                    </ul>
+                  </div>
+                ) :
+                <span>Special Location</span>
+              }
               {/* Activity Type */}
               {
                 <FormField
