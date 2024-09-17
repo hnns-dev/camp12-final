@@ -8,6 +8,7 @@ import { LuMapPin, LuCalendarDays } from "react-icons/lu";
 import TagsBadges from "@/components/TagsBadges";
 import AvatarList from "@/components/AvatarList";
 import { formatDate } from "@/lib/utils/formatDate";
+import { Button } from "@/components/ui/button";
 
 export default async function MeetDetailPage({
   params,
@@ -28,7 +29,6 @@ export default async function MeetDetailPage({
       return <div>Meet not found</div>;
     }
 
-    // Get the current user's session using Lucia
     const { user } = await validateRequest();
     const currentUserId = user?.id || "";
 
@@ -37,23 +37,24 @@ export default async function MeetDetailPage({
     );
 
     return (
-      <div className="h-screen flex flex-col items-center bg-white relative">
-        <Back />
-        <ShareInvite
-          responseId={meetData.id}
-          userId={currentUserId}
-          creatorId={meetData.creator.id}
-          isPublic={meetData.isPublic}
-        />
-        <img
-          className="w-screen object-cover h-2/5"
-          src={meetData.venue?.image || "/signin-hero.jpg"}
-          alt={meetData.venue?.name || "Event venue"}
-        />
-        <main className="absolute top-[33%] left-0 right-0 bottom-0 bg-white rounded-t-3xl shadow-lg overflow-y-auto">
-          <header className="flex justify-between p-3"></header>
-          <section className="absolute w-full">
-            <div className="flex flex-col gap-4">
+      <div className="h-screen flex flex-col bg-white">
+        <div className="relative h-2/5">
+          <Back className="absolute top-4 left-4 z-10" />
+          <ShareInvite
+            responseId={meetData.id}
+            userId={currentUserId}
+            creatorId={meetData.creator.id}
+            isPublic={meetData.isPublic}
+          />
+          <img
+            className="w-full h-full object-cover"
+            src={meetData.venue?.image || "/signin-hero.jpg"}
+            alt={meetData.venue?.name || "Event venue"}
+          />
+        </div>
+        <main className="flex flex-col h-3/5 bg-white rounded-t-3xl -mt-6 relative z-10 overflow-hidden">
+          <div className="flex-grow overflow-y-auto  py-6">
+            <div className="flex flex-col gap-4 ">
               <div className="flex gap-2 px-5">
                 <FaBasketball className="size-6 fill-orange" />
                 <p className="font-medium">
@@ -95,27 +96,23 @@ export default async function MeetDetailPage({
               {meetData.tags && meetData.tags.length > 0 && (
                 <TagsBadges tags={meetData.tags} />
               )}
-              <label htmlFor="description" className="font-semibold px-5 pt-4">
+              <label htmlFor="description" className="font-semibold pt-4 px-5">
                 About the meet
               </label>
               <p className="text-muted-foreground px-5">
                 {meetData.notes || "No description available."}
               </p>
             </div>
-          </section>
-          <div className="flex flex-col items-stretch flex-grow justify-end mb-14 mt-6 px-5">
-            <button
-              className={`font-medium text-white rounded-lg py-4 ${
+          </div>
+          <div className="p-5">
+            <Button
+              className={`w-full font-medium text-white rounded-lg py-4 ${
                 isParticipating ? "bg-green-500" : "bg-slate-900"
               }`}
               disabled={isParticipating}
             >
               {isParticipating ? "Participating" : "Participate"}
-            </button>
-            <p className="text-center mt-2">
-              {meetData.participants.length} participant
-              {meetData.participants.length !== 1 ? "s" : ""}
-            </p>
+            </Button>
           </div>
         </main>
       </div>
