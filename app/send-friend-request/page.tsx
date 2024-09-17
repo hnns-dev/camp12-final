@@ -4,21 +4,21 @@ import Link from "next/link";
 import { protectPage } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
+import { BackArrow } from "@/components/BackArrow";
 
 export default async function FriendPage({
-  searchParams,
+	searchParams,
 }: {
-  searchParams: { userId: string };
+	searchParams: { userId: string };
 }) {
+	const user = await protectPage();
+	const friend = await prisma.user.findUnique({
+		where: {
+			id: searchParams.userId,
+		},
+	});
 
-  const user = await protectPage();
-  const friend = await prisma.user.findUnique({
-    where: {
-      id: searchParams.userId
-    }
-  });
-
-  const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`
+	const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`;
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-white p-4">
