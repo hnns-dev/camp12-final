@@ -35,12 +35,14 @@ export default async function CreateMeet({
       },
     });
     if (venue) {
+      const address = venue.address ? venue.address : undefined
       return (
         <div>
           <MeetForm
             userId={user.id}
             venueId={venue.id}
             venueName={venue.name}
+            address={address}
             activityTypes={activityTypes}
           />
         </div>

@@ -38,6 +38,7 @@ export default async function Home({
   console.log(filters);
 
   const filteredVenues = filterVenues(venues, filters);
+
   const filteredOpenMeets = filterOpenMeets(openMeets, filters);
   return (
     <div className="h-screen relative overflow-hidden">
@@ -47,7 +48,6 @@ export default async function Home({
         userCreatedMeets={myMeets}
         userPariticpatingMeets={participatingMeets}
       />
-
       <Search />
       <FilterDrawer activities={activities} />
     </div>

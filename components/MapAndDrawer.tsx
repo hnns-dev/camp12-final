@@ -22,7 +22,9 @@ export default function MapAndDrawer({
   userCreatedMeets: UserCreatedMeet[];
   userPariticpatingMeets: UserParticipatingMeet[];
 }) {
-  const router = useRouter(); // useRouter hook from next/navigatio
+  const router = useRouter(); // useRouter hook from next/navigation
+  // const connectURL = `/api/new-friend?user-one=${searchParams.userId}&user-two=${user.id}`;
+
   const Map = useMemo(
     () =>
       dynamic(() => import("@/components/Map"), {

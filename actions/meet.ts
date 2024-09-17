@@ -101,6 +101,7 @@ export const submitMeetWithVenue = async (
       date: values.date,
       time: values.time,
       duration: values.duration,
+      mode: values.mode,
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
