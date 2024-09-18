@@ -128,7 +128,7 @@ export function DrawerUpComingSessions({
           <DrawerTitle className="sr-only">Upcoming meets</DrawerTitle>
           <DrawerDescription className="sr-only">
             Here you can see upcoming public sessions: those near you and those
-            you've organized.
+            you&apos;ve organized.
           </DrawerDescription>
         </DrawerHeader>
         <Tabs

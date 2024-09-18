@@ -48,9 +48,8 @@ export function FriendsList({
   return (
     <div className="flex flex-col justify-center items-center">
       {friends.map((friend, index) => (
-        <div className="flex p-4 space-y-4">
+        <div className="flex p-4 space-y-4" key={index}>
           <FriendCard
-            key={index}
             user={friend}
             myUserId={user?.id ?? null}
             showCheckbox={true}
