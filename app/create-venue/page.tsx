@@ -33,10 +33,13 @@ export default async function CreateVenuePage({
       <section className="flex flex-col items-center gap-3">
         <h1 className="text-2xl font-bold">Add a venue</h1>
         <div>
-          <ul className="text-center">{
-          address.split(",").map((item: string) =>
-          <span className="pb-6">{item}<br /></span>
-          )}
+          <ul className="text-center">
+            {address.split(",").map((item: string, idx: number) => (
+              <span key={idx} className="pb-6">
+                {item}
+                <br />
+              </span>
+            ))}
           </ul>
         </div>
       </section>
