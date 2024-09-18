@@ -20,13 +20,13 @@ model User {
   meetsCreated       Meet[]     @relation("CreatedMeets")
   meetsParticipating Meet[]     @relation("ParticipatedMeets")
   badges             Badge[]
+  bio                String?
   friends            User[]     @relation("Friends")
   friendOf           User[]     @relation("Friends")
   settings           Settings?
   checkIns           CheckIn[]
   city               City?      @relation(fields: [cityName], references: [name])
   cityName           String?
-  responses          Response[]
 }
 
 model Badge {
@@ -45,6 +45,7 @@ model Session {
 }
 
 model Tag {
+  // A name as identifier is totally fine. only if you want to have two tags with the same name butt different attributes, you need an id
   name          String         @id @default(uuid())
   venues        Venue[]
   meets         Meet[]
@@ -85,21 +86,10 @@ model Meet {
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  address        String?
   tags           Tag[]
-  Response       Response[]
+  address        String?
 }
 
-model Response {
-  id        String   @id @default(uuid())
-  meet      Meet     @relation(fields: [meetId], references: [id])
-  meetId    String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 model CheckIn {
   id             String       @id @default(uuid())

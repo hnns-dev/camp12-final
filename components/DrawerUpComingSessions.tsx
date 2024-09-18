@@ -1,121 +1,134 @@
-import { FaTableTennis } from "react-icons/fa";
-import { InteractionBar } from "./InteractionBar";
-import {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "./ui/card";
+"use client";
 
+import { getUserParticipatingMeets } from "@/lib/utils/getMeets";
+import { User } from "@prisma/client";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { LuCalendarDays, LuMapPin } from "react-icons/lu";
+import { Card, CardContent } from "./ui/card";
 import {
   Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
-  DrawerClose,
   DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
   DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
 } from "./ui/drawer";
+import { Separator } from "./ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
-import { Button } from "./ui/button";
+type MeetFromFn = Awaited<ReturnType<typeof getUserParticipatingMeets>>[number];
 
-const userId = "234";
-const meets = [
-  {
-    title: "Pingpong",
-    address: "Erich Zeigner Allee",
-    date: "28.08.2024",
-    time: "3:00 PM",
-    img: "../public/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-    creatorId: "234",
-  },
-
-  {
-    title: "Pingpong",
-    address: "Erich Zeigner Allee",
-    date: "30:08.2024",
-    img: "../public/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-    creatorId: "234",
-  },
-
-  {
-    title: "Pingpong",
-    address: "Erich Zeigner Allee",
-    date: "31:08.2024",
-    img: "../public/DolliBu-Wild-Elephant-Unicorn-Plush-Stuffed-Animal-Toy-Super-Soft-Elephantcorn-Dress-Up-Removable-Outfit-Cute-Fantasy-Wildlife-Gift-12-Inch_b81bd1b7-ab9c-47a4-b273-8899acf69d63.3a2eef36493668f5b4e5d133e2559c3b.webp",
-    creatorId: "123",
-  },
-];
-
-type Meet = {
-  title: string;
-  address: string;
-  date: string;
-  img: string;
-  creatorId: string;
-  time: string;
-};
-//not used yet
-type DrawerUpComingSessionsProps = {
-  meets: Meet[];
-  userId: string;
-};
+interface ExtendedMeet extends MeetFromFn {
+  distance?: number;
+}
+interface DrawerUpComingSessionsProps {
+  children: React.ReactNode;
+  defaultTab: string;
+  meets: ExtendedMeet[];
+  user: User | null;
+}
 
 export function DrawerUpComingSessions({
   children,
   defaultTab,
-}: {
-  children: React.ReactNode;
-  defaultTab: string;
-}) {
-  const filteredData = [...meets];
+  user,
+  meets,
+}: DrawerUpComingSessionsProps) {
+  const [sortedMeets, setSortedMeets] = useState<ExtendedMeet[]>([]);
 
-  const renderCard = (item: Meet, key: number) => (
-    <Card key={key}>
-      <CardHeader>
-        <CardTitle>{item.title}</CardTitle>
-        <CardDescription>{item.address}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Date: {item.date}</p>
-        {item.time && <p>Time: {item.time}</p>}
-        <img src={item.img} alt={item.title} />
-      </CardContent>
-    </Card>
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+
+        const meetsWithDistance = meets?.map((meet) => {
+          let meetLocation =
+            meet.location || (meet.venue && meet.venue.location);
+          let distance = Infinity;
+
+          if (meetLocation) {
+            distance = Math.sqrt(
+              Math.pow(latitude - meetLocation[0], 2) +
+                Math.pow(longitude - meetLocation[1], 2)
+            );
+          }
+
+          return {
+            ...meet,
+            distance: calculateDistance(latitude, longitude, meet),
+          };
+        });
+
+        const sorted = meetsWithDistance?.sort(
+          (a, b) => a.distance - b.distance
+        );
+        if (sorted) {
+          setSortedMeets(sorted);
+        }
+      });
+    }
+  }, [meets]);
+
+  const calculateDistance = (lat: number, lon: number, meet: ExtendedMeet) => {
+    const meetLocation = meet.location || (meet.venue && meet.venue.location);
+    if (!meetLocation) return Infinity;
+
+    return Math.sqrt(
+      Math.pow(lat - meetLocation[0], 2) + Math.pow(lon - meetLocation[1], 2)
+    );
+  };
+
+  const ownMeets = sortedMeets.filter((meet) =>
+    meet.participants.some((participant) => participant.id === user?.id)
   );
 
-  const nearMe = filteredData
-    .filter((item) => item.address === "Erich Zeigner Allee")
-    .map(renderCard);
-
-  const ownMeets = filteredData
-    .filter((item) => item.creatorId === userId)
-    .map(renderCard);
-
-  const renderEmptyState = (message: string) => <p>{message}</p>;
-
-  const nearMeContent =
-    nearMe.length > 0 ? nearMe : renderEmptyState("No nearby events found.");
-  const ownMeetsContent =
-    ownMeets.length > 0
-      ? ownMeets
-      : renderEmptyState("No events organized by you.");
+  const renderMeetCards = (meetsToRender: ExtendedMeet[]) => (
+    <div className="flex flex-col gap-2 w-full">
+      {meetsToRender.map((meet) => (
+        <Link href={`/meet/${meet.id}`} key={meet.id}>
+          <Card className="px-5 py-3 mt-2 relative w-full hover:bg-gray-50 transition-colors">
+            <CardContent className="px-0 py-0">
+              <p className="font-semibold text-sm mb-1">
+                {meet.activityType.name}
+              </p>
+              <p className="text-sm mb-2 text-muted-foreground">
+                {meet.notes || "No description available"}
+              </p>
+              <Separator className="my-2"></Separator>
+              <div className="flex gap-1 items-center">
+                <LuMapPin className="size-4 text-muted-foreground" />
+                <p className="text-sm ">
+                  {meet.venue?.address ||
+                    meet.address ||
+                    "No address available"}
+                </p>
+              </div>
+              <div className="flex flex-row justify-between items-center mb-2">
+                <div className="flex flex-row gap-1 items-center">
+                  <LuCalendarDays className="size-4 text-muted-foreground" />
+                  <p className="text-sm">
+                    {new Date(meet.date).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm">{meet.time}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  );
 
   return (
     <Drawer>
       <DrawerTrigger>{children}</DrawerTrigger>
       <DrawerContent className="z-[9999] h-[calc(100vh-16vh)] flex flex-col">
         <DrawerHeader>
-          <DrawerTitle className="sr-only">Upcoming sessions</DrawerTitle>
+          <DrawerTitle className="sr-only">Upcoming meets</DrawerTitle>
           <DrawerDescription className="sr-only">
-            You can see the upcoming sessions here: the ones near you and the
-            ones you organized.
+            Here you can see upcoming public sessions: those near you and those
+            you've organized.
           </DrawerDescription>
         </DrawerHeader>
         <Tabs
@@ -126,22 +139,44 @@ export function DrawerUpComingSessions({
             <TabsTrigger className="flex-1" value="near-me">
               Near me
             </TabsTrigger>
-            <TabsTrigger className="flex-1" value="own-meets">
-              Own meets
-            </TabsTrigger>
+            {user && (
+              <TabsTrigger className="flex-1" value="own-meets">
+                Own meets
+              </TabsTrigger>
+            )}
           </TabsList>
           <TabsContent
             value="near-me"
-            className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
+            className="py-2 flex-1 overflow-y-scroll"
           >
-            {nearMeContent}
+            <div className="mt-4">
+              <label htmlFor="meets" className="font-semibold">
+                Public Sessions Near You
+              </label>
+              {sortedMeets.length > 0 ? (
+                renderMeetCards(sortedMeets)
+              ) : (
+                <p>No public meets found near you.</p>
+              )}
+            </div>
           </TabsContent>
-          <TabsContent
-            value="own-meets"
-            className="px-4 py-2 flex-1 overflow-y-scroll max-h-[350px]"
-          >
-            {ownMeetsContent}
-          </TabsContent>
+          {user && (
+            <TabsContent
+              value="own-meets"
+              className="py-2 flex-1 overflow-y-scroll"
+            >
+              <div className="mt-4">
+                <label htmlFor="meets" className="font-semibold">
+                  Your Public Sessions
+                </label>
+                {ownMeets.length > 0 ? (
+                  renderMeetCards(ownMeets)
+                ) : (
+                  <p>You are not participating in any public meets.</p>
+                )}
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </DrawerContent>
     </Drawer>

@@ -50,7 +50,12 @@ export default async function FriendsListPage({
       </div>
       <div className="p-4 space-y-4">
         {friends.map((friend, index) => (
-          <FriendCard key={index} user={friend} myUserId={user?.id ?? null} />
+          <FriendCard
+            key={index}
+            user={friend}
+            myUserId={user?.id ?? null}
+            showTrash={true}
+          />
         ))}
       </div>
     </div>

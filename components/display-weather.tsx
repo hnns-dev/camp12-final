@@ -32,7 +32,7 @@ export default function DisplayWeather({ lat, lon }: Props) {
   console.log(weather);
 
   return (
-    <div className="p-4">
+    <div className="">
       {error && <p>Error: {error}</p>}
       {weather ? (
         <div>

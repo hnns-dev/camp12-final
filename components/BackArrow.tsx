@@ -4,21 +4,23 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type Props = {
-	variant?: "button" | "link";
+  variant?: "button" | "link";
+  className?: string;
 };
 
-export function BackArrow({ variant = "button" }: Props) {
-	const router = useRouter();
+export function BackArrow({ variant = "button", className = "" }: Props) {
+  const router = useRouter();
 
-	return (
-		<button
-			className={cn(
-				"rounded-lg p-2.5 w-full max-w-sm flex flex-col justify-between flex-grow",
-				variant === "button" ? "bg-white/80" : "bg-transparent"
-			)}
-			onClick={() => router.back()}
-		>
-			<ArrowLeft className='text-black size-6' />
-		</button>
-	);
+  return (
+    <button
+      className={cn(
+        "rounded-lg p-2.5 max-w-sm",
+        variant === "button" ? "bg-white/80" : "bg-transparent",
+        className
+      )}
+      onClick={() => router.back()}
+    >
+      <ArrowLeft className="text-black size-6" />
+    </button>
+  );
 }
