@@ -3,6 +3,7 @@ import { FaBaby, FaTrophy } from "react-icons/fa";
 import { FaTableTennisPaddleBall, FaPersonWalking } from "react-icons/fa6";
 import { Badge } from "./ui/badge";
 import { IconType } from "react-icons";
+import { tagConfigs } from "@/lib/utils/tags";
 
 interface Tag {
   name: string;
@@ -12,18 +13,7 @@ interface TagsBadgesProps {
   tags: Tag[];
 }
 
-interface TagConfig {
-  icon: IconType;
-  color: string;
-}
 
-const tagConfigs: Record<string, TagConfig> = {
-  "Beginner-friendly": { icon: FaBaby, color: "bg-turquoise" },
-  Competitive: { icon: FaTrophy, color: "bg-pink" },
-  "Equipment needed": { icon: FaTableTennisPaddleBall, color: "bg-rose" },
-  "Players wanted": { icon: FaPersonWalking, color: "bg-yellowish" },
-  // Add more mappings as needed
-};
 
 export default function TagsBadges({ tags }: TagsBadgesProps) {
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { submitMeetWithLocation, submitMeetWithVenue } from "@/actions/meet";
+import { TagInput } from "@/components/tagInput";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -31,7 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActivityType } from "@prisma/client";
+import { ActivityType, Tag } from "@prisma/client";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -46,6 +47,7 @@ type Props = {
   location?: number[];
   address?: string;
   activityTypes: ActivityType[];
+  dbTags: Tag[];
 };
 
 // Defining a schema for Meetsession Creation
@@ -57,6 +59,7 @@ export default function MeetForm({
   location,
   address,
   activityTypes,
+  dbTags,
 }: Props) {
   // Calender Popover open
   const [isOpen, setIsOpen] = useState(false);
@@ -68,6 +71,7 @@ export default function MeetForm({
       duration: 0.5,
       public: false,
       // competetive: false,
+      tags: [],
       recurring: false,
       date: new Date(),
       time: "12:00",
@@ -133,7 +137,7 @@ export default function MeetForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex-1 flex flex-col justify-between items-center"
+          className="flex-1 pb-6 flex flex-col space-y-4 justify-between items-center"
         >
           <div className="grid grid-cols-4 gap-x-4 gap-y-8  items-center">
             <div className="col-span-4 text-center">
@@ -332,6 +336,7 @@ export default function MeetForm({
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -356,7 +361,7 @@ export default function MeetForm({
                       <Switch
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-green-400 data-[state=unchecked]:bg-yellow-400"
+                        className="data-[state=checked]:bg-turquoise data-[state=unchecked]:bg-orange"
                       />
                       <span
                         className={cn(
@@ -374,11 +379,19 @@ export default function MeetForm({
               )}
             />
             {/* Tags */}
-            {/* <TagInput
-                suggestions={tagSuggestions}
-                value={value}
-                setValue={setValue}
-              /> */}
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormControl>
+                  <TagInput
+                    suggestions={dbTags}
+                    value={field.value}
+                    setValue={field.onChange}
+                  />
+                </FormControl>
+              )}
+            />
             {/* Competitive */}
             {/* took out competetive because we have mode */}
             {/* <FormField
@@ -471,7 +484,7 @@ export default function MeetForm({
               )}
             />
           </div>
-          <Button type="submit" className="w-2/3">
+          <Button type="submit" className="w-full">
             Create
           </Button>
         </form>
