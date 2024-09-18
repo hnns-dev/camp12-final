@@ -12,7 +12,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Card, CardContent } from "./ui/card";
 import { Label } from "./ui/label";
 import { Meet, User, Venue, ActivityType } from "@prisma/client";
-import { LuMapPin } from "react-icons/lu";
+import { LuMapPin, LuCalendarDays } from "react-icons/lu";
+import { Separator } from "./ui/separator";
 
 type ExtendedMeet = Meet & {
   venue: Venue | null;
@@ -75,28 +76,28 @@ export function DrawerUpComingSessions({
         <Link href={`/meet/${meet.id}`} key={meet.id}>
           <Card className="px-5 py-3 mt-2 relative w-full hover:bg-gray-50 transition-colors">
             <CardContent className="px-0 py-0">
-              <h3 className="font-semibold mb-2">{meet.activityType.name}</h3>
-              <p className="text-sm italic mb-2">
+              <p className="font-semibold text-sm mb-1">
+                {meet.activityType.name}
+              </p>
+              <p className="text-sm mb-2 text-muted-foreground">
                 {meet.notes || "No description available"}
               </p>
-              <div className="flex gap-1">
-                <LuMapPin className="size-5 text-muted-foreground" />
-                <p className="text-sm">
+              <Separator className="my-2"></Separator>
+              <div className="flex gap-1 items-center">
+                <LuMapPin className="size-4 text-muted-foreground" />
+                <p className="text-sm ">
                   {meet.venue?.address ||
                     meet.address ||
                     "No address available"}
                 </p>
               </div>
               <div className="flex flex-row justify-between items-center mb-2">
-                <div className="flex flex-row gap-4">
-                  <div>
-                    <Label className="text-gray-500">Date</Label>
-                    <p>{new Date(meet.date).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <Label className="text-gray-500">Time</Label>
-                    <p>{meet.time}</p>
-                  </div>
+                <div className="flex flex-row gap-1 items-center">
+                  <LuCalendarDays className="size-4 text-muted-foreground" />
+                  <p className="text-sm">
+                    {new Date(meet.date).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm">{meet.time}</p>
                 </div>
               </div>
             </CardContent>
