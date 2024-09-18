@@ -6,26 +6,27 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
-  id                 String     @id
-  googleId           String?    @unique
-  email              String     @unique
+  id                 String    @id
+  googleId           String?   @unique
+  email              String    @unique
   name               String?
   picture            String?
   session            Session[]
-  meetsCreated       Meet[]     @relation("CreatedMeets")
-  meetsParticipating Meet[]     @relation("ParticipatedMeets")
+  meetsCreated       Meet[]    @relation("CreatedMeets")
+  meetsParticipating Meet[]    @relation("ParticipatedMeets")
   badges             Badge[]
   bio                String?
-  friends            User[]     @relation("Friends")
-  friendOf           User[]     @relation("Friends")
+  friends            User[]    @relation("Friends")
+  friendOf           User[]    @relation("Friends")
   settings           Settings?
   checkIns           CheckIn[]
-  city               City?      @relation(fields: [cityName], references: [name])
+  city               City?     @relation(fields: [cityName], references: [name])
   cityName           String?
 }
 
@@ -89,7 +90,6 @@ model Meet {
   tags           Tag[]
   address        String?
 }
-
 
 model CheckIn {
   id             String       @id @default(uuid())
