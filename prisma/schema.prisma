@@ -47,7 +47,7 @@ model Tag {
   // A name as identifier is totally fine. only if you want to have two tags with the same name butt different attributes, you need an id
   name          String         @id @default(uuid())
   venues        Venue[]
-  meets         Meet[]         @relation("TagsOnMeets")
+  meets         Meet[]
   activityTypes ActivityType[]
 }
 
@@ -65,7 +65,7 @@ model Venue {
 }
 
 model Meet {
-id             String       @id @default(uuid())
+  id             String       @id @default(uuid())
   date           DateTime
   time           String
   mode           String
@@ -85,7 +85,7 @@ id             String       @id @default(uuid())
   activityType   ActivityType @relation(fields: [activityTypeId], references: [id])
   activityTypeId String
   competitive    Boolean?
-  tags           Tag[]        @relation("TagsOnMeets")
+  tags           Tag[]
   address        String?
 }
 
@@ -107,7 +107,7 @@ model ActivityType {
   description                  String?
   requiredNumberOfParticipants Int
   meets                        Meet[]
-  tags          Tag[]
+  tags                         Tag[]
   venues                       Venue[]
 
   CheckIn CheckIn[]

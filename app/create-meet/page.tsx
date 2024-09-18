@@ -12,6 +12,7 @@ export default async function CreateMeet({
   const user = await protectPage();
 
   const activityTypes = await prisma.activityType.findMany();
+  const tags = await prisma.tag.findMany();
 
   if (searchParams.location) {
     // Location was given in url query
@@ -24,6 +25,7 @@ export default async function CreateMeet({
           location={locationArray}
           address={address}
           activityTypes={activityTypes}
+          dbTags={tags}
         />
       </div>
     );
@@ -35,7 +37,7 @@ export default async function CreateMeet({
       },
     });
     if (venue) {
-      const address = venue.address ? venue.address : undefined
+      const address = venue.address ? venue.address : undefined;
       return (
         <div>
           <MeetForm
@@ -44,6 +46,7 @@ export default async function CreateMeet({
             venueName={venue.name}
             address={address}
             activityTypes={activityTypes}
+            dbTags={tags}
           />
         </div>
       );
