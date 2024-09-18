@@ -20,9 +20,11 @@ import {
 import { Tag } from "@prisma/client";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { tagConfigs } from "@/lib/utils/tags";
 
 type Props = {
   suggestions: Tag[];
+  //this should be called selected
   value: string[];
   setValue: React.Dispatch<React.SetStateAction<string[]>>;
 };
@@ -64,19 +66,24 @@ export function TagInput({ suggestions, value, setValue }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          type="button"
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="flex flex-wrap justify-start items-start w-full min-h-20 rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground"
+          className="flex flex-wrap justify-start items-start w-full min-h-20 rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground col-span-4"
         >
           {value?.length
             ? value.map((val, i) => (
                 <div
                   key={i}
-                  className="flex justify-center items-center gap-1 px-2 rounded-full border bg-slate-200 text-xs font-medium"
+                  className={cn(
+                    "flex justify-center items-center gap-1 px-2 rounded-full border bg-slate-200 text-xs text-foreground font-medium",
+                    tagConfigs[val].color
+                  )}
                 >
+                  {tagConfigs[val].icon({})}
                   {value.find((suggestion) => suggestion === val)}
-                  <button onClick={() => handleRemoveTag(val)}>
+                  <button type="button" onClick={() => handleRemoveTag(val)}>
                     <X className="w-3 aspect-square" />
                   </button>
                 </div>
@@ -84,7 +91,7 @@ export function TagInput({ suggestions, value, setValue }: Props) {
             : "Select Tag"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-0" side="bottom">
         <Command>
           <CommandInput
             placeholder="Search suggestion..."
@@ -92,19 +99,23 @@ export function TagInput({ suggestions, value, setValue }: Props) {
             onInput={handleInputChange}
           />
           <CommandList>
-            <CommandEmpty>
+            {/* <CommandEmpty>
               <Button onClick={handleButtonClick}>{"Add a new Tag"}</Button>
-            </CommandEmpty>
+            </CommandEmpty> */}
             <CommandGroup className="flex justify-center items-center gap-2">
               {suggestions.map((suggestion) => (
                 <CommandItem
-                  className="flex justify-center items-center border-2 rounded-full m-2 pr-4 pl-4"
+                  className={cn(
+                    "flex justify-center items-center border-2 gap-2 rounded-full m-2 pr-4 pl-4",
+                    tagConfigs[suggestion.name].color
+                  )}
                   key={suggestion.name}
                   value={suggestion.name}
                   onSelect={() => {
                     handleSetValue(suggestion.name);
                   }}
                 >
+                  {tagConfigs[suggestion.name].icon({})}
                   {suggestion.name}
                 </CommandItem>
               ))}

@@ -8,6 +8,7 @@ export const meetSchema = z.object({
   mode: z.enum(["softie", "casual", "competitive"], {
     required_error: "Choose a Mode",
   }),
+  tags: z.array(z.string()),
   duration: z.number(),
   // change participants to guests
   groupSize: z.string(),

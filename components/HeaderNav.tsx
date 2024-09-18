@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import type { User as PrismaUser } from "@prisma/client";
 import { ActionResult } from "@/lib/utils/types";
 import Link from "next/link";
+import { BackArrow } from "./BackArrow";
 
 export default function HeaderNav({
   loggedInUserId,
@@ -14,11 +15,7 @@ export default function HeaderNav({
 }) {
   return (
     <header className="flex w-full justify-between px-3 py-3 items-center">
-      <Button variant="ghost" size="icon">
-        <Link href="/">
-          <LuArrowLeft className="size-5" />
-        </Link>
-      </Button>
+      <BackArrow />
 
       <p className=" w-auto font-medium size-4">Profile</p>
       <ProfileDropdown loggedInUserId={loggedInUserId} />

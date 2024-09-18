@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { isFuture, isToday, format } from "date-fns";
 import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
+import { FaAddressBook } from "react-icons/fa6";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
 import { InviteMeetEmail } from "@/emails/invite-meet";
@@ -102,10 +103,15 @@ export const submitMeetWithVenue = async (
       date: values.date,
       time: values.time,
       duration: values.duration,
+      mode: values.mode,
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
-      participants: {},
+      participants: {
+        connect: {
+          id: creatorId,
+        },
+      },
       notes: values.description,
       equipment: values.equipment,
       creator: {
@@ -123,27 +129,80 @@ export const submitMeetWithVenue = async (
           name: values.activityType,
         },
       },
+      tags: {
+        connect: values.tags.map((tag) => ({
+          name: tag,
+        })),
+      },
     },
   });
   redirect(`/meet/${meet?.id}`);
 };
 
+export async function getMeetData(meetId: string) {
+  console.log("Fetching meet data for ID:", meetId);
+  try {
+    const meet = await prisma.meet.findUnique({
+      where: { id: meetId },
+      include: {
+        venue: true,
+        activityType: true,
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        tags: true, // Hier fügen wir die tags hinzu
+      },
+    });
+
+    console.log("Raw meet data:", JSON.stringify(meet, null, 2));
+
+    if (!meet) {
+      console.log("Meet not found for ID:", meetId);
+      return null;
+    }
+
+    return meet;
+  } catch (error) {
+    console.error("Error fetching meet:", error);
+    throw error;
+  }
+}
+
 export const submitMeetWithLocation = async (
   values: z.infer<typeof meetSchema>,
   creatorId: string,
-  locationArray: number[]
+  locationArray: number[],
+  address?: string | null,
+  
 ) => {
   const meet = await prisma.meet.create({
     data: {
       date: values.date,
+      mode: values.mode,
       time: values.time,
       duration: values.duration,
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
-      participants: {},
+      participants: {
+        connect: {
+          id: creatorId,
+        },
+      },
       notes: values.description,
       equipment: values.equipment,
+      address: address,
       creator: {
         connect: {
           id: creatorId,
@@ -155,6 +214,11 @@ export const submitMeetWithLocation = async (
         },
       },
       location: locationArray,
+      tags: {
+        connect: values.tags.map((tag) => ({
+          name: tag,
+        })),
+      },
     },
   });
   redirect(`/meet/${meet?.id}`);
