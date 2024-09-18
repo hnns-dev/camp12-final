@@ -118,10 +118,11 @@ export function MapMarkers({
           const marker = L.marker(meet.location as L.LatLngTuple, {
             icon: meetIcon,
           })
-            .bindPopup("Meet: " + meet.activityType.name)
+            .bindPopup("Session: " + meet.activityType.name)
             .on("click", () => {
               const venueData: VenueData = {
-                name: meet.activityType.name || "Unnamed Meet",
+                id: meet.id,
+                name: meet.activityType.name || "Unnamed Session",
                 address: meet.address || "Unknown address",
                 geolocation: meet.location as LatLngExpression,
               };
