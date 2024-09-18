@@ -13,7 +13,7 @@ export default function MapPointer() {
       strokeWidth="4"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="lucide lucide-plus text-red-500"
+      className="lucide lucide-plus text-teal-900"
       animate={{ scale: [1, 1.5, 1] }}
       transition={{
         duration: 2,
