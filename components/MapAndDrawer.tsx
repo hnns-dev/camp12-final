@@ -45,13 +45,16 @@ export default function MapAndDrawer({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<VenueData | null>(null);
   const [crossVisible, setCrossVisible] = useState(false);
-  const [crossPos, setCrossPos] = useState<number[]>([0, 0]);
+  const [crossPos, setCrossPos] = useState<LatLngExpression>([0, 0]);
+  const [center, setCenter] = useState<LatLngExpression>([51.3397, 12.3731]);
 
   const toggleCross = () => setCrossVisible((prev) => !prev);
   const close = () => setCrossVisible(false);
-  const updateCrossPos = (pos: number[]) => setCrossPos(pos);
+  const updateCrossPos = (pos: LatLngExpression) => setCrossPos(pos);
 
   const openDrawer = (venueData: VenueData) => {
+    console.log({ venueData });
+
     setSelectedVenue(venueData);
     setIsDrawerOpen(true);
     console.log(crossPos);
@@ -76,6 +79,7 @@ export default function MapAndDrawer({
   return (
     <div>
       <Map
+        center={center}
         crossVisible={crossVisible}
         close={close}
         openDrawer={openDrawer}
@@ -98,6 +102,7 @@ export default function MapAndDrawer({
         toggleCross={toggleCross}
         meets={meets}
         user={user}
+        setCenter={setCenter}
       />
     </div>
   );

@@ -9,6 +9,7 @@ import TagsBadges from "@/components/TagsBadges";
 import AvatarList from "@/components/AvatarList";
 import { formatDate } from "@/lib/utils/formatDate";
 import { Button } from "@/components/ui/button";
+import { BackArrow } from "@/components/BackArrow";
 
 export default async function MeetDetailPage({
   params,
@@ -39,9 +40,9 @@ export default async function MeetDetailPage({
     return (
       <div className="h-screen flex flex-col bg-white">
         <div className="relative h-2/5">
-          <Back className="absolute top-4 left-4 z-10" />
+          <BackArrow variant="button" className="absolute top-4 left-4 z-10" />
           <ShareInvite
-            responseId={meetData.id}
+            meetId={meetData.id}
             userId={currentUserId}
             creatorId={meetData.creator.id}
             isPublic={meetData.isPublic}
@@ -74,7 +75,7 @@ export default async function MeetDetailPage({
                 <LuMapPin className="size-5 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
                   {meetData.venue?.name ||
-                    meetData.location?.join(", ") ||
+                    meetData.address ||
                     "Location not specified"}
                 </p>
               </div>

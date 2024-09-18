@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -31,8 +33,8 @@ interface DrawerUpComingSessionsProps {
 export function DrawerUpComingSessions({
   children,
   defaultTab,
-  meets,
   user,
+  meets,
 }: DrawerUpComingSessionsProps) {
   const [sortedMeets, setSortedMeets] = useState<ExtendedMeet[]>([]);
 
@@ -41,18 +43,28 @@ export function DrawerUpComingSessions({
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
-        const meetsWithDistance = meets
-          .filter((meet) => meet.isPublic)
-          .map((meet) => ({
+        const meetsWithDistance = meets?.map((meet) => {
+          let meetLocation =
+            meet.location || (meet.venue && meet.venue.location);
+          let distance = Infinity;
+
+          if (meetLocation) {
+            distance = Math.sqrt(
+              Math.pow(latitude - meetLocation[0], 2) +
+                Math.pow(longitude - meetLocation[1], 2)
+            );
+          }
+
+          return {
             ...meet,
             distance: calculateDistance(latitude, longitude, meet),
           }));
 
-        setSortedMeets(
-          meetsWithDistance.sort(
-            (a, b) => (a.distance || 0) - (b.distance || 0)
-          )
+        const sorted = meetsWithDistance?.sort(
+          (a, b) => a.distance - b.distance
         );
+        if (sorted) {setSortedMeets(sorted);}
+        
       });
     }
   }, [meets]);

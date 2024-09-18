@@ -31,10 +31,13 @@ type MapProps = {
   updateCrossPos: (pos: LatLngExpression) => void;
   handleCreateMeet: () => void;
   handleCreateVenue: () => void;
+  centerUserOnMap: boolean;
+  center: LatLngExpression;
 };
 
 export default function Map2({
   openDrawer,
+  center,
   venues,
   openMeets,
   isDrawerOpen,
@@ -43,6 +46,7 @@ export default function Map2({
   close,
   handleCreateMeet,
   handleCreateVenue,
+  centerUserOnMap,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
@@ -50,7 +54,7 @@ export default function Map2({
 
   return (
     <MapContainer
-      center={[51.3397, 12.3731]}
+      center={center}
       zoom={12}
       maxZoom={18}
       scrollWheelZoom={true}
@@ -59,6 +63,8 @@ export default function Map2({
       attributionControl={false}
     >
       <MapMarkers
+        center={center}
+        crossVisible={crossVisible}
         isDrawerOpen={isDrawerOpen}
         openDrawer={openDrawer}
         openMeets={openMeets}
