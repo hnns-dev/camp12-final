@@ -1,28 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { getUserParticipatingMeets } from "@/lib/utils/getMeets";
+import { User } from "@prisma/client";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { LuCalendarDays, LuMapPin } from "react-icons/lu";
+import { Card, CardContent } from "./ui/card";
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerDescription,
   DrawerTrigger,
 } from "./ui/drawer";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
-import { Card, CardContent } from "./ui/card";
-import { Label } from "./ui/label";
-import { Meet, User, Venue, ActivityType } from "@prisma/client";
-import { LuMapPin, LuCalendarDays } from "react-icons/lu";
 import { Separator } from "./ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
-type ExtendedMeet = Meet & {
-  venue: Venue | null;
-  activityType: ActivityType;
+type MeetFromFn = Awaited<ReturnType<typeof getUserParticipatingMeets>>[number];
+
+interface ExtendedMeet extends MeetFromFn {
   distance?: number;
-};
-
+}
 interface DrawerUpComingSessionsProps {
   children: React.ReactNode;
   defaultTab: string;
@@ -58,13 +57,15 @@ export function DrawerUpComingSessions({
           return {
             ...meet,
             distance: calculateDistance(latitude, longitude, meet),
-          }));
+          };
+        });
 
         const sorted = meetsWithDistance?.sort(
           (a, b) => a.distance - b.distance
         );
-        if (sorted) {setSortedMeets(sorted);}
-        
+        if (sorted) {
+          setSortedMeets(sorted);
+        }
       });
     }
   }, [meets]);

@@ -110,7 +110,7 @@ export default async function VenueDetailsPage({
             </div>
 
             <div className="px-5">
-              <TagsBadges tags={venue?.tags} />
+              {venue?.tags.length ? <TagsBadges tags={venue?.tags} /> : null}
               <div className="-mt-">
                 <label htmlFor="description" className="font-semibold">
                   About the venue
