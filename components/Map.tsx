@@ -31,6 +31,7 @@ type MapProps = {
   updateCrossPos: (pos: LatLngExpression) => void;
   handleCreateMeet: () => void;
   handleCreateVenue: () => void;
+  centerUserOnMap: boolean;
 };
 
 export default function Map2({
@@ -43,6 +44,7 @@ export default function Map2({
   close,
   handleCreateMeet,
   handleCreateVenue,
+  centerUserOnMap,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
