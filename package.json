@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "bun seed.ts"
+    "seed": "bun seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@edgestore/react": "^0.2.2",
