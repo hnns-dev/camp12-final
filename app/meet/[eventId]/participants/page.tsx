@@ -28,7 +28,6 @@ export default async function ParticipantsPage({
             key={participant.id}
             user={participant}
             myUserId={user?.id ?? null}
-            disableDelete
           />
         ))}
       </div>

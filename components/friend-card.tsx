@@ -1,20 +1,28 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Trash2, CalendarDays } from "lucide-react";
 import { User } from "@prisma/client";
+import { Checkbox } from "./ui/checkbox";
 import Link from "next/link";
 
 interface FriendCardProps {
   user: User;
   myUserId: string | null;
-  disableDelete?: boolean;
+  showTrash?: boolean;
+  showCheckbox?: boolean;
+  checked?: boolean;
+  onChange?: () => void;
 }
 
 export function FriendCard({
-  disableDelete = false,
   myUserId,
   user,
+  showCheckbox = false,
+  showTrash = false,
+  onChange,
+  checked,
 }: FriendCardProps) {
   return (
     <Link href={`/profile/${user.id}`}>
@@ -41,18 +49,25 @@ export function FriendCard({
                 </div>
               </div>
             </div>
-            {!disableDelete ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="top-2 right-2 text-destructive hover:bg-transparent"
-              >
-                <div className="absolute top-3 right-3 border p-2 rounded-md">
-                  <Trash2 className="h-4 w-4" />
-                </div>
-              </Button>
-            ) : null}
           </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="top-2 right-2 text-destructive hover:bg-transparent"
+          >
+            {showTrash ? (
+              <Trash2 className="h-4 w-4" />
+            ) : (
+              showCheckbox && (
+                <Checkbox
+                  checked={checked}
+                  id={`friend-${user.id}`}
+                  onClick={onChange}
+                />
+              )
+            )}
+          </Button>
         </div>
       </div>
     </Link>

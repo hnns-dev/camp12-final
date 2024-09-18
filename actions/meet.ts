@@ -7,6 +7,8 @@ import { meetSchema } from "@/lib/validation/zod-meet";
 import { z } from "zod";
 import { FaAddressBook } from "react-icons/fa6";
 import { redirect } from "next/navigation";
+import { Resend } from "resend";
+import { InviteMeetEmail } from "@/emails/invite-meet";
 
 // Helper function to check if a given time is in the future
 function isTimeInFuture(time: string) {
@@ -221,3 +223,21 @@ export const submitMeetWithLocation = async (
   });
   redirect(`/meet/${meet?.id}`);
 };
+
+export async function inviteToMeet(userIds: string[], meetId: string) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: userIds,
+      },
+    },
+    select: { email: true },
+  });
+  await resend.emails.send({
+    from: "info@dnmct.dev",
+    to: users.map((u) => u.email),
+    subject: "You're invited to my meet",
+    react: InviteMeetEmail({ meetId }),
+  });
+}
