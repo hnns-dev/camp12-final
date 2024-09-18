@@ -40,8 +40,8 @@ export function MapMarkers({
   });
 
   const userIcon = new L.Icon({
-    iconUrl: "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png",
-    iconSize: [41, 41],
+    iconUrl: "/marker.svg",
+    iconSize: [30, 30],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
