@@ -191,6 +191,7 @@ const user3 = await prisma.user.create({
   },
 });
 
+
 // Tags
 await prisma.tag.create({ data: { name: "public ground" } });
 await prisma.tag.create({ data: { name: "wheelchair-accessible" } });

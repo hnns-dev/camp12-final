@@ -123,6 +123,11 @@ export const submitMeetWithVenue = async (
           name: values.activityType,
         },
       },
+      tags: {
+        connect: values.tags.map((tag) => ({
+          name: tag,
+        })),
+      },
     },
   });
   redirect(`/meet/${meet?.id}`);
@@ -199,6 +204,11 @@ export const submitMeetWithLocation = async (
         },
       },
       location: locationArray,
+      tags: {
+        connect: values.tags.map((tag) => ({
+          name: tag,
+        })),
+      },
     },
   });
   redirect(`/meet/${meet?.id}`);
