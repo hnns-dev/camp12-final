@@ -20,6 +20,7 @@ export default async function VenueDetailsPage({
   const venue = await prisma.venue.findUnique({
     where: { id: params.venueId },
     select: {
+      id: true,
       name: true,
       location: true,
       image: true,
@@ -64,6 +65,9 @@ export default async function VenueDetailsPage({
     throw new Error("The coordinates are undefined or in wrong format");
   }
 
+  console.log("venue");
+  console.log(venue?.id);
+
   return (
     <div className="h-screen flex flex-col bg-white">
       <div className="relative h-2/5">
@@ -106,7 +110,7 @@ export default async function VenueDetailsPage({
             </div>
 
             <div className="px-5">
-              <TagsBadges tags={venue.tags} />
+              <TagsBadges tags={venue?.tags} />
               <div className="-mt-">
                 <label htmlFor="description" className="font-semibold">
                   About the venue
@@ -154,7 +158,10 @@ export default async function VenueDetailsPage({
         </div>
         <div className="p-5">
           <Button className="w-full font-medium text-white rounded-lg py-4">
-            Create Session
+            <Link href={`/create-meet?venueId=${venue?.id}`}>
+              {" "}
+              Create Session
+            </Link>
           </Button>
         </div>
       </main>
