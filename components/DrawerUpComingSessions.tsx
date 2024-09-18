@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { FaTableTennis } from "react-icons/fa";
 import { InteractionBar } from "./InteractionBar";
@@ -31,12 +33,12 @@ type ExtendedMeet = AllMeet & { distance?: number };
 export function DrawerUpComingSessions({
   children,
   defaultTab,
-  meets,
   user,
+  meets,
 }: {
   children: React.ReactNode;
   defaultTab: string;
-  meets: AllMeet[];
+  meets?: AllMeet[];
   user: User;
 }) {
   const [sortedMeets, setSortedMeets] = useState<ExtendedMeet[]>([]);
@@ -46,7 +48,7 @@ export function DrawerUpComingSessions({
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
 
-        const meetsWithDistance = meets.map((meet) => {
+        const meetsWithDistance = meets?.map((meet) => {
           let meetLocation =
             meet.location || (meet.venue && meet.venue.location);
           let distance = Infinity;
@@ -64,10 +66,11 @@ export function DrawerUpComingSessions({
           };
         });
 
-        const sorted = meetsWithDistance.sort(
+        const sorted = meetsWithDistance?.sort(
           (a, b) => a.distance - b.distance
         );
-        setSortedMeets(sorted);
+        if (sorted) {setSortedMeets(sorted);}
+        
       });
     }
   }, [meets]);
