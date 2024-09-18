@@ -1,15 +1,28 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Trash2, CalendarDays } from "lucide-react";
 import { User } from "@prisma/client";
+import { Checkbox } from "./ui/checkbox";
 
 interface FriendCardProps {
   user: User;
   myUserId: string | null;
+  showTrash?: boolean;
+  showCheckbox?: boolean;
+  checked?: boolean;
+  onChange?: () => void;
 }
 
-export function FriendCard({ myUserId, user }: FriendCardProps) {
+export function FriendCard({
+  myUserId,
+  user,
+  showCheckbox = false,
+  showTrash = false,
+  onChange,
+  checked,
+}: FriendCardProps) {
   return (
     <div className="relative shadow-md border border-gray-200 rounded-md bg-background text-foreground">
       <div className="p-4">
@@ -38,9 +51,17 @@ export function FriendCard({ myUserId, user }: FriendCardProps) {
             size="icon"
             className="top-2 right-2 text-destructive hover:bg-transparent"
           >
-            <div className="absolute top-3 right-3 border p-2 rounded-md">
+            {showTrash ? (
               <Trash2 className="h-4 w-4" />
-            </div>
+            ) : (
+              showCheckbox && (
+                <Checkbox
+                  checked={checked}
+                  id={`friend-${user.id}`}
+                  onClick={onChange}
+                />
+              )
+            )}
           </Button>
         </div>
       </div>
