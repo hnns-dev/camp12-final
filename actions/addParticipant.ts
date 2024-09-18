@@ -23,13 +23,6 @@ export async function addParticipant(meetId: string, userId: string) {
       },
     });
 
-    await prisma.response.create({
-      data: {
-        meetId: meetId,
-        userId: userId,
-        status: "accepted",
-      },
-    });
 
     return { success: true, participants: updatedMeet.participants };
   } catch (error) {

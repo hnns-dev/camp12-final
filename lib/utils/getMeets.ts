@@ -42,6 +42,7 @@ export async function getAllMeets() {
       venue: true,
       activityType: true,
       participants: true,
+      creator: true,
     },
   });
   return meets;

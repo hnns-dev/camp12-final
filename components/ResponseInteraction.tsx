@@ -19,10 +19,10 @@ export default function ResponseInteraction({ meetId }: ResponseInteractionProps
     setIsLoading(true);
     try {
       const result = await addGuest(meetId, guestName);
-      if (result.success) {
+      if (result?.success) {
         router.push(`/meet/${meetId}`);
       } else {
-        console.error(result.error);
+        console.error(result?.error);
       }
     } catch (error) {
       console.error("Failed to add participant:", error);

@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/db";
 import { Tag } from "@prisma/client";
 import { VisibilityStatus } from "@prisma/client";
+import { Modern_Antiqua } from "next/font/google";
 
 interface SettingsProps {
   friendsVisible: VisibilityStatus;
@@ -61,6 +62,7 @@ interface MeetProps {
   duration: number;
   isPublic: boolean;
   creatorId: string;
+  mode: string;
   groupSize: number;
   notes?: string;
   venueId: string;
@@ -71,6 +73,7 @@ export const createMeet = async ({
   date,
   time,
   duration,
+  mode,
   isPublic,
   creatorId,
   groupSize,
@@ -81,6 +84,7 @@ export const createMeet = async ({
   await prisma.meet.create({
     data: {
       date: date,
+      mode: mode,
       time: time,
       duration: duration,
       isPublic: isPublic,

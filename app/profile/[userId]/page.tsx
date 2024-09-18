@@ -33,6 +33,7 @@ export default async function ProfilePage({
           activityType: true,
           participants: true,
           creator: true,
+          venue: true,
         },
       },
     },
@@ -89,7 +90,7 @@ export default async function ProfilePage({
       <div className="flex flex-col items-center pt-5">
         <Avatar className="h-40 w-40">
           <AvatarImage
-            src={showPicture()}
+            src={showPicture() ?? ""}
             alt="@shadcn"
             className="object-cover"
           />
@@ -197,7 +198,11 @@ export default async function ProfilePage({
         <Separator className="my-5" />
         <div className="flex items-center w-full justify-between px-5 mb-4">
           <p className="font-semibold">Sessions</p>
-          <DrawerUpComingSessions defaultTab="own-meets"> 
+          <DrawerUpComingSessions
+            user={user}
+            meets={user.meetsCreated}
+            defaultTab="own-meets"
+          >
             <div className=" font-semibold underline">view all</div>
           </DrawerUpComingSessions>
         </div>

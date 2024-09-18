@@ -5,7 +5,6 @@ import { generateIdFromEntropySize } from "lucia";
 console.log("Cleaning Database...");
 
 // Delete data in the correct order to avoid foreign key constraint errors
-await prisma.response.deleteMany();
 await prisma.meet.deleteMany();
 await prisma.report.deleteMany();
 await prisma.badge.deleteMany();
@@ -519,21 +518,6 @@ await prisma.report.create({
 // Responses
 console.log("Creating responses...");
 
-await prisma.response.create({
-  data: {
-    meetId: meet1.id,
-    userId: user2.id,
-    status: "accepted",
-  },
-});
-
-await prisma.response.create({
-  data: {
-    meetId: meet2.id,
-    userId: user1.id,
-    status: "pending",
-  },
-});
 
 // ... (create other responses similarly)
 

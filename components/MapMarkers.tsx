@@ -190,6 +190,7 @@ export function MapMarkers({
           const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.flyTo(nearestVenue, 16);
           const venueData: VenueData = {
+            id: "",
             name: "Closest Venue",
             address: "Some Address",
             distance: distanceFormatted,
