@@ -74,7 +74,7 @@ export default async function MeetDetailPage({
                 <LuMapPin className="size-5 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
                   {meetData.venue?.name ||
-                    meetData.location?.join(", ") ||
+                    meetData.address ||
                     "Location not specified"}
                 </p>
               </div>
