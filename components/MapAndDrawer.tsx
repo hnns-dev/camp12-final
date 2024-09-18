@@ -65,7 +65,7 @@ export default function MapAndDrawer({
   async function handleCreateVenue() {
     try {
       const url = `/create-venue?location=${queryString.toString()}`;
-      router.push(url); //
+      router.push(url);
     } catch (error) {
       console.log(error);
     }
