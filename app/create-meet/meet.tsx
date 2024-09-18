@@ -1,6 +1,7 @@
 "use client";
 
 import { submitMeetWithLocation, submitMeetWithVenue } from "@/actions/meet";
+import { BackArrow } from "@/components/BackArrow";
 import { TagInput } from "@/components/tagInput";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -133,7 +134,13 @@ export default function MeetForm({
 
   return (
     <div className="p-6 h-screen flex flex-col">
-      <h2 className="text-xl font-bold pb-3 text-center">Create a Session</h2>
+      <div className="flex justify-between items-center mb-3">
+        <BackArrow />
+        <h2 className="text-xl font-bold flex-1 text-center">
+          Create a Session
+        </h2>
+        <div className="size-11"></div>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

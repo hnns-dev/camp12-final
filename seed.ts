@@ -193,13 +193,13 @@ const user3 = await prisma.user.create({
 
 
 // Tags
-await prisma.tag.create({ data: { name: "public ground" } });
-await prisma.tag.create({ data: { name: "wheelchair-accessible" } });
+await prisma.tag.create({ data: { name: "Public ground" } });
+await prisma.tag.create({ data: { name: "Wheelchair accessible" } });
 await prisma.tag.create({ data: { name: "Relaxing" } });
-await prisma.tag.create({ data: { name: "Friendly Neighborhood" } });
+await prisma.tag.create({ data: { name: "Friendly neighborhood" } });
 await prisma.tag.create({ data: { name: "Dogs around" } });
-await prisma.tag.create({ data: { name: "illuminated at night" } });
-await prisma.tag.create({ data: { name: "sheltered" } });
+await prisma.tag.create({ data: { name: "Illuminated at night" } });
+await prisma.tag.create({ data: { name: "Sheltered" } });
 
 // Meets
 const meet1 = await prisma.meet.create({

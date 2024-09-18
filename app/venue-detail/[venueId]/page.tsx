@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import TagsBadges from "@/components/TagsBadges";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { BackArrow } from "@/components/BackArrow";
 
 export default async function VenueDetailsPage({
   params,
@@ -66,7 +67,7 @@ export default async function VenueDetailsPage({
   return (
     <div className="h-screen flex flex-col bg-white">
       <div className="relative h-2/5">
-        <Back className="absolute top-4 left-4 z-10" />
+        <BackArrow />
         <img
           className="w-full h-full object-cover"
           src={venue?.image || "/signin-hero.jpg"}

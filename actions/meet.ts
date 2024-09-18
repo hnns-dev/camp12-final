@@ -105,7 +105,11 @@ export const submitMeetWithVenue = async (
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
-      participants: {},
+      participants: {
+        connect: {
+          id: creatorId,
+        },
+      },
       notes: values.description,
       equipment: values.equipment,
       creator: {
@@ -189,7 +193,11 @@ export const submitMeetWithLocation = async (
       isPublic: values.public,
       isRecurring: values.recurring,
       groupSize: Number(values.groupSize),
-      participants: {},
+      participants: {
+        connect: {
+          id: creatorId,
+        },
+      },
       notes: values.description,
       equipment: values.equipment,
       address: address,

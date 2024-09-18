@@ -13,6 +13,7 @@ import { DrawerCreateVenue } from "./DrawerCreateVenue";
 import { cn } from "@/lib/utils";
 import { FaTableTennis } from "react-icons/fa";
 import { Meet, User } from "@prisma/client";
+import { LatLngExpression } from "leaflet";
 
 type Props = {
   userCreatedMeets: UserCreatedMeet[];
@@ -21,6 +22,7 @@ type Props = {
   toggleCross: () => void;
   meets: AllMeet[];
   user: User;
+  setCenter: React.Dispatch<React.SetStateAction<LatLngExpression>>;
 };
 
 export default function Navbar({
@@ -30,6 +32,7 @@ export default function Navbar({
   toggleCross,
   meets,
   user,
+  setCenter,
 }: Props) {
   return (
     <nav
@@ -42,7 +45,29 @@ export default function Navbar({
       <DrawerUpComingSessions meets={meets} user={user} defaultTab="near-me">
         <FaTableTennis className="size-8 fill-white" />
       </DrawerUpComingSessions>
-      <FaLocationCrosshairs className="size-8 fill-white" />
+      <FaLocationCrosshairs
+        className="size-8 fill-white"
+        onClick={() => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                const userPos: LatLngExpression = [latitude, longitude];
+                setCenter(userPos);
+              },
+              (error) => {
+                console.error("Error getting user location:", error);
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 5000,
+              }
+            );
+          } else {
+            console.error("Geolocation is not supported by this browser");
+          }
+        }}
+      />
       <button onClick={toggleCross}>
         <FaCirclePlus className="size-8 fill-white" />{" "}
       </button>
