@@ -1,4 +1,4 @@
-import L, { LatLngExpression, map } from "leaflet";
+import L, { icon, LatLngExpression, map } from "leaflet";
 import { Venue } from "@/lib/utils/types";
 import { useRef, useEffect, useState } from "react";
 import { VenueData } from "./Map";
@@ -14,6 +14,8 @@ type Props = {
   openDrawer: (venueData: VenueData) => void;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isDrawerOpen: boolean;
+  crossVisible: boolean;
+  center: LatLngExpression;
 };
 
 export function MapMarkers({
@@ -23,6 +25,8 @@ export function MapMarkers({
   openDrawer,
   setLoading,
   isDrawerOpen,
+  crossVisible,
+  center,
 }: Props) {
   const venueIcon = new L.Icon({
     iconUrl:
@@ -30,6 +34,14 @@ export function MapMarkers({
     shadowUrl:
       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
     iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  const userIcon = new L.Icon({
+    iconUrl: "/marker.svg",
+    iconSize: [30, 30],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
@@ -71,6 +83,9 @@ export function MapMarkers({
 
       const VenueMarkers = L.markerClusterGroup();
       const OpenMeetMarkers = L.markerClusterGroup();
+      const UserMarker = L.marker(userPosition ?? center, {
+        icon: userIcon,
+      });
 
       venues.forEach((venue) => {
         if (venue.location && venue.location.length === 2) {
@@ -79,7 +94,9 @@ export function MapMarkers({
           })
             .bindPopup(venue.name || "Unnamed Venue")
             .on("click", () => {
+              if (crossVisible) return;
               const venueData: VenueData = {
+                id: venue.id,
                 name: venue.name || "Unnamed Venue",
                 address: venue.address || "Unknown address",
                 geolocation: venue.location as LatLngExpression,
@@ -101,10 +118,11 @@ export function MapMarkers({
           const marker = L.marker(meet.location as L.LatLngTuple, {
             icon: meetIcon,
           })
-            .bindPopup("Meet: " + meet.activityType.name)
+            .bindPopup("Session: " + meet.activityType.name)
             .on("click", () => {
               const venueData: VenueData = {
-                name: meet.activityType.name || "Unnamed Meet",
+                id: meet.id,
+                name: meet.activityType.name || "Unnamed Session",
                 address: meet.address || "Unknown address",
                 geolocation: meet.location as LatLngExpression,
               };
@@ -133,7 +151,9 @@ export function MapMarkers({
           setLoading(false);
           if (map) {
             map.setView(userPos, 13);
-            L.marker(userPos).addTo(map).bindPopup("You are here");
+            L.marker(userPos, { icon: userIcon })
+              .addTo(map)
+              .bindPopup("You are here");
           }
         },
         (error) => {
@@ -153,6 +173,10 @@ export function MapMarkers({
   }, [venues]);
 
   useEffect(() => {
+    map.flyTo(center);
+  }, [center]);
+
+  useEffect(() => {
     if (!map) return;
 
     function handleClick() {
@@ -166,6 +190,7 @@ export function MapMarkers({
           const distanceFormatted = (distance / 1000).toFixed(2) + " km"; // Format distance as kilometers
           map.flyTo(nearestVenue, 16);
           const venueData: VenueData = {
+            id: "",
             name: "Closest Venue",
             address: "Some Address",
             distance: distanceFormatted,

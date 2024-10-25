@@ -105,6 +105,7 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem>
               <FormDescription>
+                {/* @ts-ignore */}
                 <Switch
                   {...field}
                   onCheckedChange={(checked) => {

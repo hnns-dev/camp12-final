@@ -5,12 +5,14 @@ import L, { LatLngExpression } from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster";
 import { XIcon } from "lucide-react";
-import { useRef, useState } from "react";
-import { GiCrosshair } from "react-icons/gi";
-import { MapContainer } from "react-leaflet";
 import { Button } from "./ui/button";
+import MapPointer from "./MapPointer";
+import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import "leaflet/dist/leaflet.css";
+import { MapContainer } from "react-leaflet";
 import { MapMarkers } from "./MapMarkers";
 
 export interface VenueData {
@@ -31,11 +33,12 @@ type MapProps = {
   updateCrossPos: (pos: LatLngExpression) => void;
   handleCreateMeet: () => void;
   handleCreateVenue: () => void;
-  centerUserOnMap: boolean;
+  center: LatLngExpression;
 };
 
 export default function Map2({
   openDrawer,
+  center,
   venues,
   openMeets,
   isDrawerOpen,
@@ -44,15 +47,27 @@ export default function Map2({
   close,
   handleCreateMeet,
   handleCreateVenue,
-  centerUserOnMap,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<L.Map | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const variants = {
+    open: { rotate: [0, 0, 270, 270, 0] },
+    closed: { rotate: [0, 0, 0, 0, 0] },
+  };
+  const [isOpen, setIsOpen] = useState(false);
 
+  function buttonHandlerMeet() {
+    handleCreateMeet();
+    setIsOpen((prevState) => !prevState);
+  }
+  function buttonHandlerVenue() {
+    handleCreateVenue();
+    setIsOpen((prevState) => !prevState);
+  }
   return (
     <MapContainer
-      center={[51.3397, 12.3731]}
+      center={center}
       zoom={12}
       maxZoom={18}
       scrollWheelZoom={true}
@@ -61,6 +76,8 @@ export default function Map2({
       attributionControl={false}
     >
       <MapMarkers
+        center={center}
+        crossVisible={crossVisible}
         isDrawerOpen={isDrawerOpen}
         openDrawer={openDrawer}
         openMeets={openMeets}
@@ -74,9 +91,13 @@ export default function Map2({
         url="https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json"
       />
       {crossVisible ? (
-        <div className="absolute  top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2">
-          <GiCrosshair className="size-20" />
-        </div>
+        <motion.div
+          animate={isOpen ? "open" : "closed"}
+          variants={variants}
+          className="absolute top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2"
+        >
+          <MapPointer />
+        </motion.div>
       ) : null}
       {crossVisible ? (
         <div className="bg-white rounded-t-3xl p-4 pb-8 border-border z-[1000] absolute bottom-0 inset-x-0">
@@ -86,10 +107,10 @@ export default function Map2({
             </Button>
           </div>
           <div className="flex gap-4">
-            <Button className="flex-1" onClick={handleCreateMeet}>
+            <Button className="flex-1" onClick={buttonHandlerMeet}>
               Create Meet
             </Button>
-            <Button className="flex-1" onClick={handleCreateVenue}>
+            <Button className="flex-1" onClick={buttonHandlerVenue}>
               Create Venue
             </Button>
           </div>

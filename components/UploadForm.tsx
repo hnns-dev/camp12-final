@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useEdgeStore } from "../lib/edgestore";
 
-export default function uploadForm() {
+export default function UploadForm() {
   const [file, setFile] = React.useState<File>();
   const { edgestore } = useEdgeStore();
 
