@@ -1,9 +1,6 @@
 import { BackArrow } from "@/components/BackArrow";
 import Search from "@/components/Search";
 import { prisma } from "@/lib/db";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 const SearchPage = async ({
 	searchParams,
